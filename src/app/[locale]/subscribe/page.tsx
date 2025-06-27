@@ -62,117 +62,149 @@ export default function SubscribePage() {
     const selectedOptionData = options.find(option => option.id === selectedOption)
     
     return (
-        <div className="w-full max-w-5xl h-[calc(100vh-4.25rem)] flex flex-col space-y-5 pb-10">
+        <div className="w-full max-w-5xl mx-auto min-h-screen flex flex-col p-4 md:p-6 space-y-4 md:space-y-6">
+            {/* Header */}
             <div className="flex flex-col space-y-2">
-                <h1 className="text-3xl font-semibold">Tilaa liukasvaroitukset</h1>
-                <p className="text-muted-foreground">Valitse miten haluat vastaanottaa liukasvaroitukset Helsingissä</p>
+                <h1 className="text-2xl md:text-3xl font-semibold">Tilaa liukasvaroitukset</h1>
+                <p className="text-sm md:text-base text-muted-foreground">
+                    Valitse miten haluat vastaanottaa liukasvaroitukset Helsingissä
+                </p>
             </div>
             
-            <div className="w-full h-full grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div className="flex flex-col justify-between space-y-5">
-                    <RadioGroup 
-                        value={selectedOption} 
-                        onValueChange={setSelectedOption}
-                        className="col-span-1 space-y-3"
-                    >
-                        {options.map((option) => (
-                            <div 
-                                key={option.id} 
-                                onClick={() => setSelectedOption(option.id)}
-                                className="cursor-pointer"
-                            >
-                                <Card 
-                                    className={`${selectedOption === option.id ? "border-primary bg-primary/5" : "hover:bg-muted/50"}`}
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-6">
+                {/* Left Column - Options & Benefits */}
+                <div className="flex flex-col space-y-4 md:space-y-6 lg:col-span-1">
+                    {/* Option Selection */}
+                    <div>
+                        <h2 className="font-medium mb-3 text-sm md:text-base">Valitse tapa:</h2>
+                        <RadioGroup 
+                            value={selectedOption} 
+                            onValueChange={setSelectedOption}
+                            className="space-y-2 md:space-y-3"
+                        >
+                            {options.map((option) => (
+                                <div 
+                                    key={option.id} 
+                                    onClick={() => setSelectedOption(option.id)}
+                                    className="cursor-pointer"
                                 >
-                                    <CardContent className="flex items-center space-x-5">
-                                        <RadioGroupItem 
-                                            value={option.id} 
-                                            id={option.id} 
-                                            className="h-5 w-5"
-                                        />
-                                        {option.icon}
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-center space-x-2">
-                                                <Label htmlFor={option.id} className="font-medium cursor-pointer">
-                                                    {option.label}
-                                                </Label>
-                                                {option.warning && (
-                                                    <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">
-                                                        Lisävaiheita
-                                                    </span>
-                                                )}
-                                            </div>  
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        ))}
-                    </RadioGroup>
-                    <div className="">
-                        <h3 className="font-medium mb-2">Mitä saat:</h3>
-                        <ul className="text-sm text-gray-500 space-y-1">
-                        <li>• Reaaliaikaiset varoitukset liukkaista teistä</li>
-                        <li>• Tiedot vaarallisimmista alueista</li>
-                        <li>• Vakavuusluokitus jokaiselle varoitukselle</li>
-                        <li>• Maksutonta palvelua kaikille helsinkiläisille</li>
+                                    <Card 
+                                        className={`transition-colors ${
+                                            selectedOption === option.id 
+                                                ? "border-primary bg-primary/5" 
+                                                : "hover:bg-muted/50"
+                                        }`}
+                                    >
+                                        <CardContent className="p-3 md:p-4 flex items-center space-x-3">
+                                            <RadioGroupItem 
+                                                value={option.id} 
+                                                id={option.id} 
+                                                className="h-4 w-4 md:h-5 md:w-5"
+                                            />
+                                            <div className="flex-shrink-0">
+                                                {option.icon}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex justify-between items-center">
+                                                    <Label 
+                                                        htmlFor={option.id} 
+                                                        className="font-medium cursor-pointer text-sm md:text-base truncate"
+                                                    >
+                                                        {option.label}
+                                                    </Label>
+                                                    {option.warning && (
+                                                        <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full whitespace-nowrap ml-2">
+                                                            Lisävaiheita
+                                                        </span>
+                                                    )}
+                                                </div>  
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            ))}
+                        </RadioGroup>
+                    </div>
+                    
+                    {/* Benefits */}
+                    <div className="order-last lg:order-none">
+                        <h3 className="font-medium mb-3 text-sm md:text-base">Mitä saat:</h3>
+                        <ul className="text-xs md:text-sm text-muted-foreground space-y-1.5 md:space-y-2">
+                            <li>• Reaaliaikaiset varoitukset liukkaista teistä</li>
+                            <li>• Tiedot vaarallisimmista alueista</li>
+                            <li>• Vakavuusluokitus jokaiselle varoitukselle</li>
+                            <li>• Maksutonta palvelua kaikille helsinkiläisille</li>
                         </ul>
                     </div>
                 </div>
                 
-                <Card className="w-full h-full col-span-1 md:col-span-2">
-                    <CardHeader>
-                        <CardTitle className="flex items-center space-x-2 border-b pb-5">
+                {/* Right Column - Setup Form */}
+                <Card className="lg:col-span-2 flex flex-col">
+                    <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
                             {selectedOptionData?.icon}
                             <span>Tilaa {selectedOptionData?.label}</span>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="w-full h-full flex flex-col justify-between space-y-5">
-                        <ScrollArea className="h-full">
-                            <div className="space-y-5">
-                                <div className="space-y-3">
-                                    <h3 className="font-medium">Ohjeet:</h3>
-                                    <ul className="space-y-2 pl-5 list-disc">
-                                        {selectedOptionData?.guide.map((step, index) => (
-                                            <li key={index}>{step}</li>
-                                        ))}
-                                    </ul>
+                    <CardContent className="flex-1 flex flex-col space-y-4 md:space-y-6">
+                        {/* Instructions */}
+                        <div className="space-y-3">
+                            <h3 className="font-medium text-sm md:text-base">Ohjeet:</h3>
+                            <ul className="space-y-2 pl-4 md:pl-5 list-disc text-sm">
+                                {selectedOptionData?.guide.map((step, index) => (
+                                    <li key={index}>{step}</li>
+                                ))}
+                            </ul>
+                        </div>
+                        
+                        {/* Phone Number Input */}
+                        {(selectedOption === "whatsapp" || selectedOption === "signal" || selectedOption === "sms") && (
+                            <div className="space-y-3">
+                                <Label className="text-sm md:text-base">Puhelinnumero</Label>
+                                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                                    <Input 
+                                        placeholder="+358401234567" 
+                                        value={phoneNumber}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                        className="flex-1"
+                                    />
+                                    <Button variant="outline" className="sm:flex-shrink-0">
+                                        <Phone className="h-4 w-4 mr-2" />
+                                        Tarkista
+                                    </Button>
                                 </div>
-                                
-                                {(selectedOption === "whatsapp" || selectedOption === "signal" || selectedOption === "sms") && (
-                                    <div className="space-y-3">
-                                        <Label>Puhelinnumero</Label>
-                                        <div className="flex space-x-2">
-                                            <Input 
-                                                placeholder="+358401234567" 
-                                                value={phoneNumber}
-                                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                            />
-                                            <Button variant="outline">
-                                                <Phone className="h-4 w-4 mr-2" />
-                                                Tarkista
-                                            </Button>
-                                        </div>
-                                        <p className="text-sm text-muted-foreground">
-                                            Lähetämme vahvistuskoodin tähän numeroon
-                                        </p>
-                                    </div>
-                                )}
+                                <p className="text-xs md:text-sm text-muted-foreground">
+                                    Lähetämme vahvistuskoodin tähän numeroon
+                                </p>
                             </div>
-                        </ScrollArea>
-                        <div className="space-y-5">
-                            <div className="flex items-center space-x-2 leading-none">
+                        )}
+                        
+                        {/* Terms and Submit */}
+                        <div className="mt-auto space-y-4">
+                            <div className="flex items-start space-x-2">
                                 <Checkbox 
                                     id="terms" 
                                     checked={termsAccepted}
                                     onCheckedChange={(checked) => setTermsAccepted(!!checked)}
+                                    className="mt-0.5 flex-shrink-0"
                                 />
-                                <Label htmlFor="terms" className="text-sm">
-                                    Hyväksyn <a href="#" className="text-primary hover:underline">käyttöehdot</a> ja 
-                                    <a href="#" className="text-primary hover:underline"> tietosuojaselosteen</a>
+                                <Label htmlFor="terms" className="text-xs md:text-sm leading-relaxed">
+                                    Hyväksyn{" "}
+                                    <a href="#" className="text-primary hover:underline">
+                                        käyttöehdot
+                                    </a>
+                                    {" "}ja{" "}
+                                    <a href="#" className="text-primary hover:underline">
+                                        tietosuojaselosteen
+                                    </a>
                                 </Label>
                             </div>
                             
-                            <Button disabled={!termsAccepted} className="w-full">
+                            <Button 
+                                disabled={!termsAccepted} 
+                                className="w-full h-12 text-sm md:text-base"
+                            >
                                 <CheckCircle className="h-4 w-4 mr-2" />
                                 Tilaa ilmoitukset
                             </Button>
