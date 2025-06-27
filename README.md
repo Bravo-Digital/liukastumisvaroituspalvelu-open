@@ -1,5 +1,14 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## TODO
+- Mobile friendly pages
+- Translations for all texts
+- Subscription functionality
+- Data fetching from Ilmatieteenlaitos and parsing data for jalankulkusää
+- Whole api
+- Footer
+- Navbar [X]
+
 ## Getting Started
 
 First, run the development server:
