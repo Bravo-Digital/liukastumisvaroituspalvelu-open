@@ -7,9 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { MessageSquare, Smartphone, Bell, Send, CheckCircle, Phone } from "lucide-react"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
+import { MessageSquare, Smartphone, Bell, Send, CheckCircle, Phone, ArrowLeft } from "lucide-react"
 
 const options = [
     {
@@ -20,16 +19,6 @@ const options = [
             "Syötä puhelinnumerosi alla olevaan kenttään",
             "Painaa 'Tilaa ilmoitukset'",
             "Vahvista tilaus WhatsApp-viestillä"
-        ]
-    },
-    {
-        id: "signal",
-        label: "Signal",
-        icon: <Send className="h-5 w-5 text-blue-600" />,
-        guide: [
-            "Syötä puhelinnumerosi alla olevaan kenttään",
-            "Painaa 'Tilaa ilmoitukset'",
-            "Vahvista tilaus Signal-viestillä"
         ]
     },
     {
@@ -58,13 +47,26 @@ export default function SubscribePage() {
     const [selectedOption, setSelectedOption] = useState<string>("whatsapp")
     const [phoneNumber, setPhoneNumber] = useState<string>("")
     const [termsAccepted, setTermsAccepted] = useState<boolean>(false)
+    const [showVerification, setShowVerification] = useState<boolean>(false)
+    const [verificationCode, setVerificationCode] = useState<string>("")
     
     const selectedOptionData = options.find(option => option.id === selectedOption)
     
+    const handlePhoneSubmit = () => {
+        if (phoneNumber.trim()) {
+            setShowVerification(true)
+        }
+    }
+    
+    const handleBackToPhone = () => {
+        setShowVerification(false)
+        setVerificationCode("")
+    }
+    
     return (
-        <div className="w-full max-w-5xl mx-auto min-h-screen flex flex-col p-4 md:p-6 space-y-4 md:space-y-6">
+        <div className="w-full max-w-5xl min-h-[calc(100vh-76px)] mx-auto flex flex-col p-4 md:p-6 space-y-4 md:space-y-6">
             {/* Header */}
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-2 flex-shrink-0">
                 <h1 className="text-2xl md:text-3xl font-semibold">Tilaa liukasvaroitukset</h1>
                 <p className="text-sm md:text-base text-muted-foreground">
                     Valitse miten haluat vastaanottaa liukasvaroitukset Helsingissä
@@ -72,12 +74,11 @@ export default function SubscribePage() {
             </div>
             
             {/* Main Content */}
-            <div className="flex-1 flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-6">
+            <div className="flex-1 flex flex-col md:grid md:grid-cols-3 gap-4 md:gap-6 min-h-0">
                 {/* Left Column - Options & Benefits */}
-                <div className="flex flex-col space-y-4 md:space-y-6 lg:col-span-1">
+                <div className="flex flex-col space-y-4 md:space-y-6 md:col-span-1 flex-shrink-0">
                     {/* Option Selection */}
                     <div>
-                        <h2 className="font-medium mb-3 text-sm md:text-base">Valitse tapa:</h2>
                         <RadioGroup 
                             value={selectedOption} 
                             onValueChange={setSelectedOption}
@@ -140,16 +141,16 @@ export default function SubscribePage() {
                 </div>
                 
                 {/* Right Column - Setup Form */}
-                <Card className="lg:col-span-2 flex flex-col">
-                    <CardHeader className="pb-4">
+                <Card className="lg:col-span-2 flex flex-col min-h-0">
+                    <CardHeader className="pb-4 flex-shrink-0">
                         <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
                             {selectedOptionData?.icon}
                             <span>Tilaa {selectedOptionData?.label}</span>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="flex-1 flex flex-col space-y-4 md:space-y-6">
+                    <CardContent className="flex-1 flex flex-col space-y-4 md:space-y-6 min-h-0">
                         {/* Instructions */}
-                        <div className="space-y-3">
+                        <div className="space-y-3 flex-shrink-0">
                             <h3 className="font-medium text-sm md:text-base">Ohjeet:</h3>
                             <ul className="space-y-2 pl-4 md:pl-5 list-disc text-sm">
                                 {selectedOptionData?.guide.map((step, index) => (
@@ -158,30 +159,77 @@ export default function SubscribePage() {
                             </ul>
                         </div>
                         
-                        {/* Phone Number Input */}
-                        {(selectedOption === "whatsapp" || selectedOption === "signal" || selectedOption === "sms") && (
-                            <div className="space-y-3">
-                                <Label className="text-sm md:text-base">Puhelinnumero</Label>
-                                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                                    <Input 
-                                        placeholder="+358401234567" 
-                                        value={phoneNumber}
-                                        onChange={(e) => setPhoneNumber(e.target.value)}
-                                        className="flex-1"
-                                    />
-                                    <Button variant="outline" className="sm:flex-shrink-0">
-                                        <Phone className="h-4 w-4 mr-2" />
-                                        Tarkista
-                                    </Button>
-                                </div>
-                                <p className="text-xs md:text-sm text-muted-foreground">
-                                    Lähetämme vahvistuskoodin tähän numeroon
-                                </p>
+                        {/* Phone Number Input or Verification Code */}
+                        {(selectedOption === "whatsapp") && (
+                            <div className="space-y-3 flex-shrink-0">
+                                {!showVerification ? (
+                                    <>
+                                        <Label className="text-sm md:text-base">Puhelinnumero</Label>
+                                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                                            <Input 
+                                                placeholder="+358401234567" 
+                                                value={phoneNumber}
+                                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                                className="flex-1"
+                                            />
+                                            <Button 
+                                                variant="outline" 
+                                                className="sm:flex-shrink-0"
+                                                onClick={handlePhoneSubmit}
+                                                disabled={!phoneNumber.trim()}
+                                            >
+                                                <Phone className="h-4 w-4 mr-2" />
+                                                Lähetä koodi
+                                            </Button>
+                                        </div>
+                                        <p className="text-xs md:text-sm text-muted-foreground">
+                                            Lähetämme vahvistuskoodin tähän numeroon
+                                        </p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="flex items-center space-x-2">
+                                            <Button 
+                                                variant="ghost" 
+                                                size="sm"
+                                                onClick={handleBackToPhone}
+                                                className="p-1"
+                                            >
+                                                <ArrowLeft className="h-4 w-4" />
+                                            </Button>
+                                            <Label className="text-sm md:text-base">Syötä vahvistuskoodi</Label>
+                                        </div>
+                                        <div className="flex flex-col items-center space-y-4">
+                                            <InputOTP 
+                                                maxLength={6} 
+                                                value={verificationCode}
+                                                onChange={(value) => setVerificationCode(value)}
+                                            >
+                                                <InputOTPGroup>
+                                                    <InputOTPSlot index={0} />
+                                                    <InputOTPSlot index={1} />
+                                                    <InputOTPSlot index={2} />
+                                                    <InputOTPSlot index={3} />
+                                                    <InputOTPSlot index={4} />
+                                                    <InputOTPSlot index={5} />
+                                                </InputOTPGroup>
+                                            </InputOTP>
+                                            <div className="text-center">
+                                                <p className="text-xs md:text-sm text-muted-foreground mb-2">
+                                                    Lähetimme koodin numeroon {phoneNumber}
+                                                </p>
+                                                <Button variant="link" size="sm" className="text-xs">
+                                                    Lähetä koodi uudelleen
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         )}
                         
                         {/* Terms and Submit */}
-                        <div className="mt-auto space-y-4">
+                        <div className="mt-auto space-y-4 flex-shrink-0">
                             <div className="flex items-start space-x-2">
                                 <Checkbox 
                                     id="terms" 
@@ -202,11 +250,11 @@ export default function SubscribePage() {
                             </div>
                             
                             <Button 
-                                disabled={!termsAccepted} 
+                                disabled={!termsAccepted || (showVerification && verificationCode.length !== 6)} 
                                 className="w-full h-12 text-sm md:text-base"
                             >
                                 <CheckCircle className="h-4 w-4 mr-2" />
-                                Tilaa ilmoitukset
+                                {showVerification ? "Vahvista koodi" : "Tilaa ilmoitukset"}
                             </Button>
                         </div>
                     </CardContent>
