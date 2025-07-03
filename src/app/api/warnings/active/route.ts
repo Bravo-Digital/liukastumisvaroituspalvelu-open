@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db/index';
 import { warningsTable, warningDetailsTable } from '@/db/schema';
-import { eq, inArray, and, desc } from 'drizzle-orm';
+import { eq, and, lte, gte, inArray, desc } from 'drizzle-orm';
 
 // Helper function to parse query parameters
 function parseQueryParams(request: NextRequest) {
@@ -20,10 +20,16 @@ function parseQueryParams(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const now = new Date();
     const { limit, offset, languages, severities } = parseQueryParams(request);
     
-    // Build where conditions
-    const whereConditions = [];
+    // Build where conditions - always include time filter for active warnings
+    const whereConditions = [
+      and(
+        lte(warningsTable.onsetAt, now),
+        gte(warningsTable.expiresAt, now)
+      )
+    ];
     
     if (severities.length > 0) {
       whereConditions.push(inArray(warningsTable.severity, severities));
@@ -39,13 +45,11 @@ export async function GET(request: NextRequest) {
       .from(warningsTable)
       .leftJoin(warningDetailsTable, eq(warningsTable.id, warningDetailsTable.warningId));
     
-    // Apply filters if any
-    if (whereConditions.length > 0) {
-      query = query.where(and(...whereConditions));
-    }
+    // Apply filters - whereConditions will always have at least the time filter
+    query = query.where(and(...whereConditions));
     
     // Get all filtered results first
-    const allWarnings = await query.orderBy(desc(warningsTable.createdAt));
+    const allWarnings = await query.orderBy(desc(warningsTable.severity), desc(warningsTable.onsetAt));
     
     // Process results into unique warnings
     const warningsMap = new Map();
@@ -93,9 +97,9 @@ export async function GET(request: NextRequest) {
       }
     });
   } catch (error) {
-    console.error('Error fetching all warnings:', error);
+    console.error('Error fetching active warnings:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch all warnings' },
+      { error: 'Failed to fetch active warnings' },
       { status: 500 }
     );
   }
