@@ -2,6 +2,15 @@
   "Navbar": {
     "Warnings": "Warnings",
     "API": "API",
+    "Feedback": "Feedback",
     "Subscribe": "Subscribe"
+  },
+
+  "HomePage": {
+    "title": "Slip Warning Service",
+    "description": "Slip Warning Service provides extremely slippery pedestrian warnings via text message",
+    "area": "Area",
+    "validFrom": "Valid from",
+    "severity": "Severity"
   }
 }

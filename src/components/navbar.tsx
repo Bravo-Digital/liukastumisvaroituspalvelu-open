@@ -13,6 +13,10 @@ const links = [
     label: "API",
     href: "/api"
   },
+  {
+    label: "Feedback",
+    href: "/feedback"
+  }
 ]
 
 export default async function Navbar() {

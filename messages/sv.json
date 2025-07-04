@@ -2,6 +2,14 @@
   "Navbar": {
     "Warnings": "Varningar",
     "API": "API",
+    "Feedback": "Ge feedback",
     "Subscribe": "Prenumerera"
+  },
+  "HomePage": {
+    "title": "Halkvarningsservice",
+    "description": "Halkvarningsservice tillhandahåller extremt hala gångbanvarningar via textmeddelande",
+    "area": "Område",
+    "validFrom": "Gäller från",
+    "severity": "Allvarlighetsgrad"
   }
 }

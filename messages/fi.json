@@ -2,6 +2,13 @@
   "Navbar": {
     "Warnings": "Varoitukset",
     "API": "Rajapinta",
+    "Feedback": "Anna palautetta",
     "Subscribe": "Tilaa"
+  },
+  "HomePage": {
+    "title": "Liukastumistvaroituspalvelu",
+    "description": "Tämä palvelu tarjoaa ajantasaiset liukastumisvaroitukset Helsingissä ja Uudellamaalla.",
+    "subscribeButton": "Tilaa varoitukset",
+    "feedbackButton": "Anna palautetta"
   }
 }

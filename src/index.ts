@@ -2,8 +2,8 @@ import { XMLParser } from "fast-xml-parser"
 import Parser from "rss-parser"
 
 import { eq } from "drizzle-orm"
-import { db } from "@/db/index"
-import { warningsTable, warningDetailsTable } from "@/db/schema"
+import { db } from "@/lib/db"
+import { warningsTable, warningDetailsTable } from "@/lib/schema"
 
 interface Area {
   areaDesc: string
@@ -55,7 +55,7 @@ async function checkWarnings() {
 
     for (const item of feed.items) {
       const isWind = true
-      const isRoughlyHelsinki = /helsinki|uusimaa|southern|whole/i.test(String(item.title))
+      const isRoughlyHelsinki = /western|uusimaa|southern|whole/i.test(String(item.title))
 
       if (isWind && isRoughlyHelsinki && item.link) {
         const capResponse = await fetch(item.link)

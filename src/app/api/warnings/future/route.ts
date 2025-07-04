@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/db/index';
-import { warningsTable, warningDetailsTable } from '@/db/schema';
+import { db } from '@/lib/db';
+import { warningsTable, warningDetailsTable } from '@/lib/schema';
 import { eq, gt, inArray, and, desc } from 'drizzle-orm';
 
 // Helper function to parse query parameters
