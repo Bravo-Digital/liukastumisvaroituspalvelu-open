@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - Mobile friendly pages
 - Translations for all texts
 - Subscription functionality
-- Data fetching from Ilmatieteenlaitos and parsing data for jalankulkusää
+- Data fetching from Ilmatieteenlaitos and parsing data for jalankulkusää (handle warning updates)
 - Whole api
 - Footer
 - Navbar [X]
