@@ -11,6 +11,7 @@ interface Area {
 
 interface InfoBlock {
   language: string
+  status: string
   severity: string
   certainty: string
   event: string
@@ -39,6 +40,7 @@ let modified: string | null = null
 const areasToCheck = [
   "Uusimaa",
 ]
+
 async function checkWarnings() {
   try {
     const headResponse = await fetch(FEED_URL, { method: 'HEAD' })
@@ -65,6 +67,7 @@ async function checkWarnings() {
         const cap = xmlParser.parse(capText)
         const alert = cap.alert
         const identifier = alert.identifier
+        const type = alert.msgType
 
         const infoList = Array.isArray(alert.info) ? alert.info : [alert.info]
 
@@ -99,6 +102,7 @@ async function checkWarnings() {
         }
         warnings.push({
           identifier,
+          type,
           info
         })
       }
@@ -111,27 +115,67 @@ async function checkWarnings() {
           .from(warningsTable)
           .where(eq(warningsTable.id, warning.identifier))
 
-        if (existing.length === 0) {
-          await db
-            .insert(warningsTable)
-            .values({
-              id: warning.identifier,
-              severity: warning.info[0].severity,
-              certainty: warning.info[0].certainty,
-              createdAt: new Date(),
-              onsetAt: new Date(warning.info[0].onset),
-              expiresAt: new Date(warning.info[0].expires),
-            })
+        if (warning.type === 'Cancel') {
+          // Handle cancellation - update existing warning status to cancelled
+          if (existing.length > 0) {
+            await db
+              .update(warningsTable)
+              .set({ status: 'cancelled' })
+              .where(eq(warningsTable.id, warning.identifier))
+          }
+        } else {
+          // Handle new warnings or updates
+          if (existing.length === 0) {
+            await db
+              .insert(warningsTable)
+              .values({
+                id: warning.identifier,
+                severity: warning.info[0].severity,
+                certainty: warning.info[0].certainty,
+                status: 'active', // Set initial status
+                createdAt: new Date(),
+                onsetAt: new Date(warning.info[0].onset),
+                expiresAt: new Date(warning.info[0].expires),
+              })
 
-          for (const detail of warning.info) {
-            await db.insert(warningDetailsTable).values({
-              warningId: warning.identifier,
-              lang: detail.lang,
-              location: detail.areaDesc,
-              headline: detail.headline,
-              description: detail.description,
-              event: detail.event,
-            })
+            for (const detail of warning.info) {
+              await db.insert(warningDetailsTable).values({
+                warningId: warning.identifier,
+                lang: detail.lang,
+                location: detail.areaDesc,
+                headline: detail.headline,
+                description: detail.description,
+                event: detail.event,
+              })
+            }
+          } else if (warning.type === 'Update') {
+            // Handle updates to existing warnings
+            await db
+              .update(warningsTable)
+              .set({
+                severity: warning.info[0].severity,
+                certainty: warning.info[0].certainty,
+                onsetAt: new Date(warning.info[0].onset),
+                expiresAt: new Date(warning.info[0].expires),
+              })
+              .where(eq(warningsTable.id, warning.identifier))
+
+            // You might want to update the details as well
+            // First delete existing details, then insert new ones
+            await db
+              .delete(warningDetailsTable)
+              .where(eq(warningDetailsTable.warningId, warning.identifier))
+
+            for (const detail of warning.info) {
+              await db.insert(warningDetailsTable).values({
+                warningId: warning.identifier,
+                lang: detail.lang,
+                location: detail.areaDesc,
+                headline: detail.headline,
+                description: detail.description,
+                event: detail.event,
+              })
+            }
           }
         }
       }

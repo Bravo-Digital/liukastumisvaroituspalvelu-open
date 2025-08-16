@@ -1,292 +1,316 @@
 "use client"
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { submitFeedback, type FeedbackFormData } from '@/actions/feedback';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Send, CheckCircle } from 'lucide-react';
+import { submitFeedback, type FeedbackFormData, type ActionResult } from '@/actions/feedback';
 
-const FeedbackPage: React.FC = () => {
-  const [formData, setFormData] = useState<FeedbackFormData>({
+interface FormData {
+  name: string;
+  email: string;
+  feedback: string;
+  wantsResponse: boolean;
+}
+
+interface FormErrors {
+  name?: string;
+  email?: string;
+  feedback?: string;
+  submit?: string;
+}
+
+export default function FeedbackForm() {
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
-    category: '',
-    subject: '',
-    message: '',
-    contactBack: false,
+    feedback: '',
+    wantsResponse: false
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [submitResult, setSubmitResult] = useState<ActionResult | null>(null);
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState('');
-  const [submitError, setSubmitError] = useState('');
-  const [isPending, startTransition] = useTransition();
-
-  const categories = [
-    { value: 'bug-report', label: 'Bug Report' },
-    { value: 'feature-request', label: 'Feature Request' },
-    { value: 'general-feedback', label: 'General Feedback' },
-    { value: 'complaint', label: 'Complaint' },
-    { value: 'compliment', label: 'Compliment' },
-    { value: 'other', label: 'Other' }
-  ];
-
-  const handleSubmit = async () => {
-    startTransition(async () => {
-      // Clear previous errors and messages
-      setErrors({});
-      setSubmitError('');
-      setSubmitMessage('');
-
-      try {
-        const result = await submitFeedback(formData);
-        
-        if (result.success) {
-          setSubmitMessage(result.message);
-          setIsSubmitted(true);
-        } else {
-          if (result.errors) {
-            setErrors(result.errors);
-          }
-          setSubmitError(result.message);
-        }
-      } catch (error) {
-        console.error('Error submitting feedback:', error);
-        setSubmitError('An unexpected error occurred. Please try again.');
-      }
-    });
-  };
-
-  const handleInputChange = (field: keyof FeedbackFormData, value: string | boolean) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [name]: value
     }));
     
     // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
+    if (errors[name as keyof FormErrors]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
+  };
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      wantsResponse: checked
+    }));
+    
+    // Clear email error when checkbox changes
+    if (errors.email) {
+      setErrors(prev => ({
+        ...prev,
+        email: undefined
+      }));
+    }
+  };
+
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateForm = (): FormErrors => {
+    const newErrors: FormErrors = {};
+    
+    // Feedback is always required
+    if (!formData.feedback.trim()) {
+      newErrors.feedback = 'Please provide your feedback';
     }
     
-    // Clear general submit error
-    if (submitError) {
-      setSubmitError('');
+    // Email validation based on checkbox state
+    if (formData.wantsResponse) {
+      if (!formData.email.trim()) {
+        newErrors.email = 'Email address is required when requesting a response';
+      } else if (!isValidEmail(formData.email)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+    } else {
+      // If email is provided but checkbox is not checked, still validate format
+      if (formData.email.trim() && !isValidEmail(formData.email)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+    }
+    
+    return newErrors;
+  };
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    
+    setIsSubmitting(true);
+    setErrors({});
+    
+    try {
+      // Call the server action
+      const result = await submitFeedback({
+        name: formData.name,
+        email: formData.email,
+        feedback: formData.feedback,
+        wantsResponse: formData.wantsResponse
+      });
+      
+      setSubmitResult(result);
+      
+      if (result.success) {
+        setIsSubmitted(true);
+        
+        // Reset form after successful submission
+        setTimeout(() => {
+          setFormData({
+            name: '',
+            email: '',
+            feedback: '',
+            wantsResponse: false
+          });
+          setIsSubmitted(false);
+          setSubmitResult(null);
+        }, 5000);
+      } else {
+        // Handle server-side validation errors
+        if (result.errors) {
+          setErrors(result.errors);
+        } else {
+          setErrors({ submit: result.message });
+        }
+      }
+      
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+      setErrors({ submit: 'An unexpected error occurred. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      email: '',
-      category: '',
-      subject: '',
-      message: '',
-      contactBack: false,
-    });
-    setErrors({});
-    setIsSubmitted(false);
-    setSubmitMessage('');
-    setSubmitError('');
-  };
-
-  if (isSubmitted) {
+  if (isSubmitted && submitResult?.success) {
     return (
-      <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center bg-white p-8 rounded-lg shadow-sm">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h2>
-            <p className="text-gray-600 mb-6">
-              {submitMessage}
-            </p>
-            <Button onClick={resetForm} className="bg-blue-600 hover:bg-blue-700">
-              Submit Another Feedback
-            </Button>
-          </div>
-        </div>
-      </div>
+      <Card className="w-full max-w-lg mx-auto">
+        <CardContent className="pt-6">
+          <Alert className="border-green-200 bg-green-50">
+            <CheckCircle className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-green-800">
+              <div className="space-y-2">
+                <p className="font-semibold">Feedback submitted successfully!</p>
+                <p>{submitResult.message}</p>
+                {formData.wantsResponse && formData.email && (
+                  <p className="text-sm">
+                    📧 Check your email at <strong>{formData.email}</strong> for confirmation.
+                  </p>
+                )}
+              </div>
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="w-full max-w-3xl p-5">
-      <div className="w-full mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">We Value Your Feedback</h1>
-          <p className="text-gray-600">
-            Help us improve by sharing your thoughts, suggestions, or reporting issues.
-          </p>
-        </div>
+    <Card className="w-full max-w-lg mx-auto shadow-lg">
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl font-bold">Share Your Feedback</CardTitle>
+        <CardDescription className="text-base">
+          Help us improve by sharing your thoughts and suggestions
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-5">
+          {/* Name Field */}
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-sm font-medium">
+              Name <span className="text-muted-foreground text-xs">(optional)</span>
+            </Label>
+            <Input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Your name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="w-full"
+            />
+          </div>
 
-        <div className="bg-white p-8 rounded-lg shadow-sm">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Feedback Form</h2>
-            <p className="text-gray-600">
-              Please fill out the form below. All fields marked with an asterisk (*) are required.
+          {/* Email Field */}
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm font-medium">
+              Email 
+              {formData.wantsResponse ? (
+                <span className="text-destructive ml-1">*</span>
+              ) : (
+                <span className="text-muted-foreground text-xs ml-1">(optional)</span>
+              )}
+            </Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="your.email@example.com"
+              value={formData.email}
+              onChange={handleInputChange}
+              className={`w-full transition-colors ${
+                errors.email ? 'border-destructive focus:border-destructive' : ''
+              } ${
+                formData.wantsResponse ? 'border-blue-300 focus:border-blue-500' : ''
+              }`}
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive flex items-center gap-1">
+                <span className="w-1 h-1 bg-destructive rounded-full"></span>
+                {errors.email}
+              </p>
+            )}
+          </div>
+
+          {/* Response Checkbox */}
+          <div className="flex items-start space-x-3 p-3 rounded-lg bg-muted/30 border border-muted">
+            <Checkbox
+              id="wants-response"
+              checked={formData.wantsResponse}
+              onCheckedChange={handleCheckboxChange}
+              className="mt-0.5"
+            />
+            <div className="space-y-1">
+              <Label
+                htmlFor="wants-response"
+                className="text-sm font-medium leading-none cursor-pointer"
+              >
+                I would like a response to my feedback
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                {formData.wantsResponse 
+                  ? "We'll reply to your email address" 
+                  : "Check this if you want us to get back to you"
+                }
+              </p>
+            </div>
+          </div>
+
+          {/* Feedback Field */}
+          <div className="space-y-2">
+            <Label htmlFor="feedback" className="text-sm font-medium">
+              Feedback <span className="text-destructive">*</span>
+            </Label>
+            <Textarea
+              id="feedback"
+              name="feedback"
+              placeholder="Tell us what you think, what could be improved, or any suggestions you have..."
+              value={formData.feedback}
+              onChange={handleInputChange}
+              className={`min-h-[120px] resize-none transition-colors ${
+                errors.feedback ? 'border-destructive focus:border-destructive' : ''
+              }`}
+            />
+            {errors.feedback && (
+              <p className="text-sm text-destructive flex items-center gap-1">
+                <span className="w-1 h-1 bg-destructive rounded-full"></span>
+                {errors.feedback}
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              {formData.feedback.length}/1000 characters
             </p>
           </div>
 
-          {/* Global Error Message */}
-          {submitError && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
-              <div className="flex">
-                <AlertCircle className="h-5 w-5 text-red-400 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700">{submitError}</p>
-              </div>
-            </div>
+          {/* Submit Error */}
+          {errors.submit && (
+            <Alert variant="destructive">
+              <AlertDescription className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-destructive rounded-full"></span>
+                {errors.submit}
+              </AlertDescription>
+            </Alert>
           )}
+
+          {/* Submit Button */}
+          <Button 
+            type="button"
+            onClick={handleSubmit}
+            className="w-full h-11 text-base font-medium" 
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Submitting Feedback...
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                Send Feedback
+              </>
+            )}
+          </Button>
           
-          <div className="space-y-6">
-
-            {/* Name Field */}
-            <div className="space-y-2">
-              <Label htmlFor="name">
-                Name (optional)
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="Enter your full name"
-                className={errors.name ? 'border-red-500' : ''}
-                disabled={isPending}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name}</p>
-              )}
-            </div>
-
-            {/* Email Field */}
-            <div className="space-y-2">
-              <Label htmlFor="email">
-                Email {formData.contactBack ? <span className="text-red-500">*</span> : '(optional)'}
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="Enter your email address"
-                className={errors.email ? 'border-red-500' : ''}
-                disabled={isPending}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email}</p>
-              )}
-            </div>
-
-            {/* Contact Back Checkbox */}
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="contactBack"
-                checked={formData.contactBack}
-                onCheckedChange={(checked) => handleInputChange('contactBack', checked as boolean)}
-                disabled={isPending}
-              />
-              <Label htmlFor="contactBack" className="text-sm font-medium">
-                I'd like to be contacted about this feedback
-              </Label>
-            </div>
-
-            {/* Category Selection */}
-            <div className="space-y-2">
-              <Label htmlFor="category">
-                Category <span className="text-red-500">*</span>
-              </Label>
-              <Select 
-                value={formData.category} 
-                onValueChange={(value) => handleInputChange('category', value)}
-                disabled={isPending}
-              >
-                <SelectTrigger className={errors.category ? 'border-red-500' : ''}>
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
-                      {category.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.category && (
-                <p className="text-sm text-red-500">{errors.category}</p>
-              )}
-            </div>
-
-            {/* Subject */}
-            <div className="space-y-2">
-              <Label htmlFor="subject">
-                Subject <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="subject"
-                type="text"
-                value={formData.subject}
-                onChange={(e) => handleInputChange('subject', e.target.value)}
-                placeholder="Brief description of your feedback"
-                className={errors.subject ? 'border-red-500' : ''}
-                disabled={isPending}
-              />
-              {errors.subject && (
-                <p className="text-sm text-red-500">{errors.subject}</p>
-              )}
-            </div>
-
-            {/* Message */}
-            <div className="space-y-2">
-              <Label htmlFor="message">
-                Message <span className="text-red-500">*</span>
-              </Label>
-              <Textarea
-                id="message"
-                value={formData.message}
-                onChange={(e) => handleInputChange('message', e.target.value)}
-                placeholder="Please provide detailed feedback..."
-                rows={5}
-                className={errors.message ? 'border-red-500' : ''}
-                disabled={isPending}
-              />
-              {errors.message && (
-                <p className="text-sm text-red-500">{errors.message}</p>
-              )}
-            </div>
-
-            {/* Submit Button */}
-            <div className="flex justify-end">
-              <Button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isPending}
-                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-              >
-                {isPending ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    <span>Submitting...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-2">
-                    <Send className="h-4 w-4" />
-                    <span>Submit Feedback</span>
-                  </div>
-                )}
-              </Button>
-            </div>
-          </div>
+          <p className="text-xs text-muted-foreground text-center">
+            * Required fields
+          </p>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
-};
-
-export default FeedbackPage;
+}

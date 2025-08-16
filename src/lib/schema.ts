@@ -3,6 +3,7 @@ import { integer, pgTable, timestamp, varchar, text, boolean } from "drizzle-orm
 export const warningsTable = pgTable("warnings", {
   id: varchar("id", { length: 256 }).primaryKey(),
   severity: varchar("severity", { length: 50 }).notNull(),
+  status: varchar("status", { length: 20 }).notNull(),
   certainty: varchar("certainty", { length: 50 }).notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   onsetAt: timestamp("effective_at", { mode: "date" }).notNull(),
