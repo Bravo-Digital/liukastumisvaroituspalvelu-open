@@ -11,5 +11,29 @@
     "area": "Område",
     "validFrom": "Gäller från",
     "severity": "Allvarlighetsgrad"
-  }
+  },
+  "FeedbackForm": {
+  "title": "Ge feedback",
+  "description": "Är du nöjd med halkvarningstjänsten? Vad skulle du vilja förbättra?",
+  "nameLabel": "Namn",
+  "nameOptional": "(valfritt)",
+  "emailLabel": "E-post",
+  "emailRequiredIndicator": "*",
+  "emailOptional": "(valfritt)",
+  "wantsResponseLabel": "Jag vill ha svar på min feedback",
+  "wantsResponseDescOn": "Vi svarar på din e-post",
+  "wantsResponseDescOff": "Välj detta om du vill att vi kontaktar dig",
+  "feedbackLabel": "Feedback",
+  "feedbackRequiredIndicator": "*",
+  "feedbackPlaceholder": "Berätta vad du tycker, vad som kan förbättras eller andra förslag...",
+  "feedbackCharCount": "/1000 tecken",
+  "submitButton": "Skicka feedback",
+  "submittingButton": "Skickar feedback...",
+  "submitSuccessTitle": "Feedback skickad!",
+  "submitSuccessMessage": "Tack för din feedback.",
+  "submitSuccessEmailMessage": "📧 Kontrollera din e-post på {{email}} för bekräftelse.",
+  "submitError": "Ett fel inträffade. Försök igen.",
+  "requiredFieldsText": "* Obligatoriska fält"
+}
+
 }

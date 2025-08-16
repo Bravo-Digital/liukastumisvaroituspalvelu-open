@@ -12,5 +12,29 @@
     "area": "Area",
     "validFrom": "Valid from",
     "severity": "Severity"
-  }
+  },
+  "FeedbackForm": {
+  "title": "Give Feedback",
+  "description": "Are you satisfied with the slip warning service? What would you like to see improved?",
+  "nameLabel": "Name",
+  "nameOptional": "(optional)",
+  "emailLabel": "Email",
+  "emailRequiredIndicator": "*",
+  "emailOptional": "(optional)",
+  "wantsResponseLabel": "I would like a response to my feedback",
+  "wantsResponseDescOn": "We will reply to your email",
+  "wantsResponseDescOff": "Select this if you want us to contact you",
+  "feedbackLabel": "Feedback",
+  "feedbackRequiredIndicator": "*",
+  "feedbackPlaceholder": "Tell us what you think, what could be improved, or any other suggestions...",
+  "feedbackCharCount": "/1000 characters",
+  "submitButton": "Submit Feedback",
+  "submittingButton": "Submitting feedback...",
+  "submitSuccessTitle": "Feedback Sent Successfully!",
+  "submitSuccessMessage": "Thank you for your feedback.",
+  "submitSuccessEmailMessage": "📧 Check your email at {{email}} for confirmation.",
+  "submitError": "An error occurred. Please try again.",
+  "requiredFieldsText": "* Required fields"
+}
+
 }

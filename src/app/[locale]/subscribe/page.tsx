@@ -132,9 +132,9 @@ export default function SubscribePage() {
                     <div className="order-last lg:order-none">
                         <h3 className="font-medium mb-3 text-sm md:text-base">Mitä saat:</h3>
                         <ul className="text-xs md:text-sm text-muted-foreground space-y-1.5 md:space-y-2">
-                            <li>• Reaaliaikaiset varoitukset liukkaista teistä</li>
-                            <li>• Tiedot vaarallisimmista alueista</li>
-                            <li>• Vakavuusluokitus jokaiselle varoitukselle</li>
+                            <li>Varoitukset liukkaasta jalankulkusäästä</li>
+                            <li>Tiedot vaarallisimmista alueista</li>
+                            <li>Vakavuusluokitus jokaiselle varoitukselle</li>
                             <li>• Maksutonta palvelua kaikille helsinkiläisille</li>
                         </ul>
                     </div>
