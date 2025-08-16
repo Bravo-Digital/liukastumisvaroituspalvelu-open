@@ -1,28 +1,28 @@
-import { buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
-import ThemeToggler from "./ui/theme-toggler";
-import LanguageSwitcher from "./ui/language-switcher";
-import { getTranslations } from "next-intl/server";
+import { buttonVariants } from "@/components/ui/button"
+import Link from "next/link"
+import ThemeToggler from "./ui/theme-toggler"
+import LanguageSwitcher from "./ui/language-switcher"
+import { getTranslations } from "next-intl/server"
 
 const links = [
-  {
-    label: "Warnings",
-    href: "/"
-  },
-  {
-    label: "API",
-    href: "/api"
-  },
-  {
-    label: "Feedback",
-    href: "/feedback"
-  }
+  { label: "Warnings", href: "/" },
+  { label: "API", href: "/api" },
+  { label: "Feedback", href: "/feedback" },
 ]
 
 export default async function Navbar() {
   const t = await getTranslations("Navbar")
   return (
-    <nav className="w-full flex justify-between items-center p-5 text-sm md:text-base max-w-5xl">
+    <nav className="w-full flex justify-between items-center p-5 text-sm md:text-base max-w-5xl mx-auto">
+      
+      {/* Brand / Logo */}
+      <div className="flex items-center space-x-2 md:space-x-3">
+        <Link href="/" className="text-2xl font-bold hover:text-primary/80 transition-colors">
+          Liukastumisvaroituspalvelu
+        </Link>
+      </div>
+
+      {/* Navigation Links */}
       <ul className="flex space-x-5 md:space-x-10">
         {links.map((link) => (
           <li key={link.label}>
@@ -37,6 +37,7 @@ export default async function Navbar() {
         ))}
       </ul>
 
+      {/* Actions */}
       <div className="flex space-x-2 md:space-x-4 items-center">
         <Link
           href={"/subscribe"}
@@ -48,5 +49,5 @@ export default async function Navbar() {
         <ThemeToggler />
       </div>
     </nav>
-  );
+  )
 }

@@ -8,7 +8,6 @@ export default async function FeedbackPage({ params }: { params: { locale: strin
   const rawData = await readFile(filePath, "utf-8");
   const messages = JSON.parse(rawData);
 
-  // Spread the FeedbackForm translations directly
   const translations = messages.FeedbackForm;
 
   return <FeedbackForm translations={translations} />;

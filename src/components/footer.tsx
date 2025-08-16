@@ -18,7 +18,7 @@ const footerContent = [
 
 export default function Footer() {
     return (
-        <footer className="w-full h-auto flex justify-center items-start bg-foreground text-background">
+        <footer className="w-full h-auto flex justify-center items-start ">
             <div className="w-full max-w-5xl grid grid-cols-3 py-10">
                 <div>
                   <h1 className="text-2xl font-bold">Liukastumisvaroituspalvelu</h1>
