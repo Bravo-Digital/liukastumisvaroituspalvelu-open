@@ -36,10 +36,11 @@ const options = [
         icon: <Smartphone className="h-5 w-5 text-orange-600" />,
         warning: true,
         guide: [
-            "Syötä puhelinnumerosi alla olevaan kenttään",
-            "Lähetä tekstiviesti sanalla LIAKAS numeroon 12345",
-            "Odota aktivointiviestiä (voi kestää jopa 5 minuuttia)"
-        ]
+            ["1. Lähetä tekstiviesti numeroon ", { bold: "050 902 4308" }],
+            ["2. Viestin sisältö: '", { bold: "LIITY HELSINKI" }],
+            ["3. Halutessasi saada varoitukset tiettynä kellonaikana, lisää tunti viestiin, esim. '", { bold: "LIITY HELSINKI 8" }, "' (tarkoittaa klo 08:00)"]
+          ]
+          
     }
 ]
 
@@ -141,11 +142,31 @@ export default function SubscribePage() {
                         {/* Instructions */}
                         <div className="space-y-3 flex-shrink-0">
                             <h3 className="font-medium text-sm md:text-base">Ohjeet:</h3>
-                            <ul className="space-y-2 pl-4 md:pl-5 list-disc text-sm">
-                                {selectedOptionData?.guide.map((step, index) => (
-                                    <li key={index}>{step}</li>
-                                ))}
-                            </ul>
+                            <ul className="space-y-4 pl-4 md:pl-5 text-sm">
+  {selectedOptionData?.guide.map((step, index) => (
+    <li key={index} className="flex flex-col space-y-1">
+      {Array.isArray(step) ? (
+        <div className="flex flex-wrap gap-1 items-center">
+          {step.map((part: string | { bold: string }, i: number) =>
+            typeof part === "string" ? (
+              <span key={i}>{part}</span>
+            ) : (
+              <span
+                key={i}
+                className="bg-gray-800 text-white px-2 py-1 rounded-lg font-semibold"
+              >
+                {part.bold}
+              </span>
+            )
+          )}
+        </div>
+      ) : (
+        <span>{step}</span>
+      )}
+    </li>
+  ))}
+</ul>
+
                         </div>
                         
                         {/* Phone Number Input or Verification Code */}
@@ -217,35 +238,38 @@ export default function SubscribePage() {
                             </div>
                         )}
                         
-                        {/* Terms and Submit */}
-                        <div className="mt-auto space-y-4 flex-shrink-0">
-                            <div className="flex items-start space-x-2">
-                                <Checkbox 
-                                    id="terms" 
-                                    checked={termsAccepted}
-                                    onCheckedChange={(checked) => setTermsAccepted(!!checked)}
-                                    className="mt-0.5 flex-shrink-0"
-                                />
-                                <Label htmlFor="terms" className="text-xs md:text-sm leading-relaxed">
-                                    Hyväksyn{" "}
-                                    <a href="#" className="text-primary hover:underline">
-                                        käyttöehdot
-                                    </a>
-                                    {" "}ja{" "}
-                                    <a href="#" className="text-primary hover:underline">
-                                        tietosuojaselosteen
-                                    </a>
-                                </Label>
-                            </div>
-                            
-                            <Button 
-                                disabled={!termsAccepted || (showVerification && verificationCode.length !== 6)} 
-                                className="w-full h-12 text-sm md:text-base"
-                            >
-                                <CheckCircle className="h-4 w-4 mr-2" />
-                                {showVerification ? "Vahvista koodi" : "Tilaa ilmoitukset"}
-                            </Button>
-                        </div>
+{/* Terms and Submit */}
+{selectedOption !== "sms" && (
+  <div className="mt-auto space-y-4 flex-shrink-0">
+    <div className="flex items-start space-x-2">
+      <Checkbox 
+        id="terms" 
+        checked={termsAccepted}
+        onCheckedChange={(checked) => setTermsAccepted(!!checked)}
+        className="mt-0.5 flex-shrink-0"
+      />
+      <Label htmlFor="terms" className="text-xs md:text-sm leading-relaxed">
+        Hyväksyn{" "}
+        <a href="#" className="text-primary hover:underline">
+          käyttöehdot
+        </a>
+        {" "}ja{" "}
+        <a href="#" className="text-primary hover:underline">
+          tietosuojaselosteen
+        </a>
+      </Label>
+    </div>
+    
+    <Button 
+      disabled={!termsAccepted || (showVerification && verificationCode.length !== 6)} 
+      className="w-full h-12 text-sm md:text-base"
+    >
+      <CheckCircle className="h-4 w-4 mr-2" />
+      {showVerification ? "Vahvista koodi" : "Tilaa ilmoitukset"}
+    </Button>
+  </div>
+)}
+
                     </CardContent>
                 </Card>
             </div>

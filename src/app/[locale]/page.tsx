@@ -48,8 +48,8 @@ export default async function HomePage() {
       answer: "Tällä hetkellä liukkausvaroitukset ovat vain Helsingin alueelta."
     },
     {
-        question: "Kuka vastaa liukkausvaroituspalvelun ylläpidosta?",
-        answer: "Liukkausvaroituspalvelun ylläpidosta vastaa Bravo Digital Oy."
+        question: "Kuka vastaa Liukasbotin ylläpidosta?",
+        answer: "Liukasbotin ylläpidosta vastaa Bravo Digital Oy."
       }
   ];
 
@@ -62,27 +62,27 @@ export default async function HomePage() {
 
   {/* Hero content */}
   <div className="relative flex flex-col items-center space-y-6 px-5 md:px-0">
-  <h1 className="text-3xl md:text-5xl font-bold leading-tight whitespace-normal [overflow-wrap:anywhere] [hyphens:auto] ">
-  Vältä loukkaantumiset{" "}
-  <span className="relative inline-block px-1.5">
-    <span className="absolute inset-0 h-full border border-primary/60 bg-primary/15 group-hover:bg-primary/20 dark:border-primary/40 z-0 rounded-sm" />
+  <h1 className="text-3xl md:text-5xl font-bold leading-tight whitespace-normal [overflow-wrap:anywhere] [hyphens:auto]">
+    Vältä liukastumiset{" "}
+    <span className="block relative px-1.5 mt-2">
+      <span className="absolute inset-0 h-full border border-primary/60 bg-primary/15 group-hover:bg-primary/20 dark:border-primary/40 z-0 rounded-sm" />
 
-    <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute top-[-2px] left-[-2px]">
-      <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
-    </svg>
-    <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute top-[-2px] right-[-2px]">
-      <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
-    </svg>
-    <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute bottom-[-2px] left-[-2px]">
-      <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
-    </svg>
-    <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute right-[-2px] bottom-[-2px]">
-      <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
-    </svg>
+      <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute top-[-2px] left-[-2px]">
+        <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
+      </svg>
+      <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute top-[-2px] right-[-2px]">
+        <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
+      </svg>
+      <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute bottom-[-2px] left-[-2px]">
+        <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
+      </svg>
+      <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute right-[-2px] bottom-[-2px]">
+        <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
+      </svg>
 
-    <span className="relative z-10">Liukastumisvaroituspalvelulla</span>
-  </span>
-</h1>
+      <span className="relative z-10">Liukasbotilla</span>
+    </span>
+  </h1>
 
 
     <p className="text-base md:text-lg max-w-xl">
@@ -108,10 +108,10 @@ export default async function HomePage() {
     bg-[size:3rem_3rem]">
   </div>
 
-  <h2 className="text-2xl md:text-3xl font-bold">Tietoa palvelusta</h2>
+  <h2 className="text-2xl md:text-3xl font-bold">Tietoa Liukasbotista</h2>
   
   <p className="text-base md:text-lg leading-relaxed text-card-foreground/90">
-    Liukasvaroituspalvelun idea on tiedottaa sen käyttäjiä silloin, kun ulkona on erityisen liukasta, jotta liukastumisilta vältyttäisiin.
+    Liukasbotin idea on tiedottaa sen käyttäjiä silloin, kun ulkona on erityisen liukasta, jotta liukastumisilta vältyttäisiin.
   </p>
 
   <h3 className="text-xl md:text-2xl font-semibold mt-4">Toimintaperiaatteet</h3>

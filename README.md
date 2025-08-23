@@ -1,9 +1,10 @@
 ## Kuinka käynnistetään
 Voit valita onko dev vai prod
 
+```bash
 docker compose up dev  --build  # development
 docker compose up prod  # production
-
+```
 
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
