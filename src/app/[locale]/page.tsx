@@ -62,27 +62,28 @@ export default async function HomePage() {
 
   {/* Hero content */}
   <div className="relative flex flex-col items-center space-y-6 px-5 md:px-0">
-    <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-      Vältä loukkaantumiset{" "}
-      <span className="relative inline-block px-1.5">
-        <span className="absolute inset-0 h-full border border-primary/60 bg-primary/15 group-hover:bg-primary/20 dark:border-primary/40 z-0 rounded-sm" />
-        
-        <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute top-[-2px] left-[-2px]">
-          <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
-        </svg>
-        <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute top-[-2px] right-[-2px]">
-          <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
-        </svg>
-        <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute bottom-[-2px] left-[-2px]">
-          <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
-        </svg>
-        <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute right-[-2px] bottom-[-2px]">
-          <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
-        </svg>
+  <h1 className="text-3xl md:text-5xl font-bold leading-tight whitespace-normal [overflow-wrap:anywhere] [hyphens:auto] ">
+  Vältä loukkaantumiset{" "}
+  <span className="relative inline-block px-1.5">
+    <span className="absolute inset-0 h-full border border-primary/60 bg-primary/15 group-hover:bg-primary/20 dark:border-primary/40 z-0 rounded-sm" />
 
-        <span className="relative z-10">Liukastumisvaroituspalvelulla</span>
-      </span>
-    </h1>
+    <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute top-[-2px] left-[-2px]">
+      <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
+    </svg>
+    <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute top-[-2px] right-[-2px]">
+      <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
+    </svg>
+    <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute bottom-[-2px] left-[-2px]">
+      <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
+    </svg>
+    <svg width="5" height="5" viewBox="0 0 5 5" className="fill-primary dark:fill-primary/70 absolute right-[-2px] bottom-[-2px]">
+      <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
+    </svg>
+
+    <span className="relative z-10">Liukastumisvaroituspalvelulla</span>
+  </span>
+</h1>
+
 
     <p className="text-base md:text-lg max-w-xl">
       Saat ilmoitukset erittäin liukkaasta jalankulkusäästä suoraan puhelimeesi. Palvelu on ilmainen.

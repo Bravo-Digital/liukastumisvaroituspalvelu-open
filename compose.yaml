@@ -1,0 +1,56 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${NODE_ENV:-development}  # Use 'development' or 'production'
+    command: >
+      sh -c "if [ '${NODE_ENV}' = 'production' ]; then pnpm start; else pnpm dev; fi"
+    environment:
+      PORT: "${PORT}"
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
+      GATEWAYAPI_API_KEY: "${GATEWAYAPI_API_KEY}"
+      REPLY_SENDER: "${REPLY_SENDER}"
+      WEBHOOK_SECRET: "${WEBHOOK_SECRET}"
+      NODE_ENV: "${NODE_ENV:-development}"
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - liukastumisvaroituspalvelu_net
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - liukastumisvaroituspalvelu_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - liukastumisvaroituspalvelu_net
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@bravodigital.fi
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - liukastumisvaroituspalvelu_net
+
+volumes:
+  liukastumisvaroituspalvelu_db_data:
+
+networks:
+  liukastumisvaroituspalvelu_net:
+    driver: bridge

@@ -5,8 +5,8 @@ const footerContent = [
         title: "Links",
         links: [
             {
-                label: "Home",
-                href: "/"
+                label: "Tietosuojaseloste",
+                href: "gdpr"
             },
             {
                 label: "Sign in",

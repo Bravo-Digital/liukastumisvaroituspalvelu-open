@@ -42,7 +42,7 @@ async function sendEmailNotification(formData: FeedbackFormData) {
     subject: `New Feedback from ${formData.name || 'Anonymous User'}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #333; border-bottom: 2px solid #4f46e5; padding-bottom: 10px;">
+        <h2 style="color: #333; border-bottom: 2px solidrgb(0, 166, 255); padding-bottom: 10px;">
           New Feedback Received
         </h2>
         
@@ -104,7 +104,7 @@ async function sendEmailNotification(formData: FeedbackFormData) {
           </div>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
-            <p>Best regards,<br>The Support Team</p>
+          
             <p>Submitted on: ${new Date().toLocaleString()}</p>
           </div>
         </div>
@@ -147,7 +147,7 @@ export async function submitFeedback(formData: FeedbackFormData): Promise<Action
       message: formData.feedback.trim(),
       category: formData.wantsResponse ? "response_requested" : "general",
       email: formData.email.trim(),
-      created_at: new Date(),
+      createdAt: new Date(),
       // Add other required fields according to your feedbackTable schema
     });
 
