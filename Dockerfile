@@ -1,4 +1,4 @@
-# Stage 1: Install dependencies and build (can be dev or prod)
+# Stage 1: Builder (for building both Next.js and TypeScript workers)
 FROM node:20-alpine AS builder
 
 # Enable pnpm
@@ -6,58 +6,59 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Copy dependency files
+# Copy package files and install all dependencies (including dev)
 COPY package.json pnpm-lock.yaml* ./
-
-# Install all dependencies (dev + prod)
 RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the app
+# Copy source code
 COPY . .
 
-# Build Next.js for production
+# Build Next.js app
 RUN pnpm build
+
+# Build workers (TypeScript -> JavaScript)
+RUN pnpm build:workers
 
 # Stage 2: Production image
 FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# Enable pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Copy only prod dependencies
+# Copy only production dependencies
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile --prod
 
-# Copy the built Next.js app from builder
+# Copy built Next.js app
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/messages ./messages
 
-# Expose app port
+# Copy compiled workers
+COPY --from=builder /app/dist/workers ./dist/workers
+
+
 EXPOSE 8080
 
-# Production start
+# Run Next.js in production
 CMD ["pnpm", "start"]
 
-# Stage 3 (optional): Development image
+# Stage 3: Development image
 FROM node:20-alpine AS development
 
 WORKDIR /app
 
-# Enable pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Copy dependency files and install all dependencies
+# Install all dependencies (dev + prod)
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile
 
-# Copy all app files
+# Copy source code
 COPY . .
 
-# Expose dev port
 EXPOSE 8080
 
-# Start Next.js dev server
-CMD ["pnpm", "dev"]
+# Build workers first, then start Next.js dev
+CMD ["sh", "-c", "pnpm build:workers && pnpm dev"]

@@ -39,16 +39,14 @@ export async function GET(request: NextRequest) {
       whereConditions.push(inArray(warningDetailsTable.lang, languages));
     }
     
-    // Apply filters - whereConditions will always have at least the time filter
-    const query = db
+    // Get all filtered results first
+    const allWarnings = await db
     .select()
     .from(warningsTable)
     .leftJoin(warningDetailsTable, eq(warningsTable.id, warningDetailsTable.warningId))
-    .where(and(...whereConditions));
-    
-    // Get all filtered results first
-    const allWarnings = await query.orderBy(desc(warningsTable.severity), desc(warningsTable.onsetAt));
-    
+    .where(and(...whereConditions))
+    .orderBy(desc(warningsTable.severity), desc(warningsTable.onsetAt));
+  
     // Process results into unique warnings
     const warningsMap = new Map();
     

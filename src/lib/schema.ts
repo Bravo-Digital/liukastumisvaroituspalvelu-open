@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, timestamp, varchar, text, boolean } from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, timestamp, varchar, text, boolean, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const warningsTable = pgTable("warnings", {
   id: varchar("id", { length: 256 }).primaryKey(),
@@ -37,8 +37,8 @@ export const usersTable = pgTable("users", {
   phone: varchar("phone", { length: 20 }).notNull(),
   area: varchar("area", { length: 128 }).notNull(),
   joinDate: timestamp("join_date", { mode: "date" }).notNull().defaultNow(),
-  hour: varchar("hour", { length: 5 }).notNull(), // e.g., "08:00"
-  language: varchar("language", { length: 2 }).notNull().default("fi"), // e.g., "fi", "en", "sv"
+  hour: varchar("hour", { length: 5 }), // e.g., "08:00" (if null, then send sms immediately)
+  language: varchar("language", { length: 2 }).notNull().default("fi"), // "fi","en","sv"
 });
 
 
@@ -50,3 +50,28 @@ export const smsLogsTable = pgTable("sms_logs", {
   status: varchar("status", { length: 20 }).notNull(), // e.g., "registered", "ignored", "error"
   error: text("error"), // optional error message
 });
+export const smsQueueTable = pgTable(
+  "sms_queue",
+  {
+    id: serial("id").primaryKey(),
+    warningId: varchar("warning_id", { length: 256 }).notNull(),
+    userId: integer("user_id").notNull(),
+    phone: varchar("phone", { length: 20 }).notNull(),
+    language: varchar("language", { length: 2 }).notNull(),
+    message: text("message").notNull(),
+    scheduledAt: timestamp("scheduled_at", { mode: "date" }).notNull(),
+    sentAt: timestamp("sent_at", { mode: "date" }),
+    status: varchar("status", { length: 20 }).notNull().default("pending"), // pending|sent|error|cancelled
+    attempts: integer("attempts").notNull().default(0),
+    gatewayMessageId: varchar("gateway_message_id", { length: 64 }), // GatewayAPI message ID
+    lastError: text("last_error"),
+  },
+  (table) => {
+    return {
+      userWarningUnique: uniqueIndex("sms_queue_user_warning_unique").on(
+        table.userId,
+        table.warningId
+      ),
+    };
+  }
+);

@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Chart } from "@/components/chart"
+
 import { ChevronDown, TrendingUp } from "lucide-react"
 import {
   DropdownMenu,
@@ -87,10 +87,6 @@ export default function Statistics() {
           ))}
         </div>
 
-        {/* Chart */}
-        <div className="md:col-span-2">
-          <Chart className="w-full h-full" year={selectedYear} />
-        </div>
       </div>
 
       {/* Data Table - Full width */}

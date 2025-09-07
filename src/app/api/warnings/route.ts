@@ -39,13 +39,13 @@ export async function GET(request: NextRequest) {
       .from(warningsTable)
       .leftJoin(warningDetailsTable, eq(warningsTable.id, warningDetailsTable.warningId));
     
-    // Apply filters if any
-    if (whereConditions.length > 0) {
-      query = query.where(and(...whereConditions));
-    }
-    
     // Get all filtered results first
-    const allWarnings = await query.orderBy(desc(warningsTable.createdAt));
+    const allWarnings = await db
+    .select()
+    .from(warningsTable)
+    .leftJoin(warningDetailsTable, eq(warningsTable.id, warningDetailsTable.warningId))
+    .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
+    .orderBy(desc(warningsTable.createdAt));
     
     // Process results into unique warnings
     const warningsMap = new Map();

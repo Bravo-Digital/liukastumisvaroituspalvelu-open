@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: ${NODE_ENV:-development}  # Use 'development' or 'production'
+      target: ${NODE_ENV:-development}
     command: >
       sh -c "if [ '${NODE_ENV}' = 'production' ]; then pnpm start; else pnpm dev; fi"
     environment:
@@ -15,6 +15,30 @@ services:
       NODE_ENV: "${NODE_ENV:-development}"
     ports:
       - "${PORT}:${PORT}"
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - liukastumisvaroituspalvelu_net
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${NODE_ENV:-development}
+    command: >
+      sh -c "if [ '${NODE_ENV}' = 'production' ]; then
+               pnpm workers;
+             else
+               pnpm build:workers && pnpm workers;
+             fi"
+    
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
+      GATEWAYAPI_API_KEY: "${GATEWAYAPI_API_KEY}"
+      REPLY_SENDER: "${REPLY_SENDER}"
+      WEBHOOK_SECRET: "${WEBHOOK_SECRET}"
+      NODE_ENV: "${NODE_ENV:-development}"
     depends_on:
       - db
     restart: unless-stopped

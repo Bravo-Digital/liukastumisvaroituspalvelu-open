@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "build:workers": "tsc --project tsconfig.workers.json && tsc-alias --project tsconfig.workers.json",
+    "workers": "concurrently \"node dist/workers/index.js\" \"node dist/workers/scheduler.js\""
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -19,15 +20,21 @@
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "concurrently": "^9.2.1",
+    "date-fns-tz": "^3.2.0",
     "dotenv": "^17.0.0",
     "drizzle-orm": "^0.44.2",
     "fast-xml-parser": "^5.2.5",
+    "gel": "^2.1.1",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.523.0",
+    "luxon": "^3.7.2",
     "motion": "^12.23.12",
+    "mysql2": "^3.14.4",
     "next": "15.3.4",
     "next-intl": "^4.3.1",
     "next-themes": "^0.4.6",
@@ -37,7 +44,8 @@
     "react-dom": "^19.0.0",
     "recharts": "^3.0.0",
     "rss-parser": "^3.13.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -46,12 +54,16 @@
     "@types/pg": "^8.15.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/xml2js": "^0.4.14",
     "drizzle-kit": "^0.31.4",
     "nodemailer": "^7.0.5",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.3",
     "tw-animate-css": "^1.3.4",
-    "typescript": "^5"
+    "typescript": "^5.2.2"
   },
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021"

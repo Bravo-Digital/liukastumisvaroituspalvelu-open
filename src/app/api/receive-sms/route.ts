@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { eq } from "drizzle-orm"; // make sure to import eq
 import { usersTable, smsLogsTable } from "@/lib/schema";
+import { sendBulkSms } from "@/actions/sendSms";
 
 const JOIN_KEYWORDS = ["JOIN", "LIITY", "DELTA"];
 const LANGUAGE_MAP: Record<string, string> = {
@@ -15,6 +16,12 @@ const CONFIRMATION_MESSAGES: Record<string, (area: string, hour: string) => stri
   en: (area, hour) => `Thank you for joining - you will now receive slippery warnings for ${area} at ${hour}!`,
   fi: (area, hour) => `Kiitos liittymisestä - saat nyt liukkausvaroituksia alueelle ${area} klo ${hour}!`,
   sv: (area, hour) => `Tack för att du anslöt - du kommer nu få varningar för hala vägar för ${area} kl ${hour}!`,
+};
+
+const IMMEDIATE_CONFIRMATION_MESSAGES: Record<string, (area: string) => string> = {
+  en: (area) => `Thank you for joining - you will now receive warnings for ${area}!`,
+  fi: (area) => `Kiitos liittymisestä - saat nyt varoitukset alueelle ${area}!`,
+  sv: (area) => `Tack för att du anslöt - du kommer nu få varningar för ${area}!`,
 };
 
 export async function POST(req: NextRequest) {
@@ -41,13 +48,16 @@ export async function POST(req: NextRequest) {
 
     if (JOIN_KEYWORDS.includes(keyword)) {
       const area = parts[1] ?? "Unknown";
-      let hour = "08:00";
-      if (parts[2]) {
-        const h = parseInt(parts[2], 10);
-        if (!isNaN(h) && h >= 0 && h <= 23) {
-          hour = (h < 10 ? "0" : "") + h + ":00";
-        }
-      }
+
+        // Use the specified hour if provided, otherwise leave blank (immediate)
+  let hour: string | null = null;
+  if (parts[2]) {
+    const h = parseInt(parts[2], 10);
+    if (!isNaN(h) && h >= 0 && h <= 23) {
+      hour = (h < 10 ? "0" : "") + h + ":00";
+    }
+  }
+
 
       const existingUser = await db
       .select()
@@ -66,16 +76,16 @@ export async function POST(req: NextRequest) {
             language: language,
           }).onConflictDoNothing();
 
-          const smsText = CONFIRMATION_MESSAGES[language](area, hour);
+      // Use different confirmation message if hour is blank
+      const smsText = hour
+        ? CONFIRMATION_MESSAGES[language](area, hour)
+        : IMMEDIATE_CONFIRMATION_MESSAGES[language](area);
 
-          await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/send-sms`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              sender: process.env.REPLY_SENDER,
-              message: smsText,
-              msisdn: from,
-            }),
+
+          await sendBulkSms({
+            sender: process.env.REPLY_SENDER!,
+            message: smsText,
+            recipients: [{ msisdn: from }],
           });
 
           status = "registered";

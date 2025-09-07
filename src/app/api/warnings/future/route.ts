@@ -35,14 +35,12 @@ export async function GET(request: NextRequest) {
     }
     
     // Build the query with filters first, then ordering
-    let query = db
-      .select()
-      .from(warningsTable)
-      .leftJoin(warningDetailsTable, eq(warningsTable.id, warningDetailsTable.warningId));
-    
-    // Apply filters - whereConditions will always have at least the time filter
-    query = query.where(and(...whereConditions));
-    
+    const query = db
+    .select()
+    .from(warningsTable)
+    .leftJoin(warningDetailsTable, eq(warningsTable.id, warningDetailsTable.warningId))
+    .where(and(...whereConditions)); 
+  
     // Get all filtered results first
     const allWarnings = await query.orderBy(desc(warningsTable.onsetAt));
     

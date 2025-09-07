@@ -1,4 +1,6 @@
 ## Kuinka käynnistetään
+drizzle-kit push
+
 Voit valita onko dev vai prod
 
 ```bash
