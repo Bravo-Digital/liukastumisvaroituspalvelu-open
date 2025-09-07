@@ -5,7 +5,12 @@
     "Feedback": "Anna palautetta",
     "Subscribe": "Tilaa varoitukset"
   },
-  "HomePage": {
+  "Footer": {
+    "slogan": "Liukkaan jalankulkusään varoitukset suoraan puhelimeesi.",
+    "links": "Linkit",
+    "gdpr": "Tietosuojaseloste"
+  },
+  "Warning": {
     "title": "Liukastumisvaroituspalvelu",
     "description": "Tämä palvelu tarjoaa ajantasaiset liukastumisvaroitukset Helsingissä ja Uudellamaalla.",
     "subscribeButton": "Tilaa",
@@ -34,6 +39,35 @@
       "submitSuccessEmailMessage": "📧 Tarkista sähköpostisi osoitteessa {{email}} vahvistusta varten.",
       "submitError": "Tapahtui virhe. Yritä uudelleen.",
       "requiredFieldsText": "* Pakolliset kentät"
+    },
+    "Homepage": {
+      "Hero": {
+        "title1/2": "Vältä liukastumiset",
+        "title2/2": "Liukasbotilla",
+        "desc": "Saat ilmoitukset erittäin liukkaasta jalankulkusäästä suoraan puhelimeesi. Palvelu on ilmainen.",
+        "subscibe": "Tilaa varoitukset"
+      },
+      "InfoBox": {
+        "title": "Tietoa Liukasbotista",
+        "text": "Liukasbotin idea on tiedottaa sen käyttäjiä silloin, kun ulkona on erityisen liukasta, jotta liukastumisilta vältyttäisiin.",
+        "subtitle": "Toimintaperiaatteet",
+        "p1": "Saat ilmoituksen puhelimeesi, kun ulkona on poikkeuksellisen liukasta, ja liikkuminen vaatii erityistä varovaisuutta.",
+        "p2": "Varoitus lähetetään liukkaan sään alussa.",
+        "p3": "Palvelu on täysin ilmainen."
+      },
+      "FAQ": {
+        "title": "Usein kysytyt kysymykset",
+        "q1": "Miten saan varoitukset puhelimeeni?",
+        "a1/1": "Voit tilata varoitukset puhelimeesi ",
+        "from_here": "täältä",
+        "a1/2": ". Kun poikkeuksellista liukkautta havaitaan, saat varoituksen suoraan puhelimeesi.",
+        "q2": "Onko palvelu ilmainen?",
+        "a2": "Kyllä, palvelu on täysin ilmainen.",
+        "q3": "Onko palvelu käytössä vain Helsingissä?",
+        "a3": "Tällä hetkellä liukkausvaroitukset ovat vain Helsingin alueelta.",
+        "q4": "Kuka vastaa Liukasbotin ylläpidosta?",
+        "a4": "Liukasbotin ylläpidosta vastaa Bravo Digital Oy."
+      }
     }
   
   

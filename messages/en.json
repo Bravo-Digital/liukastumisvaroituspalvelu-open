@@ -5,8 +5,13 @@
     "Feedback": "Feedback",
     "Subscribe": "Subscribe"
   },
+  "Footer": {
+  "slogan": "Slippery weather alerts directly to your phone.",
+  "links": "Links",
+  "gdpr": "Privacy Policy"
+},
 
-  "HomePage": {
+  "Warning": {
     "title": "Slip Warning Service",
     "description": "Slip Warning Service provides extremely slippery pedestrian warnings via text message",
     "area": "Area",
@@ -35,6 +40,35 @@
   "submitSuccessEmailMessage": "📧 Check your email at {{email}} for confirmation.",
   "submitError": "An error occurred. Please try again.",
   "requiredFieldsText": "* Required fields"
+},
+"Homepage": {
+  "Hero": {
+  "title1/2": "Avoid slipping with",
+  "title2/2": "Liukasbotti",
+  "desc": "Get alerts about extremely slippery walking conditions directly on your phone. The service is free.",
+  "subscibe": "Subscirbe"
+},
+"InfoBox": {
+  "title": "About Liukasbotti",
+  "text": "The idea of Liukasbotti is to inform its users when it is especially slippery outside, in order to help prevent accidents.",
+  "subtitle": "How it works",
+  "p1": "You will receive a notification on your phone when it is unusually slippery outside and extra caution is required.",
+  "p2": "The warning is sent at the start of slippery conditions.",
+  "p3": "The service is completely free."
+},
+"FAQ": {
+  "title": "Frequently Asked Questions",
+  "q1": "How do I get alerts on my phone?",
+  "a1/1": "You can subscribe to alerts on your phone ",
+  "from_here": "here",
+  "a1/2": ". When unusual slipperiness is detected, you will receive an alert directly on your phone.",
+  "q2": "Is the service free?",
+  "a2": "Yes, the service is completely free.",
+  "q3": "Is the service only available in Helsinki?",
+  "a3": "At the moment, slipperiness alerts are only available for the Helsinki area.",
+  "q4": "Who is responsible for maintaining Liukasbotti?",
+  "a4": "Liukasbotti is maintained by Bravo Digital Oy."
+}
 }
 
 }

@@ -1,4 +1,6 @@
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { useTranslations } from "next-intl";
+import { use } from "react";
 
 interface FAQItem {
   question: string;
@@ -10,10 +12,11 @@ interface FAQProps {
 }
 
 export function FAQ({ items }: FAQProps) {
+  const t = useTranslations("Homepage.FAQ");
   return (
     <section className="w-full max-w-5xl mx-auto py-16 px-5 md:px-0">
       <h2 className="text-3xl md:text-4xl font-bold mb-10 text-center">
-        Usein kysytyt kysymykset
+        {t("title")}
       </h2>
       <Accordion type="single" collapsible className="space-y-4">
         {items.map((item, index) => (

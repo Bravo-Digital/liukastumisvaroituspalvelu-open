@@ -2,7 +2,7 @@ import Link from "next/link"
 import Statistics from "@/components/statistics"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertTriangle, CheckCircle } from "lucide-react"
-import { getLocale } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 import { buttonVariants } from "@/components/ui/button";
 import { DotPattern } from "@/components/ui/shadcn-io/dot-pattern";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,7 @@ const localeMap = {
 }
 
 export default async function HomePage() {
+  const t = await getTranslations("Homepage")
   const locale = await getLocale() as keyof typeof localeMap
   const apiLocale = localeMap[locale]
   const result = await fetch(`http://localhost:3000/api/warnings/active?languages=${apiLocale}`).then(res => res.json())
@@ -24,32 +25,32 @@ export default async function HomePage() {
 
   const faqItems = [
     {
-      question: "Miten saan varoitukset puhelimeeni?",
+      question: t("FAQ.q1"),
       answer: (
         <>
-          Voit tilata varoitukset puhelimeesi{" "}
+          {t("FAQ.a1/1")}
           <a
             href="/subscribe"
             className="text-primary font-medium hover:underline"
           >
-            täältä
+            {t("FAQ.from_here")}
           </a>
-          . Kun poikkeuksellista liukkautta havaitaan, saat varoituksen suoraan puhelimeesi.
+          {t("FAQ.a1/2")}
         </>
       )
       
     },
     {
-      question: "Onko palvelu ilmainen?",
-      answer: "Kyllä, palvelu on täysin ilmainen."
+      question: t("FAQ.q2"),
+      answer: t("FAQ.a2")
     },
     {
-      question: "Onko palvelu käytössä vain Helsingissä?",
-      answer: "Tällä hetkellä liukkausvaroitukset ovat vain Helsingin alueelta."
+      question: t("FAQ.q3"),
+      answer:  t("FAQ.a3")
     },
     {
-        question: "Kuka vastaa Liukasbotin ylläpidosta?",
-        answer: "Liukasbotin ylläpidosta vastaa Bravo Digital Oy."
+        question: t("FAQ.q4"),
+        answer: t("FAQ.a4")
       }
   ];
 
@@ -63,7 +64,7 @@ export default async function HomePage() {
   {/* Hero content */}
   <div className="relative flex flex-col items-center space-y-6 px-5 md:px-0">
   <h1 className="text-3xl md:text-5xl font-bold leading-tight whitespace-normal [overflow-wrap:anywhere] [hyphens:auto]">
-    Vältä liukastumiset{" "}
+    {t("Hero.title1/2")}
     <span className="block relative px-1.5 mt-2">
       <span className="absolute inset-0 h-full border border-primary/60 bg-primary/15 group-hover:bg-primary/20 dark:border-primary/40 z-0 rounded-sm" />
 
@@ -80,19 +81,19 @@ export default async function HomePage() {
         <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
       </svg>
 
-      <span className="relative z-10">Liukasbotilla</span>
+      <span className="relative z-10">{t("Hero.title2/2")}</span>
     </span>
   </h1>
 
 
     <p className="text-base md:text-lg max-w-xl">
-      Saat ilmoitukset erittäin liukkaasta jalankulkusäästä suoraan puhelimeesi. Palvelu on ilmainen.
+      {t("Hero.desc")}
     </p>
     <Link
       href="/subscribe"
       className={buttonVariants({ variant: "default", size: "lg" })}
     >
-      Tilaa varoitukset
+      {t("Hero.subscibe")}
     </Link>
   </div>
 </section>
@@ -108,31 +109,31 @@ export default async function HomePage() {
     bg-[size:3rem_3rem]">
   </div>
 
-  <h2 className="text-2xl md:text-3xl font-bold">Tietoa Liukasbotista</h2>
+  <h2 className="text-2xl md:text-3xl font-bold">{t("InfoBox.title")}</h2>
   
   <p className="text-base md:text-lg leading-relaxed text-card-foreground/90">
-    Liukasbotin idea on tiedottaa sen käyttäjiä silloin, kun ulkona on erityisen liukasta, jotta liukastumisilta vältyttäisiin.
+    {t("InfoBox.text")}
   </p>
 
-  <h3 className="text-xl md:text-2xl font-semibold mt-4">Toimintaperiaatteet</h3>
+  <h3 className="text-xl md:text-2xl font-semibold mt-4">{t("InfoBox.subtitle")}</h3>
   <ul className="list-disc list-inside space-y-2 text-card-foreground/90">
     <li className="flex items-start space-x-3">
       <div className="bg-primary/10 text-primary group-hover:bg-primary/20 flex w-12 h-12 items-center justify-center rounded-full transition-colors duration-300 flex-shrink-0">
         <CheckCircle className="w-5 h-5" />
       </div>
-      <span>Saat ilmoituksen puhelimeesi, kun ulkona on poikkeuksellisen liukasta, ja liikkuminen vaatii erityistä varovaisuutta.</span>
+      <span>{t("InfoBox.p1")}</span>
     </li>
     <li className="flex items-center space-x-3">
       <div className="bg-primary/10 text-primary group-hover:bg-primary/20 flex w-12 h-12 items-center justify-center rounded-full transition-colors duration-300 flex-shrink-0">
         <CheckCircle className="w-5 h-5" />
       </div>
-      <span>Varoitus lähetetään liukkaan sään alussa.</span>
+      <span>{t("InfoBox.p2")}</span>
     </li>
     <li className="flex items-center space-x-3">
       <div className="bg-primary/10 text-primary group-hover:bg-primary/20 flex w-12 h-12 items-center justify-center rounded-full transition-colors duration-300 flex-shrink-0">
         <CheckCircle className="w-5 h-5" />
       </div>
-      <span>Palvelu on täysin ilmainen.</span>
+      <span>{t("InfoBox.p3")}</span>
     </li>
   </ul>
 </section>

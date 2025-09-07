@@ -5,7 +5,12 @@
     "Feedback": "Ge feedback",
     "Subscribe": "Prenumerera"
   },
-  "HomePage": {
+  "Footer": {
+  "slogan": "Halkvarningar direkt till din telefon.",
+  "links": "Länkar",
+  "gdpr": "Integritetspolicy"
+},
+  "Warning": {
     "title": "Halkvarningsservice",
     "description": "Halkvarningsservice tillhandahåller extremt hala gångbanvarningar via textmeddelande",
     "area": "Område",
@@ -34,6 +39,36 @@
   "submitSuccessEmailMessage": "📧 Kontrollera din e-post på {{email}} för bekräftelse.",
   "submitError": "Ett fel inträffade. Försök igen.",
   "requiredFieldsText": "* Obligatoriska fält"
+},
+"Homepage": {
+  "Hero": {
+  "title1/2": "Undvik halkolyckor med",
+  "title2/2": "Liukasbotti",
+  "desc": "Få varningar om mycket hala gångförhållanden direkt till din telefon. Tjänsten är gratis.",
+  "subscibe": "Prenumerera"
+},
+"InfoBox": {
+  "title": "Om Liukasbotti",
+  "text": "Idén med Liukasbotti är att informera användarna när det är särskilt halt ute, för att undvika olyckor.",
+  "subtitle": "Så fungerar det",
+  "p1": "Du får en notifikation till din telefon när det är ovanligt halt ute och det krävs extra försiktighet.",
+  "p2": "Varningen skickas i början av det hala vädret.",
+  "p3": "Tjänsten är helt gratis."
+},
+"FAQ": {
+  "title": "Vanliga frågor",
+  "q1": "Hur får jag varningar till min telefon?",
+  "a1/1": "Du kan prenumerera på varningar till din telefon ",
+  "from_here": "här",
+  "a1/2": ". När ovanlig halka upptäcks får du en varning direkt till din telefon.",
+  "q2": "Är tjänsten gratis?",
+  "a2": "Ja, tjänsten är helt gratis.",
+  "q3": "Är tjänsten endast tillgänglig i Helsingfors?",
+  "a3": "För tillfället finns halkvarningarna endast för Helsingforsområdet.",
+  "q4": "Vem ansvarar för underhållet av Liukasbotti?",
+  "a4": "Liukasbotti underhålls av Bravo Digital Oy."
 }
+}
+
 
 }
