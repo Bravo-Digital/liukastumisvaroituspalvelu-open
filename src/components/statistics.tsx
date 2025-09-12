@@ -1,9 +1,7 @@
 "use client"
-import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
-import { ChevronDown, TrendingUp } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,35 +10,68 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import DataTable from "./data-table"
+import { useTranslations } from "next-intl"
 
-const yearlyStats = {
-  2024: [
-    { title: "Varoituksia", data: "12", trend: "+2 talvesta 2021" },
-    { title: "Aktiivisia tilaajia", data: "4007", trend: "+20% talvesta 2021" },
-    { title: "Rajapintakyselyitä", data: "3204", trend: "+45% talvesta 2021" },
-  ],
-  2023: [
-    { title: "Varoituksia", data: "10", trend: "+1 talvesta 2022" },
-    { title: "Aktiivisia tilaajia", data: "3672", trend: "+10% talvesta 2022" },
-    { title: "Rajapintakyselyitä", data: "2210", trend: "+25% talvesta 2022" },
-  ],
-  2022: [
-    { title: "Varoituksia", data: "9", trend: "-1 viime talvesta" },
-    { title: "Aktiivisia tilaajia", data: "3340", trend: "+15% viime talvesta" },
-    { title: "Rajapintakyselyitä", data: "1760", trend: "+30% viime talvesta" },
-  ]
+interface Stats {
+  users: number
+  warnings: number
 }
 
 export default function Statistics() {
-  const [selectedYear, setSelectedYear] = useState<2024 | 2023 | 2022>(2024)
+  const t = useTranslations("Statistics")
+
+  const START_YEAR = 2025 // Winter 2025-2026
+  const currentYear = new Date().getFullYear()
+  const currentMonth = new Date().getMonth() + 1 // Jan=1, Dec=12
+
+// Determine the latest winter season (cannot go into the future)
+let latestWinterYear: number
+if (currentMonth >= 10) {
+  // Winter just started, show currentYear if data exists
+  latestWinterYear = currentYear
+} else {
+  // Winter started last year
+  latestWinterYear = currentYear - 1
+}
+
+// Prevent going before START_YEAR
+latestWinterYear = Math.max(latestWinterYear, START_YEAR)
+
+  // Generate winter years from START_YEAR up to latestWinterYear
+  const winterYears = Array.from(
+    { length: latestWinterYear - START_YEAR + 1 },
+    (_, i) => START_YEAR + i
+  )
+
+  const [selectedYear, setSelectedYear] = useState(latestWinterYear)
+  const [stats, setStats] = useState<Stats>({ users: 0, warnings: 0 })
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(`/api/winter-stats?year=${selectedYear}`)
+        if (!res.ok) throw new Error("Failed to fetch stats")
+        const data: Stats = await res.json()
+        setStats(data)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStats()
+  }, [selectedYear])
 
   return (
     <div className="space-y-6">
-      {/* Header - Mobile optimized */}
+      {/* Header */}
       <div className="sticky top-0 bg-background z-10 py-4 border-b">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <h1 className="text-xl sm:text-2xl font-semibold leading-tight">
-            Tilastot talvikaudelta {selectedYear} – {selectedYear + 1}
+          {t("title")} {selectedYear} – {selectedYear + 1}
           </h1>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -52,11 +83,8 @@ export default function Statistics() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="min-w-auto">
-              {[2024, 2023, 2022].map((year) => (
-                <DropdownMenuItem
-                  key={year}
-                  onClick={() => setSelectedYear(year as 2024 | 2023 | 2022)}
-                >
+              {winterYears.map((year) => (
+                <DropdownMenuItem key={year} onClick={() => setSelectedYear(year)}>
                   {year}
                 </DropdownMenuItem>
               ))}
@@ -65,31 +93,32 @@ export default function Statistics() {
         </div>
       </div>
 
-      {/* Main Content - Original layout on desktop, stacked on mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Statistics Cards */}
-        <div className="md:col-span-1 flex flex-col space-y-4">
-          {yearlyStats[selectedYear].map((statistic, index) => (
-            <Card key={index} className="h-full">
-              <CardHeader>
-                <CardTitle>{statistic.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="w-full flex justify-between items-center">
-                  <span className="text-xl font-bold">{statistic.data}</span>
-                  <Badge>
-                    <TrendingUp className="mr-1 h-4 w-4" />
-                    <span>{statistic.trend}</span>
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle>{t("warnings")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="w-full flex justify-between items-center">
+              <span className="text-3xl sm:text-4xl font-bold">{loading ? "..." : stats.warnings}</span>
+            </div>
+          </CardContent>
+        </Card>
 
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle>{t("users")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="w-full flex justify-between items-center">
+              <span className="text-3xl sm:text-4xl font-bold">{loading ? "..." : stats.users}</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Data Table - Full width */}
+      {/* Data Table */}
       <div className="w-full overflow-x-auto">
         <DataTable className="w-full" year={selectedYear} />
       </div>

@@ -31,9 +31,7 @@ export async function GET(request: NextRequest) {
       )
     ];
     
-    if (severities.length > 0) {
-      whereConditions.push(inArray(warningsTable.severity, severities));
-    }
+
     
     if (languages.length > 0) {
       whereConditions.push(inArray(warningDetailsTable.lang, languages));
@@ -45,7 +43,7 @@ export async function GET(request: NextRequest) {
     .from(warningsTable)
     .leftJoin(warningDetailsTable, eq(warningsTable.id, warningDetailsTable.warningId))
     .where(and(...whereConditions))
-    .orderBy(desc(warningsTable.severity), desc(warningsTable.onsetAt));
+    .orderBy(desc(warningsTable.onsetAt))
   
     // Process results into unique warnings
     const warningsMap = new Map();
@@ -59,7 +57,6 @@ export async function GET(request: NextRequest) {
           id: warning.id,
           effectiveAt: warning.onsetAt,
           expiresAt: warning.expiresAt,
-          severity: warning.severity,
           createdAt: warning.createdAt,
           details: []
         });

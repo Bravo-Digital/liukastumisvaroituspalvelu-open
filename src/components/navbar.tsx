@@ -1,5 +1,5 @@
 import { buttonVariants } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { Menu } from "lucide-react"
 import Link from "next/link"
 import ThemeToggler from "./ui/theme-toggler"
@@ -54,12 +54,14 @@ export default async function Navbar() {
       {/* Mobile Hamburger */}
       <div className="md:hidden">
         <Sheet>
+          
           <SheetTrigger asChild>
             <button className="p-2 rounded-md hover:bg-accent">
               <Menu className="h-6 w-6" />
             </button>
           </SheetTrigger>
           <SheetContent side="right" className="w-80">
+          <SheetTitle className="sr-only">Menu</SheetTitle> 
             <nav className="flex flex-col space-y-4 mt-6 px-10">
               {links.map((link) => (
                 <Link

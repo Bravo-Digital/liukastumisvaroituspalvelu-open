@@ -71,6 +71,58 @@
   "q4": "Who is responsible for maintaining Liukasbotti?",
   "a4": "Liukasbotti is maintained by Bravo Digital Inc."
 }
+},
+"WarningsPage": {
+  "active": {
+    "title": "Active slippery warning",
+    "description_singular": "It is exceptionally slippery in Helsinki.",
+    "description_plural": "It is exceptionally slippery in Helsinki."
+  },
+  "none": {
+    "title": "No active warnings",
+    "description": "There are no active slippery warnings currently."
+  }
+},
+"Statistics": {
+  "title": "Statistics for winter season",
+  "warnings": "Warnings",
+  "users": "Active subscribers"
+},
+"DataTable": {
+  "date": "Date",
+  "time": "Time",
+  "area": "City",
+  "loading": "Loading...",
+  "empty": "No warnings"
+},
+"subscribe": {
+  "title": "Begin receiving slippery warnings",
+  "subtitle": "Choose how you wish to receive slippery warnings",
+  "subscribeWith": "Receive",
+  "instructions": "Instructions:",
+  "options": {
+    "sms": {
+      "label": "SMS Warnings",
+      "guide": {
+        "step1": "1. Send a text message to this number: ",
+        "step2": "2. Message text: ",
+        "step3": "3. If you wish to receive the hours at a specific hour, add it to the end of the message. e.g. ",
+        "step1a": "050 902 4308",
+        "step2a": "JOIN HELSINKI",
+        "step3a": "JOIN HELSINKI 8"
+      }
+    }
+  },
+  "acceptTerms": "I accept",
+  "terms": "the Terms and Conditions",
+  "privacy": "and the Privacy Policy",
+  "and": "and",
+  "verifyCode": "Verify Code",
+  "subscribeButton": "Get notifications"
 }
+  
+  
+
+
 
 }

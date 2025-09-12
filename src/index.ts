@@ -16,8 +16,6 @@ interface Area {
 interface InfoBlock {
   language: string;
   status: string;
-  severity: string;
-  certainty: string;
   event: string;
   onset: string;
   expires: string;
@@ -28,8 +26,6 @@ interface InfoBlock {
 
 interface Info {
   lang: string;
-  severity: string;
-  certainty: string;
   event: string;
   onset: string;
   expires: string;
@@ -37,15 +33,31 @@ interface Info {
   description: string;
   areaDesc: string[];
 }
+const areaMap: Record<string, string> = {
+  "southern finland": "uusimaa",
+  "the southern part of the country": "uusimaa",
+  "helsinki": "uusimaa",
+  "uusimaa": "uusimaa",
+  "whole country": "uusimaa",
+  "all of finland": "uusimaa",
+};
+
 function normalizeArea(desc: string): string {
   const d = desc.toLowerCase();
-
-  if (d.includes("uusimaa")) return "uusimaa";
-  if (d.includes("helsinki")) return "uusimaa";
-  if (d.includes("southern finland")) return "uusimaa";
-  if (d.includes("whole country") || d.includes("all of finland")) return "uusimaa";
-
+  for (const key in areaMap) {
+    if (d.includes(key)) return areaMap[key];
+  }
   return d;
+}
+
+function safeOnset(str?: string): Date {
+  if (!str) return new Date();
+  const d = new Date(str);
+  return isNaN(d.getTime()) ? new Date() : d;
+}
+
+function sevenDaysLater(base: Date): Date {
+  return new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);
 }
 
 // const FEED_URL = 'https://alerts.fmi.fi/cap/feed/2024/02-22/03-23-10Z-rss_en-GB.rss';
@@ -203,8 +215,6 @@ async function checkWarnings() {
 
           return {
             lang: infoBlock.language,
-            severity: infoBlock.severity,
-            certainty: infoBlock.certainty,
             event: infoBlock.event,
             onset: infoBlock.onset,
             expires: infoBlock.expires,
@@ -255,15 +265,29 @@ async function checkWarnings() {
         }
 
         if (existing.length === 0) {
+          // Check if there is any active warning that hasn't expired
+          const activeWarnings = await db
+            .select()
+            .from(warningsTable)
+            .where(sql`${warningsTable.expiresAt} > now()`);
+        
+          if (activeWarnings.length > 0) {
+            console.log(`[Index] Skipping new warning ${warning.identifier} because an active warning exists`);
+            continue; 
+          }
+        
           console.log(`[Index] Inserting new warning: ${warning.identifier}`);
+          const createdAt = new Date();
+          const onsetAt = safeOnset(warning.info[0].onset);
+          const expiresAt = sevenDaysLater(createdAt);
+        
           await db.insert(warningsTable).values({
             id: warning.identifier,
-            severity: warning.info[0].severity,
-            certainty: warning.info[0].certainty,
-            status: 'active',
-            createdAt: new Date(),
-            onsetAt: new Date(warning.info[0].onset),
-            expiresAt: new Date(warning.info[0].expires),
+            area: "HELSINKI",
+            status: "active",
+            createdAt,
+            onsetAt,
+            expiresAt,
           });
         
           for (const detail of warning.info) {
@@ -276,28 +300,30 @@ async function checkWarnings() {
               event: detail.event,
             });
         
-            // enqueue per-language job immediately
             await enqueueJobsForWarning(
               warning.identifier,
-              new Date(detail.onset ?? warning.info[0].onset),
-              new Date(detail.expires ?? warning.info[0].expires),
-              [detail] // pass single detail for this language
+              onsetAt,
+              expiresAt,
+              [detail]
             );
           }
-
-            
-        } else if (warning.type === 'Update') {
+        }
+        
+        
+        else if (warning.type === "Update") {
           console.log(`[Index] Updating existing warning: ${warning.identifier}`);
+          const onsetAt = safeOnset(warning.info[0].onset);
+          const expiresAt = sevenDaysLater(new Date());
+          
           await db.update(warningsTable)
             .set({
-              severity: warning.info[0].severity,
-              certainty: warning.info[0].certainty,
-              onsetAt: new Date(warning.info[0].onset),
-              expiresAt: new Date(warning.info[0].expires),
+              area: "helsinki",
+              onsetAt,
+              expiresAt,
             })
             .where(eq(warningsTable.id, warning.identifier));
+          
         
-          // Replace details
           await db.delete(warningDetailsTable)
             .where(eq(warningDetailsTable.warningId, warning.identifier));
         
@@ -310,16 +336,9 @@ async function checkWarnings() {
               description: detail.description,
               event: detail.event,
             });
-        
-            // enqueue again after update (refresh jobs)
-            await enqueueJobsForWarning(
-              warning.identifier,
-              new Date(detail.onset ?? warning.info[0].onset),
-              new Date(detail.expires ?? warning.info[0].expires),
-              [detail]
-            );
           }
-        } 
+        }
+        
         else {
           console.log(`[Index] Warning already exists and is not an update: ${warning.identifier}`);
         }

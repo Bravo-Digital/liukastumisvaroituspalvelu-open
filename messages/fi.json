@@ -19,58 +19,113 @@
     "feedbackButton": "Anna palautetta"
   },  
   
-    "FeedbackForm": {
-      "title": "Anna palautetta",
-      "description": "Oletko tyytyväinen Liukasbottiin? Mitä haluaisit parannettavan?",
-      "nameLabel": "Nimi",
-      "nameOptional": "(valinnainen)",
-      "emailLabel": "Sähköposti",
-      "emailRequiredIndicator": "*",
-      "emailOptional": "(valinnainen)",
-      "wantsResponseLabel": "Haluaisin vastauksen palautteeseeni",
-      "wantsResponseDescOn": "Vastaamme sähköpostiisi",
-      "wantsResponseDescOff": "Valitse tämä, jos haluat, että otamme sinuun yhteyttä",
-      "feedbackLabel": "Palaute",
-      "feedbackRequiredIndicator": "*",
-      "feedbackPlaceholder": "Kerro meille, mitä mieltä olet, mitä voisi parantaa tai muita ehdotuksia...",
-      "feedbackCharCount": "/1000 merkkiä",
-      "submitButton": "Lähetä palaute",
-      "submittingButton": "Lähetetään palautetta...",
-      "submitSuccessTitle": "Palaute lähetetty onnistuneesti!",
-      "submitSuccessMessage": "Kiitos palautteestasi.",
-      "submitSuccessEmailMessage": "📧 Tarkista sähköpostisi osoitteessa {{email}} vahvistusta varten.",
-      "submitError": "Tapahtui virhe. Yritä uudelleen.",
-      "requiredFieldsText": "* Pakolliset kentät"
-    },
-    "Homepage": {
-      "Hero": {
-        "title1/2": "Vältä liukastumiset",
-        "title2/2": "Liukasbotilla",
-        "desc": "Saat ilmoitukset erittäin liukkaasta jalankulkusäästä suoraan puhelimeesi. Palvelu on ilmainen.",
-        "subscibe": "Tilaa varoitukset"
-      },
-      "InfoBox": {
-        "title": "Tietoa Liukasbotista",
-        "text": "Liukasbotin idea on tiedottaa sen käyttäjiä silloin, kun ulkona on erityisen liukasta, jotta liukastumisilta vältyttäisiin.",
-        "subtitle": "Toimintaperiaatteet",
-        "p1": "Saat ilmoituksen puhelimeesi, kun ulkona on poikkeuksellisen liukasta, ja liikkuminen vaatii erityistä varovaisuutta.",
-        "p2": "Varoitus lähetetään liukkaan sään alussa.",
-        "p3": "Palvelu on täysin ilmainen."
-      },
-      "FAQ": {
-        "title": "Usein kysytyt kysymykset",
-        "q1": "Miten saan varoitukset puhelimeeni?",
-        "a1/1": "Voit tilata varoitukset puhelimeesi ",
-        "from_here": "täältä",
-        "a1/2": ". Kun poikkeuksellista liukkautta havaitaan, saat varoituksen suoraan puhelimeesi.",
-        "q2": "Onko palvelu ilmainen?",
-        "a2": "Kyllä, palvelu on täysin ilmainen.",
-        "q3": "Onko palvelu käytössä vain Helsingissä?",
-        "a3": "Tällä hetkellä liukkausvaroitukset ovat vain Helsingin alueelta.",
-        "q4": "Kuka vastaa Liukasbotin ylläpidosta?",
-        "a4": "Liukasbotin ylläpidosta vastaa Bravo Digital Oy."
+  "FeedbackForm": {
+    "title": "Anna palautetta",
+    "description": "Oletko tyytyväinen Liukasbottiin? Mitä haluaisit parannettavan?",
+    "nameLabel": "Nimi",
+    "nameOptional": "(valinnainen)",
+    "emailLabel": "Sähköposti",
+    "emailRequiredIndicator": "*",
+    "emailOptional": "(valinnainen)",
+    "wantsResponseLabel": "Haluaisin vastauksen palautteeseeni",
+    "wantsResponseDescOn": "Vastaamme sähköpostiisi",
+    "wantsResponseDescOff": "Valitse tämä, jos haluat, että otamme sinuun yhteyttä",
+    "feedbackLabel": "Palaute",
+    "feedbackRequiredIndicator": "*",
+    "feedbackPlaceholder": "Kerro meille, mitä mieltä olet, mitä voisi parantaa tai muita ehdotuksia...",
+    "feedbackCharCount": "/1000 merkkiä",
+    "submitButton": "Lähetä palaute",
+    "submittingButton": "Lähetetään palautetta...",
+    "submitSuccessTitle": "Palaute lähetetty onnistuneesti!",
+    "submitSuccessMessage": "Kiitos palautteestasi.",
+    "submitSuccessEmailMessage": "📧 Tarkista sähköpostisi osoitteessa {{email}} vahvistusta varten.",
+    "submitError": "Tapahtui virhe. Yritä uudelleen.",
+    "requiredFieldsText": "* Pakolliset kentät"
+  },
+"Homepage": {
+  "Hero": {
+    "title1/2": "Vältä liukastumiset",
+    "title2/2": "Liukasbotilla",
+    "desc": "Saat ilmoitukset erittäin liukkaasta jalankulkusäästä suoraan puhelimeesi. Palvelu on ilmainen.",
+    "subscibe": "Tilaa varoitukset"
+  },
+  "InfoBox": {
+    "title": "Tietoa Liukasbotista",
+    "text": "Liukasbotin idea on tiedottaa sen käyttäjiä silloin, kun ulkona on erityisen liukasta, jotta liukastumisilta vältyttäisiin.",
+    "subtitle": "Toimintaperiaatteet",
+    "p1": "Saat ilmoituksen puhelimeesi, kun ulkona on poikkeuksellisen liukasta, ja liikkuminen vaatii erityistä varovaisuutta.",
+    "p2": "Varoitus lähetetään liukkaan sään alussa.",
+    "p3": "Palvelu on täysin ilmainen."
+  },
+  "FAQ": {
+    "title": "Usein kysytyt kysymykset",
+    "q1": "Miten saan varoitukset puhelimeeni?",
+    "a1/1": "Voit tilata varoitukset puhelimeesi ",
+    "from_here": "täältä",
+    "a1/2": ". Kun poikkeuksellista liukkautta havaitaan, saat varoituksen suoraan puhelimeesi.",
+    "q2": "Onko palvelu ilmainen?",
+    "a2": "Kyllä, palvelu on täysin ilmainen.",
+    "q3": "Onko palvelu käytössä vain Helsingissä?",
+    "a3": "Tällä hetkellä liukkausvaroitukset ovat vain Helsingin alueelta.",
+    "q4": "Kuka vastaa Liukasbotin ylläpidosta?",
+    "a4": "Liukasbotin ylläpidosta vastaa Bravo Digital Oy."
+  }
+},
+"WarningsPage": {
+  "active": {
+    "title": "Aktiivinen liukkausvaroitus",
+    "description_singular": "Helsingissä on poikkeuksellisen liukasta.",
+    "description_plural": "Helsingissä on poikkeuksellisen liukasta."
+  },
+  "none": {
+    "title": "Ei havaittua liukkautta",
+    "description": "Tällä hetkellä ei ole aktiivisia varoituksia."
+  }
+},
+"Statistics": {
+  "title": "Tilastot talvikaudelta",
+  "warnings": "Varoituksia",
+  "users": "Aktiivisia tilaajia"
+},
+
+"DataTable": {
+  "date": "Päivämäärä",
+  "time": "Kellonaika",
+  "area": "Kaupunki",
+  "loading": "Ladataan...",
+  "empty": "Ei varoituksia"
+},
+
+  "subscribe": {
+    "title": "Tilaa liukasvaroitukset",
+    "subtitle": "Valitse miten haluat vastaanottaa liukasvaroitukset Helsingissä",
+    "subscribeWith": "Tilaa",
+    "instructions": "Ohjeet:",
+    "options": {
+      "sms": {
+        "label": "Tekstiviestivaroitukset",
+        "guide": {
+          "step1": "1. Lähetä tekstiviesti numeroon ",
+          "step2": "2. Viestin sisältö: ",
+          "step3": "3. Jos haluat saada varoitukset tiettynä kellonaikana, lisää tunti viestiin, esim. ",
+          "step1a": "050 902 4308",
+          "step2a": "LIITY HELSINKI",
+          "step3a": "LIITY HELSINKI 8"
+        }
       }
-    }
+    },
+
+    "acceptTerms": "Hyväksyn",
+    "terms": "käyttöehdot",
+    "privacy": "tietosuojaselosteen",
+    "and": "ja",
+    "verifyCode": "Vahvista koodi",
+    "subscribeButton": "Tilaa ilmoitukset"
+  }
+
+      
+
+    
   
   
 }

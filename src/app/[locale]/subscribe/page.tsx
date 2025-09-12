@@ -9,47 +9,49 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { MessageSquare, Smartphone, Bell, Send, CheckCircle, Phone, ArrowLeft } from "lucide-react"
+import { useTranslations } from "next-intl"
 
-const options = [
-    {
-        id: "whatsapp",
-        label: "WhatsApp",
-        icon: <MessageSquare className="h-5 w-5 text-green-600" />,
-        guide: [
-            "Syötä puhelinnumerosi alla olevaan kenttään",
-            "Painaa 'Tilaa ilmoitukset'",
-            "Vahvista tilaus WhatsApp-viestillä"
-        ]
-    },
-    {
-        id: "browser",
-        label: "Selainilmoitukset",
-        icon: <Bell className="h-5 w-5 text-purple-600" />,
-        guide: [
-            "Hyväksy selainilmoitukset alla olevasta painikkeesta",
-            "Valitse haluamasi alueet kartalta"
-        ]
-    },
-    {
-        id: "sms",
-        label: "SMS",
-        icon: <Smartphone className="h-5 w-5 text-orange-600" />,
-        warning: true,
-        guide: [
-            ["1. Lähetä tekstiviesti numeroon ", { bold: "050 902 4308" }],
-            ["2. Viestin sisältö: '", { bold: "LIITY HELSINKI" }],
-            ["3. Halutessasi saada varoitukset tiettynä kellonaikana, lisää tunti viestiin, esim. '", { bold: "LIITY HELSINKI 8" }, "' (tarkoittaa klo 08:00)"]
-          ]
-          
-    }
-]
 
 export default function SubscribePage() {
-    const [selectedOption, setSelectedOption] = useState<string>("whatsapp")
+    
+    const [selectedOption, setSelectedOption] = useState<string>("sms")
     const [phoneNumber, setPhoneNumber] = useState<string>("")
     const [termsAccepted, setTermsAccepted] = useState<boolean>(false)
     const [showVerification, setShowVerification] = useState<boolean>(false)
     const [verificationCode, setVerificationCode] = useState<string>("")
+    const t = useTranslations("subscribe")
+    const options = [
+        /*
+        {
+            id: "whatsapp",
+            label: "WhatsApp",
+            icon: <MessageSquare className="h-5 w-5 text-green-600" />,
+            guide: [
+                "Syötä puhelinnumerosi alla olevaan kenttään",
+                "Painaa 'Tilaa ilmoitukset'",
+                "Vahvista tilaus WhatsApp-viestillä"
+            ]
+        },
+        {
+            id: "browser",
+            label: "Selainilmoitukset",
+            icon: <Bell className="h-5 w-5 text-purple-600" />,
+            guide: [
+                "Hyväksy selainilmoitukset alla olevasta painikkeesta",
+            ]
+        }, */
+        {
+            id: "sms",
+            label: t("options.sms.label"),
+            icon: <Smartphone className="h-5 w-5 text-orange-600" />,
+            warning: true,
+            guide: [
+                [t("options.sms.guide.step1"), { bold: t("options.sms.guide.step1a") }],
+                [t("options.sms.guide.step2"), { bold: t("options.sms.guide.step2a") }],
+                [t("options.sms.guide.step3"), { bold: t("options.sms.guide.step3a") }]
+            ]
+        }
+    ]
     
     const selectedOptionData = options.find(option => option.id === selectedOption)
     
@@ -65,12 +67,12 @@ export default function SubscribePage() {
     }
     
     return (
-        <div className="w-full max-w-5xl min-h-[calc(100vh-76px)] mx-auto flex flex-col p-4 md:p-6 space-y-4 md:space-y-6">
+        <div className="w-full max-w-5xl min-h-[calc(100vh-76px)] mx-auto mt-6 flex flex-col p-4 md:p-6 space-y-4 md:space-y-6">
             {/* Header */}
             <div className="flex flex-col space-y-2 flex-shrink-0">
-                <h1 className="text-2xl md:text-3xl font-semibold">Tilaa liukasvaroitukset</h1>
+                <h1 className="text-2xl md:text-3xl font-semibold">{t("title")}</h1>
                 <p className="text-sm md:text-base text-muted-foreground">
-                    Valitse miten haluat vastaanottaa liukasvaroitukset Helsingissä
+                {t("subtitle")}
                 </p>
             </div>
             
@@ -115,11 +117,6 @@ export default function SubscribePage() {
                                                     >
                                                         {option.label}
                                                     </Label>
-                                                    {option.warning && (
-                                                        <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full whitespace-nowrap ml-2">
-                                                            Lisävaiheita
-                                                        </span>
-                                                    )}
                                                 </div>  
                                             </div>
                                         </CardContent>
@@ -135,13 +132,13 @@ export default function SubscribePage() {
                     <CardHeader className="pb-4 flex-shrink-0">
                         <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
                             {selectedOptionData?.icon}
-                            <span>Tilaa {selectedOptionData?.label}</span>
+                            <span>{t("subscribeWith")} {selectedOptionData?.label}</span>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="flex-1 flex flex-col space-y-4 md:space-y-6 min-h-0">
                         {/* Instructions */}
                         <div className="space-y-3 flex-shrink-0">
-                            <h3 className="font-medium text-sm md:text-base">Ohjeet:</h3>
+                            <h3 className="font-medium text-sm md:text-base">{t("instructions")}</h3>
                             <ul className="space-y-4 pl-4 md:pl-5 text-sm">
   {selectedOptionData?.guide.map((step, index) => (
     <li key={index} className="flex flex-col space-y-1">
@@ -169,7 +166,7 @@ export default function SubscribePage() {
 
                         </div>
                         
-                        {/* Phone Number Input or Verification Code */}
+                        {/* Phone Number Input or Verification Code 
                         {(selectedOption === "whatsapp") && (
                             <div className="space-y-3 flex-shrink-0">
                                 {!showVerification ? (
@@ -237,8 +234,9 @@ export default function SubscribePage() {
                                 )}
                             </div>
                         )}
-                        
-{/* Terms and Submit */}
+                        */}
+
+{/* Terms and Submit 
 {selectedOption !== "sms" && (
   <div className="mt-auto space-y-4 flex-shrink-0">
     <div className="flex items-start space-x-2">
@@ -254,7 +252,7 @@ export default function SubscribePage() {
           käyttöehdot
         </a>
         {" "}ja{" "}
-        <a href="#" className="text-primary hover:underline">
+        <a href="./gdpr" className="text-primary hover:underline">
           tietosuojaselosteen
         </a>
       </Label>
@@ -268,7 +266,7 @@ export default function SubscribePage() {
       {showVerification ? "Vahvista koodi" : "Tilaa ilmoitukset"}
     </Button>
   </div>
-)}
+)} */}
 
                     </CardContent>
                 </Card>

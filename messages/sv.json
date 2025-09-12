@@ -70,7 +70,54 @@
   "q4": "Vem ansvarar för underhållet av Liukasbotti?",
   "a4": "Liukasbotti underhålls av Bravo Digital Ab."
 }
-}
+},
+"WarningsPage": {
+  "active": {
+  "title": "Aktiv halkvarning",
+  "description_singular": "Helsingfors är exceptionellt halt.",
+  "description_plural": "Helsingfors är exceptionellt halt."
+  },
+  "none": {
+  "title": "Ingen halka upptäckt",
+  "description": "Det finns för närvarande inga aktiva varningar."
+  }
+},
+"Statistics": {
+  "title": "Statistik för vintersäsongen",
+  "warnings": "Varningar",
+  "users": "Aktiva prenumeranter"
+},
 
-
+  "DataTable": {
+    "date": "Datum",
+    "time": "Tid",
+    "area": "Stad",
+    "loading": "Laddar...",
+    "empty": "Inga varningar"
+  },
+"subscribe": {
+  "title": "Prenumerera på halkvarningar",
+  "subtitle": "Välj hur du vill ta emot halkvarningar i Helsingfors",
+  "subscribeWith": "Prenumerera",
+  "instructions": "Instruktioner:",
+"options": {
+  "sms": {
+    "label": "Varningar via SMS",
+  "guide": {
+    "step1": "1. Skicka ett SMS till ",
+    "step2": "2. Meddelandeinnehåll: ",
+    "step3": "3. Om du vill ta emot varningar vid en viss tidpunkt, lägg till en timme i meddelandet, t.ex. ",
+    "step1a": "050 902 4308",
+    "step2a": "DELTA HELSINKI",
+    "step3a": "DELTA HELSINKI 8"
+    }
+  }
+},
+  "acceptTerms": "Jag accepterar",
+  "terms": "användarvillkor",
+  "privacy": "integritetspolicy",
+  "and": "och",
+  "verifyCode": "Verifiera kod",
+  "subscribeButton": "Prenumerera på aviseringar"
+  }
 }

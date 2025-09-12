@@ -7,7 +7,7 @@ import { sendBulkSms as gatewaySendSms } from "@/actions/sendSms";
 
 const SENDER = process.env.REPLY_SENDER!;
 const MAX_BATCH = 1000;          // recipients per GatewayAPI call
-const MAX_ATTEMPTS = 5;          // retry limit
+const MAX_ATTEMPTS = 1;          // retry limit
 const BACKOFF_MINUTES = [1, 5, 15, 30, 60]; // backoff per attempt idx
 
 type QueueRow = {
@@ -59,12 +59,14 @@ async function fetchDueJobs(limit = 5000): Promise<QueueRow[]> {
   return rows;
 }
 
+/*
 async function markSent(ids: number[]) {
   const now = new Date();
   await db.update(smsQueueTable)
     .set({ status: "sent", sentAt: now, lastError: null })
     .where(inArray(smsQueueTable.id, ids));
-}
+} 
+    */
 
 async function markError(rows: QueueRow[], err: unknown) {
   const e = (err instanceof Error) ? err.message : String(err);
@@ -120,11 +122,17 @@ async function processQueueOnce() {
   const grouped = groupByMessageAndLang(filtered);
 
   for (const [key, rows] of grouped.entries()) {
-    // Chunk recipients for GatewayAPI
+    // Chunk recipients for SMS Gateway
     const chunks = chunk(rows, MAX_BATCH);
     for (const rowsChunk of chunks) {
       const recipients = rowsChunk.map(r => ({ msisdn: r.phone }));
       const sample = rowsChunk[0];
+        
+      // Update SMS status to 'sending'
+      await db.update(smsQueueTable)
+      .set({ status: "sending" })
+      .where(inArray(smsQueueTable.id, rowsChunk.map(r => r.id)));
+
       try {
         const res = await gatewaySendSms({
           sender: SENDER,
@@ -132,10 +140,10 @@ async function processQueueOnce() {
           recipients,
         });
         
-        // GatewayAPI returns { ids: [messageId1, messageId2, ...], usage: {...} }
+        // Message gateway returns { ids: [messageId1, messageId2, ...], usage: {...} }
         /* 
         if (!res?.ids || res.ids.length === 0) {
-          throw new Error("No message IDs returned from GatewayAPI");
+          throw new Error("No message IDs returned from gateway");
         }
         */
         // Map returned IDs to each recipient row
@@ -147,7 +155,7 @@ async function processQueueOnce() {
               status: "sent",
               sentAt: new Date(),
               lastError: null,
-              gatewayMessageId: null // GatewayAPI ID. Will be implemented later on
+              gatewayMessageId: null // Gateway ID. Will be implemented later on
             })
             .where(eq(smsQueueTable.id, r.id));
         }

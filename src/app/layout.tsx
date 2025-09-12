@@ -12,25 +12,20 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Liukastumisvaroituspalvelu - Vältä loukkaantumiset talvella",
+  title: "Liukasbotti - Vältä loukkaantumiset talvella",
   description: "Vältä loukkaantumiset liukkaalla säällä. Ota käyttöön liukastumisvaroitukset.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} antialiased w-screen h-auto flex flex-col items-center justify-start overflow-x-hidden`}
-      >
-        <ThemeProvider attribute={"class"}>
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
-  );
-}
+  export default function RootLayout({ children }: { children: React.ReactNode }) {
+    return (
+      <html lang="en" suppressHydrationWarning> {/* fallback lang */}
+        <body
+          className={`${inter.variable} antialiased w-screen h-auto flex flex-col items-center justify-start overflow-x-hidden`}
+        >
+          <ThemeProvider attribute="class">
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    );
+  }

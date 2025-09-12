@@ -141,20 +141,6 @@ export default async function HomePage() {
 <section>
 <FAQ items={faqItems} />
 </section>
-
-      {/* Active Warning Alert */}
-      {isActiveWarning && (
-        <Alert variant={activeWarning.severity} className="w-full">
-          <AlertTriangle />
-          <AlertTitle>{activeWarning.details[0].event}</AlertTitle>
-          <AlertDescription>{activeWarning.details[0].description}</AlertDescription>
-        </Alert>
-      )}
-
-
-
-     
-
     </div>
   )
 }
