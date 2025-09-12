@@ -1,17 +1,19 @@
 {
   "Navbar": {
     "Warnings": "Varningar",
-    "API": "API",
+    "developers": "För utvecklare",
     "Feedback": "Ge feedback",
     "Subscribe": "Prenumerera"
   },
   "Footer": {
-  "slogan": "Halkvarningar direkt till din telefon.",
   "links": "Länkar",
-  "gdpr": "Integritetspolicy"
+  "slogan": "Halkvarningar direkt till din telefon.",
+  "developers": "För utvecklare",
+  "gdpr": "Dataskyddsbeskrivning",
+  "feedback": "Ge feedback"
 },
   "Warning": {
-    "title": "Halkvarningsservice",
+    "title": "Liukasbotti",
     "description": "Halkvarningsservice tillhandahåller extremt hala gångbanvarningar via textmeddelande",
     "area": "Område",
     "validFrom": "Gäller från",
@@ -66,7 +68,7 @@
   "q3": "Är tjänsten endast tillgänglig i Helsingfors?",
   "a3": "För tillfället finns halkvarningarna endast för Helsingforsområdet.",
   "q4": "Vem ansvarar för underhållet av Liukasbotti?",
-  "a4": "Liukasbotti underhålls av Bravo Digital Oy."
+  "a4": "Liukasbotti underhålls av Bravo Digital Ab."
 }
 }
 

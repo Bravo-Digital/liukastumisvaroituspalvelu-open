@@ -7,8 +7,8 @@ import LanguageSwitcher from "./ui/language-switcher"
 import { getTranslations } from "next-intl/server"
 
 const links = [
-  { label: "Warnings", href: "/" },
-  { label: "API", href: "/api" },
+  { label: "Warnings", href: "/warnings" },
+  { label: "developers", href: "/developers" },
   { label: "Feedback", href: "/feedback" },
 ]
 
@@ -19,7 +19,7 @@ export default async function Navbar() {
     <nav className="w-full flex justify-between items-center p-5 text-sm md:text-base max-w-5xl mx-auto">
       {/* Brand / Logo */}
       <div className="flex items-center space-x-2 md:space-x-3">
-        <Link href="/" className="text-2xl font-bold hover:text-primary/80 transition-colors">
+        <Link href="/" className="text-2xl font-bold hover:text-primary transition-colors">
           Liukasbotti
         </Link>
       </div>
@@ -30,7 +30,7 @@ export default async function Navbar() {
           <li key={link.label}>
             <Link
               href={link.href}
-              className="relative inline-block group hover:text-primary transition-colors duration-300"
+              className="relative inline-block group hover:text-light transition-colors duration-300"
             >
               {t(link.label)}
               <span className="absolute left-0 bottom-0 w-full h-0.5 bg-current scale-x-0 origin-bottom-right transition-transform duration-300 ease-out group-hover:scale-x-100 group-hover:origin-bottom-left" />

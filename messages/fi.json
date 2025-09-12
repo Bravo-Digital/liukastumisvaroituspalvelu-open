@@ -1,17 +1,19 @@
 {
   "Navbar": {
     "Warnings": "Varoitukset",
-    "API": "Kehittäjille",
+    "developers": "Kehittäjille",
     "Feedback": "Anna palautetta",
     "Subscribe": "Tilaa varoitukset"
   },
   "Footer": {
-    "slogan": "Liukkaan jalankulkusään varoitukset suoraan puhelimeesi.",
     "links": "Linkit",
-    "gdpr": "Tietosuojaseloste"
+    "slogan": "Liukkaan jalankulkusään varoitukset suoraan puhelimeesi.",
+    "gdpr": "Tietosuojaseloste",
+    "developers": "Kehittäjille",
+    "feedback": "Anna palautetta"
   },
   "Warning": {
-    "title": "Liukastumisvaroituspalvelu",
+    "title": "Liukasbotti",
     "description": "Tämä palvelu tarjoaa ajantasaiset liukastumisvaroitukset Helsingissä ja Uudellamaalla.",
     "subscribeButton": "Tilaa",
     "feedbackButton": "Anna palautetta"
@@ -19,7 +21,7 @@
   
     "FeedbackForm": {
       "title": "Anna palautetta",
-      "description": "Oletko tyytyväinen liukastumisvaroituspalveluun? Mitä haluaisit parannettavan?",
+      "description": "Oletko tyytyväinen Liukasbottiin? Mitä haluaisit parannettavan?",
       "nameLabel": "Nimi",
       "nameOptional": "(valinnainen)",
       "emailLabel": "Sähköposti",

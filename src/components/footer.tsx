@@ -9,6 +9,8 @@ export default function Footer() {
       title: t("links"),
       links: [
         { label: t("gdpr"), href: "/gdpr" },
+        { label: t("developers"), href: "/developers" },
+        { label: t("feedback"), href: "/feedback" },
       ],
     },
   ];
@@ -29,9 +31,7 @@ export default function Footer() {
         {footerContent.map((group) => (
           <div
             className="flex flex-col space-y-3 items-center md:items-start"
-            key={group.title}
-          >
-            <h2 className="text-xl font-semibold">{group.title}</h2>
+            key={group.title}>
             <ul className="space-y-1">
               {group.links.map((link) => (
                 <li key={link.label}>

@@ -1,26 +1,28 @@
 {
   "Navbar": {
     "Warnings": "Warnings",
-    "API": "API",
+    "developers": "For developers",
     "Feedback": "Feedback",
     "Subscribe": "Subscribe"
   },
   "Footer": {
-  "slogan": "Slippery weather alerts directly to your phone.",
   "links": "Links",
-  "gdpr": "Privacy Policy"
+  "slogan": "Slippery weather alerts directly to your phone.",
+  "gdpr": "Privacy Policy",
+  "developers":"For developers",
+  "feedback": "Feedback"
 },
 
   "Warning": {
-    "title": "Slip Warning Service",
-    "description": "Slip Warning Service provides extremely slippery pedestrian warnings via text message",
+    "title": "Liukasbotti",
+    "description": "Liukasbotti provides warnings about extremely slippery pedestrian conditions via text message",
     "area": "Area",
     "validFrom": "Valid from",
     "severity": "Severity"
   },
   "FeedbackForm": {
   "title": "Give Feedback",
-  "description": "Are you satisfied with the slip warning service? What would you like to see improved?",
+  "description": "Are you satisfied with Liukasbotti? What would you like to see improved?",
   "nameLabel": "Name",
   "nameOptional": "(optional)",
   "emailLabel": "Email",
@@ -62,12 +64,12 @@
   "a1/1": "You can subscribe to alerts on your phone ",
   "from_here": "here",
   "a1/2": ". When unusual slipperiness is detected, you will receive an alert directly on your phone.",
-  "q2": "Is the service free?",
-  "a2": "Yes, the service is completely free.",
+  "q2": "Is Liukasbotti free?",
+  "a2": "Yes, it is completely free.",
   "q3": "Is the service only available in Helsinki?",
   "a3": "At the moment, slipperiness alerts are only available for the Helsinki area.",
   "q4": "Who is responsible for maintaining Liukasbotti?",
-  "a4": "Liukasbotti is maintained by Bravo Digital Oy."
+  "a4": "Liukasbotti is maintained by Bravo Digital Inc."
 }
 }
 
