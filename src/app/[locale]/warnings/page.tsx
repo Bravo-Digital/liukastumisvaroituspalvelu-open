@@ -1,4 +1,3 @@
-// app/[locale]/warnings/page.tsx
 import { db } from "@/lib/db"
 import { warningsTable } from "@/lib/schema"
 import { lt, gt, eq, and } from "drizzle-orm"

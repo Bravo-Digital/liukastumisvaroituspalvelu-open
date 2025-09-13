@@ -1,7 +1,6 @@
-// app/api/receive-sms/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { eq } from "drizzle-orm"; // make sure to import eq
+import { eq } from "drizzle-orm";
 import { usersTable, smsLogsTable } from "@/lib/schema";
 import { sendBulkSms } from "@/actions/sendSms";
 

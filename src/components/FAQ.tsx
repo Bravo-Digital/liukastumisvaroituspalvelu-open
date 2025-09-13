@@ -1,6 +1,5 @@
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { useTranslations } from "next-intl";
-import { use } from "react";
 
 interface FAQItem {
   question: string;

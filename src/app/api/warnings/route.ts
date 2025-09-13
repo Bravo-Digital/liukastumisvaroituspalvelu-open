@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
           id: warning.id,
           date,
           time,
-          area: warning.area || "", // Use area directly from warningsTable
+          area: warning.area || "",
         });
       }
     });

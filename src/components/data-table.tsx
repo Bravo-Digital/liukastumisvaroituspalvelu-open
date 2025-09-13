@@ -4,7 +4,6 @@ import { Card } from "./ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { useTranslations } from "next-intl"
 
 interface Warning {
@@ -29,44 +28,75 @@ export default function DataTable({ year, className }: DataTableProps) {
   const [loading, setLoading] = useState(false)
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' })
   const t = useTranslations("DataTable")
-  
+
   useEffect(() => {
     const fetchWarnings = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
-        const res = await fetch(`/api/warnings?year=${year}`)
-        if (!res.ok) throw new Error("Failed to fetch warnings")
-          const data = await res.json()
-          setWarnings(data.warnings)        
+        const res = await fetch(`/api/warnings?year=${year}`);
+        if (!res.ok) throw new Error("Failed to fetch warnings");
+        const data = await res.json();
+  
+        // Winter season: 1 Oct selected year → 30 Apr next year
+        const winterStart = new Date(year, 9, 1);   // 1 Oct selected year
+        const winterEnd = new Date(year + 1, 3, 30); // 30 Apr next year
+  
+        const winterWarnings = data.warnings.filter((w: Warning) => {
+          const [day, month, yearStr] = w.date.split('.').map(Number);
+          const warningDate = new Date(yearStr, month - 1, day);
+          return warningDate >= winterStart && warningDate <= winterEnd;
+        });
+  
+        setWarnings(winterWarnings);
       } catch (err) {
-        console.error(err)
+        console.error(err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-
-    fetchWarnings()
-  }, [year])
-
+    };
+  
+    fetchWarnings();
+  }, [year]);
+  
   const sortedWarnings = useMemo(() => {
-    if (!sortConfig.key) return warnings
-
+    if (!sortConfig.key) return warnings;
+  
     return [...warnings].sort((a, b) => {
-      let aValue = a[sortConfig.key!]
-      let bValue = b[sortConfig.key!]
-
-      if (sortConfig.key === 'date') {
-        const [aDay, aMonth, aYear] = a.date.split('.').map(Number)
-        const [bDay, bMonth, bYear] = b.date.split('.').map(Number)
-        aValue = new Date(aYear, aMonth - 1, aDay).getTime().toString()
-        bValue = new Date(bYear, bMonth - 1, bDay).getTime().toString()
+      let aValue: number | string;
+      let bValue: number | string;
+  
+      switch (sortConfig.key) {
+        case "date": {
+          const [aDay, aMonth, aYear] = a.date.split('.').map(Number);
+          const [bDay, bMonth, bYear] = b.date.split('.').map(Number);
+          aValue = new Date(aYear, aMonth - 1, aDay).getTime();
+          bValue = new Date(bYear, bMonth - 1, bDay).getTime();
+          break;
+        }
+        case "time": {
+          // assuming time is "HH:MM"
+          const [aH, aM] = a.time.split(':').map(Number);
+          const [bH, bM] = b.time.split(':').map(Number);
+          aValue = aH * 60 + aM; // total minutes
+          bValue = bH * 60 + bM;
+          break;
+        }
+        case "area": {
+          aValue = a.area.toLowerCase();
+          bValue = b.area.toLowerCase();
+          break;
+        }
+        default:
+          aValue = a[sortConfig.key!];
+          bValue = b[sortConfig.key!];
       }
-
-      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
-      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
-      return 0
-    })
-  }, [warnings, sortConfig])
+  
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [warnings, sortConfig]);
+  
 
   const handleSort = (key: keyof Warning) => {
     setSortConfig(current => ({

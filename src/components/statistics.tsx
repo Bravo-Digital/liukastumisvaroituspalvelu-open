@@ -20,28 +20,27 @@ interface Stats {
 export default function Statistics() {
   const t = useTranslations("Statistics")
 
-  const START_YEAR = 2025 // Winter 2025-2026
-  const currentYear = new Date().getFullYear()
-  const currentMonth = new Date().getMonth() + 1 // Jan=1, Dec=12
-
-// Determine the latest winter season (cannot go into the future)
-let latestWinterYear: number
-if (currentMonth >= 10) {
-  // Winter just started, show currentYear if data exists
-  latestWinterYear = currentYear
-} else {
-  // Winter started last year
-  latestWinterYear = currentYear - 1
-}
-
-// Prevent going before START_YEAR
-latestWinterYear = Math.max(latestWinterYear, START_YEAR)
-
-  // Generate winter years from START_YEAR up to latestWinterYear
-  const winterYears = Array.from(
-    { length: latestWinterYear - START_YEAR + 1 },
-    (_, i) => START_YEAR + i
-  )
+  const START_YEAR = 2024 // first winter season
+  const today = new Date()
+  const currentYear = today.getFullYear()
+  const currentMonth = today.getMonth() + 1
+  
+  // Determine latest winter season
+  let latestWinterYear: number
+  if (currentMonth >= 10) {
+    // Winter just started (Oct–Dec)
+    latestWinterYear = currentYear
+  } else {
+    // Winter in progress started last year
+    latestWinterYear = currentYear
+  }
+  
+  // Generate all winter years from START_YEAR up to latestWinterYear
+  const winterYears = []
+  for (let y = START_YEAR; y <= latestWinterYear; y++) {
+    winterYears.push(y)
+  }
+  
 
   const [selectedYear, setSelectedYear] = useState(latestWinterYear)
   const [stats, setStats] = useState<Stats>({ users: 0, warnings: 0 })

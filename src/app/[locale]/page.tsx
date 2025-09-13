@@ -1,11 +1,7 @@
 import Link from "next/link"
-import Statistics from "@/components/statistics"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertTriangle, CheckCircle } from "lucide-react"
+import { CheckCircle } from "lucide-react"
 import { getLocale, getTranslations } from "next-intl/server"
 import { buttonVariants } from "@/components/ui/button";
-import { DotPattern } from "@/components/ui/shadcn-io/dot-pattern";
-import { cn } from "@/lib/utils";
 import { FAQ } from "@/components/FAQ";
 
 const localeMap = {

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
-import SetHtmlLang from "@/components/SetHtmlLang"; // the small client component
+import SetHtmlLang from "@/components/SetHtmlLang";
 
 export default function LocaleLayout({
   children,
