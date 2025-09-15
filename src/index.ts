@@ -283,7 +283,7 @@ async function checkWarnings() {
         
           await db.insert(warningsTable).values({
             id: warning.identifier,
-            area: "HELSINKI",
+            area: "Helsinki",
             status: "active",
             createdAt,
             onsetAt,
