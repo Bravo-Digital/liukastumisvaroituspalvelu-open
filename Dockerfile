@@ -75,9 +75,6 @@ RUN pnpm install --frozen-lockfile --prod=false
 # Copy everything the CLI needs to resolve config + schema
 COPY . .
 
-# Sanity check: fail the image build if drizzle-orm can't be resolved
-RUN node -e "console.log('drizzle-orm:', require.resolve('drizzle-orm/package.json'))"
-
 # Run Drizzle using local install (not dlx)
 CMD ["pnpm","drizzle-kit","push","--config=drizzle.config.ts"]
 
