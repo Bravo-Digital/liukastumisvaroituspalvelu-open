@@ -68,15 +68,16 @@ FROM node:20-alpine AS migrator
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Install deps using your lockfile
+# Install deps (dev + prod). --prod=false guarantees dev deps even if NODE_ENV=production leaks in.
 COPY package.json pnpm-lock.yaml* ./
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --prod=false
 
-# Copy everything so schema & config resolve correctly
+# Copy everything the CLI needs to resolve config + schema
 COPY . .
 
-# Ensure dev deps are available for TS configs
-ENV NODE_ENV=development
+# Sanity check: fail the image build if drizzle-orm can't be resolved
+RUN node -e "console.log('drizzle-orm:', require.resolve('drizzle-orm/package.json'))"
 
-# Run Drizzle migration using your TS config
-CMD ["pnpm","dlx","drizzle-kit@latest","push","--config=drizzle.config.ts"]
+# Run Drizzle using local install (not dlx)
+CMD ["pnpm","drizzle-kit","push","--config=drizzle.config.ts"]
+
