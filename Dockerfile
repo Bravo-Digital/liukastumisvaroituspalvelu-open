@@ -62,3 +62,18 @@ EXPOSE 8080
 
 # Build workers first, then start Next.js dev
 CMD ["sh", "-c", "pnpm build:workers && pnpm dev"]
+
+# Stage: Migrator
+FROM node:20-alpine AS migrator
+WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Install deps (dev + prod) for drizzle
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install --frozen-lockfile
+
+# Only what drizzle needs to resolve the schema/config
+COPY drizzle.config.ts tsconfig.json ./
+COPY src/lib ./src/lib
+
+CMD ["pnpm","dlx","drizzle-kit@latest","push","--config=drizzle.config.ts"]

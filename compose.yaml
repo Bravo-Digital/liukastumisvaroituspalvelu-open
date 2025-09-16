@@ -74,6 +74,18 @@ services:
     restart: unless-stopped
     networks:
       - liukastumisvaroituspalvelu_net
+  
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrator
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
+    depends_on:
+      - db
+    networks:
+      - liukastumisvaroituspalvelu_net
 
 volumes:
   liukastumisvaroituspalvelu_db_data:
