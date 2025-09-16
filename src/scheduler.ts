@@ -6,7 +6,7 @@ import { sendBulkSms as gatewaySendSms } from "@/actions/sendSms";
 
 
 const SENDER = process.env.REPLY_SENDER!;
-const MAX_BATCH = 1000;          // recipients per GatewayAPI call
+const MAX_BATCH = 1000;          // recipients per gateway call
 const MAX_ATTEMPTS = 1;          // retry limit
 const BACKOFF_MINUTES = [1, 5, 15, 30, 60]; // backoff per attempt idx
 
@@ -88,8 +88,29 @@ async function markError(rows: QueueRow[], err: unknown) {
       .where(eq(smsQueueTable.id, r.id));
   }
 }
+/** mark all active warnings whose expiry is in the past as expired */
+async function expireStaleWarnings() {
+  const now = new Date();
+  const updated = await db
+    .update(warningsTable)
+    .set({ status: "expired" })
+    .where(and(eq(warningsTable.status, "active"), lte(warningsTable.expiresAt, now)))
+    .returning({ id: warningsTable.id });
 
+  if (updated.length > 0) {
+    console.log(`[Scheduler] Marked ${updated.length} warning(s) as expired:`, updated.map(x => x.id).join(", "));
+    // also cancel any not-yet-sent jobs for those warnings
+    await db
+      .update(smsQueueTable)
+      .set({ status: "cancelled", lastError: "Warning expired" })
+      .where(and(eq(smsQueueTable.status, "pending"), inArray(smsQueueTable.warningId, updated.map(x => x.id))));
+  }
+}
 async function processQueueOnce() {
+
+  // expire old warnings so they won't be used below
+  await expireStaleWarnings();
+
   const due = await fetchDueJobs();
   if (due.length === 0) {
     console.log("[Scheduler] No due jobs.");
@@ -149,16 +170,9 @@ async function processQueueOnce() {
         // Map returned IDs to each recipient row
        // const msgId = res.ids[0];
         
-        for (const r of rowsChunk) {
-          await db.update(smsQueueTable)
-            .set({
-              status: "sent",
-              sentAt: new Date(),
-              lastError: null,
-              gatewayMessageId: null // Gateway ID. Will be implemented later on
-            })
-            .where(eq(smsQueueTable.id, r.id));
-        }
+       await db.update(smsQueueTable)
+       .set({ status: "sent", sentAt: new Date(), lastError: null, gatewayMessageId: null })
+       .where(inArray(smsQueueTable.id, rowsChunk.map(r => r.id)));
         
         console.log(`[Scheduler] Sent ${rowsChunk.length} SMS for ${key}`);
         

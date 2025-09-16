@@ -13,6 +13,9 @@ services:
       REPLY_SENDER: "${REPLY_SENDER}"
       WEBHOOK_SECRET: "${WEBHOOK_SECRET}"
       NODE_ENV: "${NODE_ENV:-development}"
+      ADMIN_USERNAME: "${ADMIN_USERNAME}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+      ADMIN_SECRET: "${ADMIN_SECRET}"
     ports:
       - "${PORT}:${PORT}"
     depends_on:

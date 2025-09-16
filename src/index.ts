@@ -5,7 +5,7 @@ import { usersTable, smsQueueTable } from "@/lib/schema";
 
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { warningsTable, warningDetailsTable } from "@/lib/schema";
+import { warningsTable } from "@/lib/schema";
 import { isImmediateHour, nextRunAtForHour, baseMessageByLang } from "@/lib/smsUtil";
 
 
@@ -173,7 +173,7 @@ async function checkWarnings() {
       console.log("TITLE:", item.title);
 
       const isPedestrianSlippery = /pedestrian/i.test(String(item.title)) || /slippery/i.test(String(item.title));
-      const matchesTargetArea = /western|uusimaa|southern|whole/i.test(String(item.title));
+      const matchesTargetArea = /uusimaa|southern|whole/i.test(String(item.title));
       console.log("MATCHES TARGET AREA?", matchesTargetArea);
 
       if (isPedestrianSlippery && matchesTargetArea && item.link) {
@@ -192,10 +192,10 @@ async function checkWarnings() {
         console.log("CAP expires:", alert.expires);
 
         if (!matchesTargetArea) {
-          console.log("⚠️ Skipped because target area did not match");
+          console.log("Skipped because target area did not match");
         }
         if (!isPedestrianSlippery) {
-          console.log("⚠️ Skipped because not pedestrian slippery");
+          console.log("Skipped because not pedestrian slippery");
         }
 
         if (!alert || !alert.identifier) {
@@ -290,16 +290,7 @@ async function checkWarnings() {
             expiresAt,
           });
         
-          for (const detail of warning.info) {
-            await db.insert(warningDetailsTable).values({
-              warningId: warning.identifier,
-              lang: detail.lang,
-              location: detail.areaDesc,
-              headline: detail.headline,
-              description: detail.description,
-              event: detail.event,
-            });
-        
+          for (const detail of warning.info) {        
             await enqueueJobsForWarning(
               warning.identifier,
               onsetAt,
@@ -322,21 +313,6 @@ async function checkWarnings() {
               expiresAt,
             })
             .where(eq(warningsTable.id, warning.identifier));
-          
-        
-          await db.delete(warningDetailsTable)
-            .where(eq(warningDetailsTable.warningId, warning.identifier));
-        
-          for (const detail of warning.info) {
-            await db.insert(warningDetailsTable).values({
-              warningId: warning.identifier,
-              lang: detail.lang,
-              location: detail.areaDesc,
-              headline: detail.headline,
-              description: detail.description,
-              event: detail.event,
-            });
-          }
         }
         
         else {

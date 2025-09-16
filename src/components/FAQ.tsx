@@ -24,7 +24,7 @@ export function FAQ({ items }: FAQProps) {
             value={`item-${index}`}
             className="border border-border rounded-xl bg-card shadow-sm transition-all duration-300 hover:bg-primary/5 hover:shadow-lg"
           >
-            <AccordionTrigger className="text-lg md:text-xl font-medium px-6 py-4 no-underline hover:no-underline focus:no-underline">
+            <AccordionTrigger className="text-lg md:text-xl font-medium px-6 py-4">
               {item.question}
             </AccordionTrigger>
             <AccordionContent className="text-base md:text-lg text-card-foreground/90 px-6 pb-4 pt-2">

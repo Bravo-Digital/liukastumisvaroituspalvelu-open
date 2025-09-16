@@ -3,7 +3,10 @@
     "Warnings": "Varoitukset",
     "developers": "Kehittäjille",
     "Feedback": "Anna palautetta",
-    "Subscribe": "Tilaa varoitukset"
+    "Subscribe": "Tilaa varoitukset",
+    "SkipToContent": "Mene sisältöön",
+    "OpenMenu": "Avaa valikko",
+    "Menu": "Valikko"
   },
   "Footer": {
     "links": "Linkit",
@@ -31,6 +34,7 @@
     "wantsResponseDescOn": "Vastaamme sähköpostiisi",
     "wantsResponseDescOff": "Valitse tämä, jos haluat, että otamme sinuun yhteyttä",
     "feedbackLabel": "Palaute",
+    "feedbackSubmitted": "Kiitos palautteestasi!",
     "feedbackRequiredIndicator": "*",
     "feedbackPlaceholder": "Kerro meille, mitä mieltä olet, mitä voisi parantaa tai muita ehdotuksia...",
     "feedbackCharCount": "/1000 merkkiä",
@@ -38,9 +42,10 @@
     "submittingButton": "Lähetetään palautetta...",
     "submitSuccessTitle": "Palaute lähetetty onnistuneesti!",
     "submitSuccessMessage": "Kiitos palautteestasi.",
-    "submitSuccessEmailMessage": "📧 Tarkista sähköpostisi osoitteessa {{email}} vahvistusta varten.",
     "submitError": "Tapahtui virhe. Yritä uudelleen.",
-    "requiredFieldsText": "* Pakolliset kentät"
+    "requiredFieldsText": "* Pakolliset kentät",
+    "emailRequiredWhenAskingForResponse": "Sähköpostiosoite on pakollinen, jos haluat vastauksen palautteeseesi",
+    "enterValidEmail": "Syötä kelvollinen sähköpostiosoite"
   },
 "Homepage": {
   "Hero": {
@@ -60,15 +65,16 @@
   "FAQ": {
     "title": "Usein kysytyt kysymykset",
     "q1": "Miten saan varoitukset puhelimeeni?",
-    "a1/1": "Voit tilata varoitukset puhelimeesi ",
-    "from_here": "täältä",
-    "a1/2": ". Kun poikkeuksellista liukkautta havaitaan, saat varoituksen suoraan puhelimeesi.",
+    "from_here": "Tilaa varoitukset puhelimeesi täältä.",
+    "a1/1": "Varoitukset toimitetaan tekstiviesteillä. Kun poikkeuksellista liukkautta havaitaan, saat varoituksen suoraan puhelimeesi.",
     "q2": "Onko palvelu ilmainen?",
     "a2": "Kyllä, palvelu on täysin ilmainen.",
     "q3": "Onko palvelu käytössä vain Helsingissä?",
     "a3": "Tällä hetkellä liukkausvaroitukset ovat vain Helsingin alueelta.",
     "q4": "Kuka vastaa Liukasbotin ylläpidosta?",
-    "a4": "Liukasbotin ylläpidosta vastaa Bravo Digital Oy."
+    "a4": "Liukasbotin ylläpidosta vastaa Bravo Digital Oy.",
+    "q5": "En halua enää vastaanottaa varoituksia. Miten voin poistua palvelusta?",
+    "a5": "Voit poistua palvelusta lähettämällä viestin STOP numeroon 050 902 4308."
   }
 },
 "WarningsPage": {
@@ -121,11 +127,92 @@
     "and": "ja",
     "verifyCode": "Vahvista koodi",
     "subscribeButton": "Tilaa ilmoitukset"
-  }
+  },
 
       
+"SEO": {
+  "title": "Liukasbotti - Vältä loukkaantumiset talvella",
+  "description": "Tilaa ilmaiset liukastumisvaroitukset Helsingissä ja pysy pystyssä talvella.",
+  "feedbackTitle": "Anna palautetta - Liukasbotti",
+  "feedbackDescription": "Pidätkö Liukasbotista? Kerro meille, miten voimme parantaa palvelua!",
+  "warningsTitle": "Varoitukset - Liukasbotti",
+  "warningsDescription": "Katso aiempien talvien liukastumisvaroitukset.",
+  "subscribeTitle": "Tilaa liukastumisvaroitukset - Liukasbotti",
+  "subscribeDescription": "Tilaa ilmaiset liukastumisvaroitukset Helsingissä suoraan puhelimeesi!",
+    "gdprTitle": "Tietosuojaseloste – Liukasbotti",
+    "gdprDescription": "Tietosuojaseloste Liukasbotin henkilötietojen käsittelystä. Rekisterinpitäjä: Helsingin kaupunki (Kaupunkiympäristön toimiala)."
+},
 
-    
-  
-  
+  "GDPR": {
+    "title": "Tietosuojaseloste",
+    "lastUpdated": "Viimeksi päivitetty: {date}",
+    "controller": {
+      "title": "Rekisterinpitäjä",
+      "name": "Helsingin kaupunki – Kaupunkiympäristön toimiala (KYMP)",
+      "scope": "Tämä seloste koskee Liukasbotti-palvelussa tapahtuvaa henkilötietojen käsittelyä."
+    },
+    "purpose": {
+      "title": "Käsittelyn tarkoitus",
+      "lead": "Liukasbotti lähettää liukkaus- ja varovaisuusvaroituksia tekstiviesteillä. Käsittelemme vain vähimmäismäärän tietoja viestien toimittamiseksi.",
+      "items": {
+        "delivery": "Varoitusviestien toimittaminen ja kohdentaminen.",
+        "subscription": "Tilauksen hallinta (liittyminen/poistuminen, ajastus).",
+        "logging": "Tekninen lokitus ja häiriötilanteiden selvitys.",
+        "feedback": "Mahdollisen palautteen vastaanotto ja käsittely."
+      }
+    },
+    "dataCategories": {
+      "title": "Käsiteltävät henkilötiedot",
+      "table": {
+        "head": { "group": "Tietoryhmä", "desc": "Kuvaus" },
+        "rows": {
+          "contact": { "group": "Yhteystiedot", "desc": "Puhelinnumero (tekstiviestien lähettämistä varten)" },
+          "subscription": { "group": "Tilaukseen liittyvät tiedot", "desc": "Alue/paikkakunta, kielivalinta (fi/sv/en), haluttu lähetysaika" },
+          "logs": { "group": "Tekniset lokit", "desc": "Viestilokit (lähetetty viesti, tila, virheet)" },
+          "feedback": { "group": "Palaute (valinnainen)", "desc": "Nimi, sähköposti, aihe/luokka ja viesti; mahdollinen yhteydenottopyyntö" },
+          "special": { "group": "Arkaluonteiset tiedot", "desc": "Ei käsitellä." }
+        }
+      }
+    },
+    "legal": {
+      "title": "Lähteet, oikeusperusteet ja vastaanottajat",
+      "sources": { "title": "Henkilötietojen lähteet", "desc": "Tiedot saadaan rekisteröidyltä (liittymisviesti, palautelomake)." },
+      "basis": {
+        "title": "Käsittelyn oikeusperuste",
+        "desc": "Liittyminen ja viestintä perustuvat suostumukseen. Tekninen lokitus on tarpeen palvelun tuottamiseen, tietoturvaan ja toiminnan varmistamiseen (oikeutettu etu)."
+      },
+      "recipients": {
+        "title": "Vastaanottajat ja käsittelijät",
+        "table": {
+          "head": { "party": "Taho", "role": "Rooli", "location": "Sijainti" },
+          "rows": {
+            "bravo": { "party": "Bravo Digital Oy", "role": "Palvelun tuottaja / henkilötietojen käsittelijä (Liukasbotti)", "location": "Suomi (palvelintila Suomessa)" },
+            "gateway": { "party": "GatewayAPI A/S", "role": "Tekstiviestien välityspalvelu (alikäsittelijä)", "location": "Saksa (palvelimet)" }
+          }
+        }
+      },
+      "notice": "Tietoja ei siirretä EU/ETA-alueen ulkopuolelle. Palvelinten ja varmuuskopioiden sijainti: Saksa (SMS-palvelu) ja Suomi (Bravo Digitalin palvelintila)."
+    },
+    "retention": {
+      "title": "Säilytysajat ja käsittelyn kesto",
+      "desc": "Henkilötietoja säilytetään sopimuksen keston ja lakisääteisten velvoitteiden ajan kaupungin arkistointiohjeiden mukaisesti."
+    },
+    "rights": {
+      "title": "Rekisteröidyn oikeudet",
+      "items": {
+        "access": "oikeus saada pääsy omiin tietoihin (tarkastusoikeus)",
+        "rectification": "oikeus tietojen oikaisemiseen ja päivittämiseen",
+        "erasure": "oikeus tietojen poistamiseen, kun peruste täyttyy",
+        "restriction": "oikeus käsittelyn rajoittamiseen tietyissä tilanteissa",
+        "object": "oikeus vastustaa käsittelyä, kun perusteena on oikeutettu etu",
+        "withdraw": "oikeus peruuttaa suostumus milloin tahansa",
+        "complaint": "oikeus tehdä valitus valvontaviranomaiselle"
+      }
+    },
+    "contact": {
+      "title": "Yhteydenotot tietosuojaan liittyen",
+      "primary": "Ensisijaiset yhteydenotot: email(at)bravodigital.fi.",
+      "instructions": "Voit pyytää pääsyä tietoihisi, oikaista tietoja, peruuttaa suostumuksesi tai esittää muita tietosuojaan liittyviä pyyntöjä ottamalla yhteyttä rekisterinpitäjään."
+    }
+  }
 }

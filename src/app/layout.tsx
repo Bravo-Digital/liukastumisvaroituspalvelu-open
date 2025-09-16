@@ -12,9 +12,41 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Liukasbotti - Vältä loukkaantumiset talvella",
+  metadataBase: new URL("https://www.liukasbotti.fi"),
+  title: {
+    default: "Liukasbotti - Vältä loukkaantumiset talvella",
+    template: "%s | Liukasbotti"
+  },
   description: "Vältä loukkaantumiset liukkaalla säällä. Ota käyttöön liukastumisvaroitukset.",
+  keywords: ["liukastuminen", "liukastumisvaroitukset", "talvi", "turvallisuus", "liukasbotti"],
+  openGraph: {
+    title: "Liukasbotti - Vältä loukkaantumiset talvella",
+    description: "Tilaa liukastumisvaroitukset ja pysy pystyssä talvella.",
+    url: "https://www.liukasbotti.fi",
+    siteName: "Liukasbotti",
+    locale: "fi_FI",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Liukasbotti - Vältä loukkaantumiset talvella",
+    description: "Tilaa liukastumisvaroitukset ja pysy pystyssä talvella.",
+
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: "https://www.liukasbotti.fi",
+    languages: {
+      "fi": "https://www.liukasbotti.fi/fi",
+      "sv": "https://www.liukasbotti.fi/sv",
+      "en": "https://www.liukasbotti.fi/en",
+    },
+  },
 };
+
 
   export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
