@@ -214,7 +214,7 @@
         "table": {
           "head": { "party": "Part", "role": "Roll", "location": "Plats" },
           "rows": {
-            "bravo": { "party": "Bravo Digital Oy", "role": "Tjänsteleverantör / personuppgiftsbiträde (Liukasbotti)", "location": "Finland (hosting i Finland)" },
+            "bravo": { "party": "Bravo Digital Oy (3527863-5)", "role": "Tjänsteleverantör / personuppgiftsbiträde (Liukasbotti)", "location": "Finland (hosting i Finland)" },
             "gateway": { "party": "GatewayAPI A/S", "role": "SMS-gateway (underbiträde)", "location": "Tyskland (servrar)" }
           }
         }

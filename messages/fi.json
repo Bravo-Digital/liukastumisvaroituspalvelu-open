@@ -215,7 +215,7 @@
         "table": {
           "head": { "party": "Taho", "role": "Rooli", "location": "Sijainti" },
           "rows": {
-            "bravo": { "party": "Bravo Digital Oy", "role": "Palvelun tuottaja / henkilötietojen käsittelijä (Liukasbotti)", "location": "Suomi (palvelintila Suomessa)" },
+            "bravo": { "party": "Bravo Digital Oy (3527863-5)", "role": "Palvelun tuottaja / henkilötietojen käsittelijä (Liukasbotti)", "location": "Suomi (palvelintila Suomessa)" },
             "gateway": { "party": "GatewayAPI A/S", "role": "Tekstiviestien välityspalvelu (alikäsittelijä)", "location": "Saksa (palvelimet)" }
           }
         }
