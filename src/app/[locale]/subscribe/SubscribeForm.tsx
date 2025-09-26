@@ -84,7 +84,7 @@ export default function SubscribeForm() {
                     ) : (
                       <code
                         key={j}
-                        className="font-mono bg-gray-800 text-white px-2 py-1 rounded-md"
+                        className="inline-block whitespace-nowrap break-normal font-sans font-bold bg-gray-800 text-white px-2 py-1 rounded-md select-all"
                       >
                         {part.bold}
                       </code>
@@ -103,8 +103,8 @@ export default function SubscribeForm() {
               {t("options.sms.guide.examplesTitle")}
             </p>
             <ul className="space-y-1 text-sm">
-              <li className="mt-1">
-                <code className="px-2 py-1 rounded bg-gray-100">
+              <li className="mt-3">
+                <code className="inline-block whitespace-nowrap break-normal font-sans font-bold bg-gray-800 text-white px-2 py-1 rounded select-all">
                   {t("options.sms.guide.ex1")}
                 </code>
                 <span className="text-gray-600">
@@ -112,8 +112,8 @@ export default function SubscribeForm() {
                   — {t("options.sms.guide.ex1Note")}
                 </span>
               </li>
-              <li className="mt-1">
-                <code className="px-2 py-1 rounded bg-gray-100">
+              <li className="mt-3">
+                <code className="inline-block whitespace-nowrap break-normal font-sans font-bold bg-gray-800 text-white px-2 py-1 rounded select-all">
                   {t("options.sms.guide.ex2")}
                 </code>
                 <span className="text-gray-600">
@@ -121,8 +121,8 @@ export default function SubscribeForm() {
                   — {t("options.sms.guide.ex2Note")}
                 </span>
               </li>
-              <li className="mt-1">
-                <code className="px-2 py-1 rounded bg-gray-100">
+              <li className="mt-3">
+                <code className="inline-block whitespace-nowrap break-normal font-sans font-bold bg-gray-800 text-white px-2 py-1 rounded select-all">
                   {t("options.sms.guide.ex3")}
                 </code>
                 <span className="text-gray-600">
@@ -133,8 +133,7 @@ export default function SubscribeForm() {
             </ul>
 
             <div className="mt-3 text-xs md:text-sm text-gray-600">
-              <p>• {t("options.sms.guide.note1")}</p>
-              <p>• {t("options.sms.guide.note2")}</p>
+              <p>{t("options.sms.guide.note2")}</p>
             </div>
           </div>
         </CardContent>
