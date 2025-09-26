@@ -51,6 +51,24 @@
   "q5": "I no longer want to receive warnings. How can I unsubscribe?",
   "a5": "You can unsubscribe by sending the message STOP to 050 902 4308."
 },
+
+  "FeedbackEmail": {
+    "subject": "We received your feedback — Thank you!",
+    "greeting": "Hi {name},",
+    "there": "there",
+    "intro": "We've received your feedback and appreciate you taking the time to help us improve.",
+    "yourFeedback": "Your Feedback",
+    "noreplyNote": "Note: Please don't reply to this email. If you have additional questions, please submit a new feedback form on our website.",
+    "submittedOn": "Submitted on: {date}",
+    "thanksTitle": "Thank you for your feedback!"
+  },
+  "FeedbackReturn": {
+    "success": "Your feedback has been submitted. Thank you for helping us improve!",
+    "successWithResponse": "Your feedback has been submitted! We've sent a confirmation to your email and will get back to you soon.",
+    "errorGeneric": "An error occurred while submitting your feedback. Please try again."
+  },
+
+
 "Homepage": {
   "Hero": {
   "title1/2": "Avoid slipping with",
@@ -116,7 +134,7 @@
           "intro": "Subscribe like this:",
           "step1": "Send a text message to",
           "number": "050 902 4308",
-          "step2": "Message text (join):",
+          "step2": "Message text:",
           "keyword": "JOIN HELSINKI",
           "step3": "If you want to receive the warnings at a specific time, add the hour at the end (0–23, Finnish time).",
           "examplesTitle": "Examples:",

@@ -48,6 +48,24 @@
     "emailRequiredWhenAskingForResponse": "Sähköpostiosoite on pakollinen, jos haluat vastauksen palautteeseesi",
     "enterValidEmail": "Syötä kelvollinen sähköpostiosoite"
   },
+  
+    "FeedbackEmail": {
+      "subject": "Olemme vastaanottaneet palautteesi – Kiitos!",
+      "greeting": "Hei {name},",
+      "there": "sinä",
+      "intro": "Olemme vastaanottaneet palautteesi ja arvostamme, että autat meitä parantamaan palvelua.",
+      "yourFeedback": "Palautteesi",
+      "noreplyNote": "Huom! Älä vastaa tähän viestiin. Jos sinulla on lisäkysymyksiä, jätä uusi palautelomake verkkosivullamme.",
+      "submittedOn": "Lähetetty: {date}",
+      "thanksTitle": "Kiitos palautteestasi!"
+    },
+    "FeedbackReturn": {
+      "success": "Palautteesi on lähetetty. Kiitos, että autat meitä parantamaan!",
+      "successWithResponse": "Palautteesi on lähetetty! Lähetimme vahvistuksen sähköpostiisi ja palaamme pian.",
+      "errorGeneric": "Tapahtui virhe palautetta lähetettäessä. Yritä uudelleen."
+    },
+  
+  
 "Homepage": {
   "Hero": {
     "title1/2": "Vältä liukastumiset",
@@ -115,7 +133,7 @@
         "intro": "Tilaat palvelun näin:",
         "step1": "Lähetä tekstiviesti numeroon",
         "number": "050 902 4308",
-        "step2": "Viestin sisältö (liittyminen):",
+        "step2": "Viestin sisältö:",
         "keyword": "LIITY HELSINKI",
         "step3": "Jos haluat saada varoitukset tiettyyn kellonaikaan, lisää viestin loppuun tunti (0–23, Suomen aikaa).",
         "examplesTitle": "Esimerkkejä:",

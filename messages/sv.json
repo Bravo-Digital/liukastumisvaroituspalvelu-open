@@ -48,6 +48,24 @@
   "emailRequiredWhenAskingForResponse": "E-postadress krävs om du vill ha svar på din feedback",
   "enterValidEmail": "Ange en giltig e-postadress"
 },
+
+  "FeedbackEmail": {
+    "subject": "Vi har mottagit din feedback – Tack!",
+    "greeting": "Hej {name},",
+    "there": "du",
+    "intro": "Vi har mottagit din feedback och uppskattar att du hjälper oss att bli bättre.",
+    "yourFeedback": "Din feedback",
+    "noreplyNote": "Observera! Svara inte på detta meddelande. Om du har fler frågor, skicka ett nytt formulär på vår webbplats.",
+    "submittedOn": "Skickat: {date}",
+    "thanksTitle": "Tack för din feedback!"
+  },
+  "FeedbackReturn": {
+    "success": "Din feedback har skickats. Tack för att du hjälper oss att förbättra!",
+    "successWithResponse": "Din feedback har skickats! Vi har skickat en bekräftelse till din e-post och hör av oss snart.",
+    "errorGeneric": "Ett fel inträffade när din feedback skickades. Försök igen."
+  },
+
+
 "Homepage": {
   "Hero": {
   "title1/2": "Undvik halkolyckor med",
@@ -114,7 +132,7 @@
           "intro": "Gör så här:",
           "step1": "Skicka ett textmeddelande till",
           "number": "050 902 4308",
-          "step2": "Meddelandets text (gå med):",
+          "step2": "Meddelandets text:",
           "keyword": "DELTA HELSINKI",
           "step3": "Om du vill få varningar en viss tid, lägg till timmen i slutet (0–23, finsk tid).",
           "examplesTitle": "Exempel:",
