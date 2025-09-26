@@ -102,32 +102,42 @@
   "empty": "Ei varoituksia"
 },
 
-  "subscribe": {
-    "title": "Tilaa liukasvaroitukset",
-    "subtitle": "Valitse miten haluat vastaanottaa liukasvaroitukset Helsingissä",
-    "subscribeWith": "Tilaa",
-    "instructions": "Ohjeet:",
-    "options": {
-      "sms": {
-        "label": "Tekstiviestivaroitukset",
-        "guide": {
-          "step1": "1. Lähetä tekstiviesti numeroon ",
-          "step2": "2. Viestin sisältö: ",
-          "step3": "3. Jos haluat saada varoitukset tiettynä kellonaikana, lisää tunti viestiin, esim. ",
-          "step1a": "050 902 4308",
-          "step2a": "LIITY HELSINKI",
-          "step3a": "LIITY HELSINKI 8"
-        }
+"subscribe": {
+  "title": "Tilaa liukastumisvaroitukset",
+  "subtitle": "Tilaa tekstiviestivaroitukset Helsingistä. Liittyminen tapahtuu lähettämällä viesti alla olevien ohjeiden mukaan.",
+  "subscribeWith": "Tilaa",
+  "instructions": "Ohjeet:",
+  "options": {
+    "sms": {
+      "label": "Tekstiviestivaroitukset",
+      "guide": {
+        "intro": "Tilaat palvelun näin:",
+        "step1": "1) Lähetä tekstiviesti numeroon",
+        "number": "050 902 4308",
+        "step2": "2) Viestin sisältö (liittyminen):",
+        "keyword": "LIITY HELSINKI",
+        "step3": "3) (Valinnainen) Jos haluat saada varoitukset tiettyyn kellonaikaan, lisää viestin loppuun tunti (0–23, Suomen aikaa).",
+        "examplesTitle": "Esimerkkejä:",
+        "ex1": "LIITY HELSINKI",
+        "ex1Note": "Saat varoitukset heti, kun niitä on.",
+        "ex2": "LIITY HELSINKI 8",
+        "ex2Note": "Saat varoitukset klo 08:00.",
+        "ex3": "LIITY HELSINKI 18",
+        "ex3Note": "Saat varoitukset klo 18:00.",
+        "notesTitle": "Huomio:",
+        "note1": "Aika annetaan 24 h muodossa (0–23) ja on Suomen aikaa (Europe/Helsinki).",
+        "note2": "Voit poistua palvelusta milloin tahansa lähettämällä viestin STOP samaan numeroon."
       }
-    },
-
-    "acceptTerms": "Hyväksyn",
-    "terms": "käyttöehdot",
-    "privacy": "tietosuojaselosteen",
-    "and": "ja",
-    "verifyCode": "Vahvista koodi",
-    "subscribeButton": "Tilaa ilmoitukset"
+    }
   },
+  "acceptTerms": "Hyväksyn",
+  "terms": "käyttöehdot",
+  "privacy": "tietosuojaselosteen",
+  "and": "ja",
+  "verifyCode": "Vahvista koodi",
+  "subscribeButton": "Tilaa ilmoitukset"
+},
+
 
       
 "SEO": {

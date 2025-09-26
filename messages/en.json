@@ -104,30 +104,40 @@
   "empty": "No warnings"
 },
 "subscribe": {
-  "title": "Begin receiving slippery warnings",
-  "subtitle": "Choose how you wish to receive slippery warnings",
-  "subscribeWith": "Receive",
-  "instructions": "Instructions:",
-  "options": {
-    "sms": {
-      "label": "SMS Warnings",
-      "guide": {
-        "step1": "1. Send a text message to this number: ",
-        "step2": "2. Message text: ",
-        "step3": "3. If you wish to receive the warnings at a specific hour, add it to the end of the message. e.g. ",
-        "step1a": "050 902 4308",
-        "step2a": "JOIN HELSINKI",
-        "step3a": "JOIN HELSINKI 8"
+    "title": "Subscribe to ice-slip warnings",
+    "subtitle": "Subscribe to SMS alerts for Helsinki. Join by sending a message exactly as shown below.",
+    "subscribeWith": "Subscribe",
+    "instructions": "Instructions:",
+    "options": {
+      "sms": {
+        "label": "SMS alerts",
+        "guide": {
+          "intro": "Subscribe like this:",
+          "step1": "1) Send a text message to",
+          "number": "050 902 4308",
+          "step2": "2) Message text (join):",
+          "keyword": "JOIN HELSINKI",
+          "step3": "3) (Optional) If you want to receive the warnings at a specific time, add the hour at the end (0–23, Finnish time).",
+          "examplesTitle": "Examples:",
+          "ex1": "JOIN HELSINKI",
+          "ex1Note": "Receive warnings as soon as they are available.",
+          "ex2": "JOIN HELSINKI 8",
+          "ex2Note": "Receive warnings at 08:00.",
+          "ex3": "JOIN HELSINKI 18",
+          "ex3Note": "Receive warnings at 18:00.",
+          "notesTitle": "Notes:",
+          "note1": "Time uses the 24-hour format (0–23) and Europe/Helsinki time.",
+          "note2": "You can leave anytime by sending STOP to the same number."
+        }
       }
-    }
+    },
+    "acceptTerms": "I accept",
+    "terms": "terms of use",
+    "privacy": "privacy notice",
+    "and": "and",
+    "verifyCode": "Verify code",
+    "subscribeButton": "Subscribe to alerts"
   },
-  "acceptTerms": "I accept",
-  "terms": "the Terms and Conditions",
-  "privacy": "and the Privacy Policy",
-  "and": "and",
-  "verifyCode": "Verify Code",
-  "subscribeButton": "Get notifications"
-},
   
   
 "SEO": {

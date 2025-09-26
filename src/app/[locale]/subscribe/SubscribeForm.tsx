@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Smartphone, CheckCircle } from "lucide-react";
+import { Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function SubscribeForm() {
@@ -19,9 +17,9 @@ export default function SubscribeForm() {
       label: t("options.sms.label"),
       icon: <Smartphone className="h-5 w-5 text-orange-600" />,
       guide: [
-        [t("options.sms.guide.step1"), { bold: t("options.sms.guide.step1a") }],
-        [t("options.sms.guide.step2"), { bold: t("options.sms.guide.step2a") }],
-        [t("options.sms.guide.step3"), { bold: t("options.sms.guide.step3a") }],
+        [t("options.sms.guide.step1"), { bold: t("options.sms.guide.number") }],
+        [t("options.sms.guide.step2"), { bold: t("options.sms.guide.keyword") }],
+        [t("options.sms.guide.step3"), { bold: t("options.sms.guide.ex2") }],
       ],
     },
   ];
@@ -64,27 +62,32 @@ export default function SubscribeForm() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
             {selectedOptionData?.icon}
-            <span>{t("subscribeWith")} {selectedOptionData?.label}</span>
+            <span>
+              {t("subscribeWith")} {selectedOptionData?.label}
+            </span>
           </CardTitle>
         </CardHeader>
+
         <CardContent>
           <h3 className="font-medium text-sm md:text-base mb-3">
             {t("instructions")}
           </h3>
-          <ul className="space-y-4 pl-5 text-sm">
+
+          {/* 3 clear steps with bold tokens */}
+          <ol className="space-y-4 pl-5 text-sm list-decimal">
             {selectedOptionData?.guide.map((step, i) => (
-              <li key={i}>
+              <li key={i} className="pl-1">
                 {Array.isArray(step) ? (
                   step.map((part, j) =>
                     typeof part === "string" ? (
                       <span key={j}>{part} </span>
                     ) : (
-                      <span
+                      <code
                         key={j}
-                        className="bg-gray-800 text-white px-2 py-1 rounded-lg font-semibold"
+                        className="font-mono bg-gray-800 text-white px-2 py-1 rounded-md"
                       >
                         {part.bold}
-                      </span>
+                      </code>
                     )
                   )
                 ) : (
@@ -92,7 +95,48 @@ export default function SubscribeForm() {
                 )}
               </li>
             ))}
-          </ul>
+          </ol>
+
+          {/* Examples + notes */}
+          <div className="mt-4 rounded-lg bg-white border p-3">
+            <p className="font-medium mb-2">
+              {t("options.sms.guide.examplesTitle")}
+            </p>
+            <ul className="space-y-1 text-sm">
+              <li>
+                <code className="font-mono px-2 py-1 rounded bg-gray-100">
+                  {t("options.sms.guide.ex1")}
+                </code>
+                <span className="text-gray-600">
+                  {" "}
+                  — {t("options.sms.guide.ex1Note")}
+                </span>
+              </li>
+              <li>
+                <code className="font-mono px-2 py-1 rounded bg-gray-100">
+                  {t("options.sms.guide.ex2")}
+                </code>
+                <span className="text-gray-600">
+                  {" "}
+                  — {t("options.sms.guide.ex2Note")}
+                </span>
+              </li>
+              <li>
+                <code className="font-mono px-2 py-1 rounded bg-gray-100">
+                  {t("options.sms.guide.ex3")}
+                </code>
+                <span className="text-gray-600">
+                  {" "}
+                  — {t("options.sms.guide.ex3Note")}
+                </span>
+              </li>
+            </ul>
+
+            <div className="mt-3 text-xs md:text-sm text-gray-600">
+              <p>• {t("options.sms.guide.note1")}</p>
+              <p>• {t("options.sms.guide.note2")}</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

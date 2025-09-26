@@ -102,29 +102,39 @@
     "empty": "Inga varningar"
   },
 "subscribe": {
-  "title": "Prenumerera på halkvarningar",
-  "subtitle": "Välj hur du vill ta emot halkvarningar i Helsingfors",
-  "subscribeWith": "Prenumerera",
-  "instructions": "Instruktioner:",
-"options": {
-  "sms": {
-    "label": "Varningar via SMS",
-  "guide": {
-    "step1": "1. Skicka ett SMS till ",
-    "step2": "2. Meddelandeinnehåll: ",
-    "step3": "3. Om du vill ta emot varningar vid en viss tidpunkt, lägg till en timme i meddelandet, t.ex. ",
-    "step1a": "050 902 4308",
-    "step2a": "DELTA HELSINKI",
-    "step3a": "DELTA HELSINKI 8"
-    }
-  }
-},
-  "acceptTerms": "Jag accepterar",
-  "terms": "användarvillkor",
-  "privacy": "integritetspolicy",
-  "and": "och",
-  "verifyCode": "Verifiera kod",
-  "subscribeButton": "Prenumerera på aviseringar"
+    "title": "Prenumerera på halkvarningar",
+    "subtitle": "Prenumerera på SMS-varningar för Helsingfors. Gå med genom att skicka ett meddelande exakt enligt instruktionerna nedan.",
+    "subscribeWith": "Prenumerera",
+    "instructions": "Instruktioner:",
+    "options": {
+      "sms": {
+        "label": "SMS-varningar",
+        "guide": {
+          "intro": "Gör så här:",
+          "step1": "1) Skicka ett textmeddelande till",
+          "number": "050 902 4308",
+          "step2": "2) Meddelandets text (gå med):",
+          "keyword": "DELTA HELSINKI",
+          "step3": "3) (Valfritt) Om du vill få varningar en viss tid, lägg till timmen i slutet (0–23, finsk tid).",
+          "examplesTitle": "Exempel:",
+          "ex1": "DELTA HELSINKI",
+          "ex1Note": "Du får varningar så snart de finns.",
+          "ex2": "DELTA HELSINKI 8",
+          "ex2Note": "Du får varningar kl. 08:00.",
+          "ex3": "DELTA HELSINKI 18",
+          "ex3Note": "Du får varningar kl. 18:00.",
+          "notesTitle": "Observera:",
+          "note1": "Tiden anges i 24-timmarsformat (0–23), Europe/Helsinki.",
+          "note2": "Du kan avsluta när som helst genom att skicka STOP till samma nummer."
+        }
+      }
+    },
+    "acceptTerms": "Jag godkänner",
+    "terms": "användarvillkoren",
+    "privacy": "dataskyddsbeskrivningen",
+    "and": "och",
+    "verifyCode": "Bekräfta koden",
+    "subscribeButton": "Beställ aviseringar"
   },
 
   "SEO": {
