@@ -29,6 +29,7 @@
     "dotenv": "^17.0.0",
     "drizzle-orm": "^0.44.2",
     "fast-xml-parser": "^5.2.5",
+    "fontkit": "^2.0.4",
     "gel": "^2.1.1",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.523.0",
