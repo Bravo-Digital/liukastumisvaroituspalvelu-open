@@ -132,7 +132,7 @@ export default function SubscribeForm() {
               </li>
             </ul>
 
-            <div className="mt-3 text-xs md:text-sm text-gray-200">
+            <div className="mt-3 text-xs md:text-sm">
               <p>{t("options.sms.guide.note2")}</p>
             </div>
           </div>
