@@ -107,7 +107,7 @@ export default function SubscribeForm() {
                 <code className="inline-block whitespace-nowrap break-normal font-sans font-bold bg-gray-800 text-white px-2 py-1 rounded select-all">
                   {t("options.sms.guide.ex1")}
                 </code>
-                <span className="text-gray-200">
+                <span>
                   {" "}
                   — {t("options.sms.guide.ex1Note")}
                 </span>
@@ -116,7 +116,7 @@ export default function SubscribeForm() {
                 <code className="inline-block whitespace-nowrap break-normal font-sans font-bold bg-gray-800 text-white px-2 py-1 rounded select-all">
                   {t("options.sms.guide.ex2")}
                 </code>
-                <span className="text-gray-200">
+                <span>
                   {" "}
                   — {t("options.sms.guide.ex2Note")}
                 </span>
@@ -125,7 +125,7 @@ export default function SubscribeForm() {
                 <code className="inline-block whitespace-nowrap break-normal font-sans font-bold bg-gray-800 text-white px-2 py-1 rounded select-all">
                   {t("options.sms.guide.ex3")}
                 </code>
-                <span className="text-gray-200">
+                <span>
                   {" "}
                   — {t("options.sms.guide.ex3Note")}
                 </span>
