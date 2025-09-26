@@ -1,80 +1,74 @@
-# Stage 1: Builder (for building both Next.js and TypeScript workers)
-FROM node:20-alpine AS builder
+# syntax=docker/dockerfile:1
 
-# Enable pnpm
+############################
+# Base with pnpm
+############################
+FROM node:20-alpine AS base
+ENV PNPM_HOME=/root/.local/share/pnpm
+ENV PATH=$PNPM_HOME:$PATH
 RUN corepack enable && corepack prepare pnpm@latest --activate
-
 WORKDIR /app
 
-# Copy package files and install all dependencies (including dev)
+############################
+# Dependencies (cache-friendly)
+############################
+FROM base AS deps
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile
 
-# Copy source code
+############################
+# Build (Next.js + workers)
+############################
+FROM deps AS build
+# Recommended to reduce telemetry/noise in CI images
+ENV NEXT_TELEMETRY_DISABLED=1
 COPY . .
+# Build Next (and any TS) + workers
+RUN pnpm build && pnpm build:workers
 
-# Build Next.js app
-RUN pnpm build
+############################
+# Runtime: APP (Next.js)
+############################
+FROM base AS app
+# Copy node_modules from deps and prune to prod only
+COPY --from=deps /app/node_modules ./node_modules
+RUN pnpm prune --prod
 
-# Build workers (TypeScript -> JavaScript)
-RUN pnpm build:workers
+# Copy built artifacts
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/messages ./messages
+# If you have any other runtime assets, copy them here as needed
 
-# Stage 2: Production image
-FROM node:20-alpine AS production
+# Sensible defaults for containers
+ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+EXPOSE 3000
 
-WORKDIR /app
+# (Optional) healthcheck for container orchestrators
+# HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://127.0.0.1:3000/ >/dev/null || exit 1
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# Copy only production dependencies
-COPY package.json pnpm-lock.yaml* ./
-RUN pnpm install --frozen-lockfile --prod
-
-# Copy built Next.js app
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/messages ./messages
-
-# Copy compiled workers
-COPY --from=builder /app/dist/workers ./dist/workers
-
-
-EXPOSE 8080
-
-# Run Next.js in production
 CMD ["pnpm", "start"]
 
-# Stage 3: Development image
-FROM node:20-alpine AS development
-
-WORKDIR /app
-
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# Install all dependencies (dev + prod)
+############################
+# Runtime: WORKER
+############################
+FROM base AS worker
+COPY --from=deps /app/node_modules ./node_modules
+RUN pnpm prune --prod
+# Bring only what workers need
+COPY --from=build /app/dist/workers ./dist/workers
 COPY package.json pnpm-lock.yaml* ./
-RUN pnpm install --frozen-lockfile
+ENV NODE_ENV=production
+CMD ["pnpm", "workers"]
 
-# Copy source code
-COPY . .
-
-EXPOSE 8080
-
-# Build workers first, then start Next.js dev
-CMD ["sh", "-c", "pnpm build:workers && pnpm dev"]
-
-# Stage: Migrator
-FROM node:20-alpine AS migrator
-WORKDIR /app
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# Install deps (dev + prod). --prod=false guarantees dev deps even if NODE_ENV=production leaks in
+############################
+# One-shot: MIGRATOR (Drizzle)
+############################
+FROM base AS migrator
+# Dev deps are fine here for the CLI
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile --prod=false
-
-# Copy everything the CLI needs to resolve config + schema
 COPY . .
-
-# Run Drizzle using local install
 CMD ["pnpm","drizzle-kit","push","--config=drizzle.config.ts"]
-
