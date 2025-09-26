@@ -98,13 +98,13 @@ export default function SubscribeForm() {
           </ol>
 
           {/* Examples + notes */}
-          <div className="mt-4 rounded-lg bg-white border p-3">
+          <div className="mt-4 rounded-lg border p-3">
             <p className="font-medium mb-2">
               {t("options.sms.guide.examplesTitle")}
             </p>
             <ul className="space-y-1 text-sm">
-              <li>
-                <code className="font-mono px-2 py-1 rounded bg-gray-100">
+              <li className="mt-1">
+                <code className="px-2 py-1 rounded bg-gray-100">
                   {t("options.sms.guide.ex1")}
                 </code>
                 <span className="text-gray-600">
@@ -112,8 +112,8 @@ export default function SubscribeForm() {
                   — {t("options.sms.guide.ex1Note")}
                 </span>
               </li>
-              <li>
-                <code className="font-mono px-2 py-1 rounded bg-gray-100">
+              <li className="mt-1">
+                <code className="px-2 py-1 rounded bg-gray-100">
                   {t("options.sms.guide.ex2")}
                 </code>
                 <span className="text-gray-600">
@@ -121,8 +121,8 @@ export default function SubscribeForm() {
                   — {t("options.sms.guide.ex2Note")}
                 </span>
               </li>
-              <li>
-                <code className="font-mono px-2 py-1 rounded bg-gray-100">
+              <li className="mt-1">
+                <code className="px-2 py-1 rounded bg-gray-100">
                   {t("options.sms.guide.ex3")}
                 </code>
                 <span className="text-gray-600">
