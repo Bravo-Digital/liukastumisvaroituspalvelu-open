@@ -59,8 +59,8 @@ function safeOnset(str?: string): Date {
 function sevenDaysLater(base: Date): Date {
   return new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);
 }
-
-const FEED_URL = 'https://alerts.fmi.fi/cap/feed/rss_en-GB.rss';
+const FEED_URL = 'https://vbxa.github.io/liukasbotti-test-rss/testWarnings.rss'
+// const FEED_URL = 'https://alerts.fmi.fi/cap/feed/rss_en-GB.rss';
 
 let modified: string | null = null;
 

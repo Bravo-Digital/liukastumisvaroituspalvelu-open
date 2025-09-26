@@ -1,4 +1,3 @@
-// src/app/(protected)/admin/page.tsx
 import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/adminAuth";
 import {
@@ -28,6 +27,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { baseMessageByLang, formatStampForMessage } from "@/lib/smsUtil";
 import { cn } from "@/lib/utils";
+import { rectifyUser, eraseUser } from "@/actions/gdpr";
 
 export const dynamic = "force-dynamic";
 
@@ -67,6 +67,16 @@ export default async function AdminHome() {
     "use server";
     await updateWarningExpiry(formData);
   }
+  async function rectifyUserAdapter(formData: FormData) {
+    "use server";
+    await rectifyUser(formData);
+    revalidatePath("/admin");
+    }
+    async function eraseUserAdapter(formData: FormData) {
+    "use server";
+    await eraseUser(formData);
+    revalidatePath("/admin");
+    }
 
   // default date range: last 30 days
   const to = new Date();
@@ -257,6 +267,112 @@ export default async function AdminHome() {
               </TableBody>
             </Table>
           )}
+        </CardContent>
+      </Card>
+
+            {/* GDPR & Privacy */}
+            <Card>
+        <CardHeader>
+          <CardTitle>GDPR & Privacy</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Data export */}
+            <div className="space-y-4">
+              <div className="text-sm text-muted-foreground">
+                Generate a user-specific export for Right of Access / Data Portability. Includes user profile, SMS deliveries/queue, related warnings, and SMS logs.
+              </div>
+
+              <form method="GET" action="/admin/gdpr/export" target="_blank" className="grid grid-cols-1 gap-4 sm:grid-cols-6">
+                <div className="sm:col-span-2 space-y-2">
+                  <Label htmlFor="by">Lookup by</Label>
+                  <select id="by" name="by" className="w-full h-9 rounded-md border px-3 text-sm">
+                    <option value="phone">Phone</option>
+                    <option value="id">User ID</option>
+                  </select>
+                </div>
+                <div className="sm:col-span-3 space-y-2">
+                  <Label htmlFor="identifier">Identifier</Label>
+                  <Input id="identifier" name="identifier" placeholder="e.g. 358401234567 or 123" required />
+                </div>
+                <div className="sm:col-span-1 flex items-end gap-2">
+                  <Button type="submit" name="format" value="pdf" className="w-full">PDF</Button>
+                </div>
+                <div className="sm:col-span-6 flex justify-end">
+                  <Button type="submit" variant="outline" name="format" value="json">Download JSON</Button>
+                </div>
+              </form>
+            </div>
+
+            {/* Rectify / Erase */}
+            <div className="space-y-6">
+              {/* Rectify */}
+              <div className="space-y-3">
+                <div className="font-medium">Rectify user data</div>
+                <form action={rectifyUserAdapter} className="grid grid-cols-1 gap-4 sm:grid-cols-6">
+                  <div className="sm:col-span-2 space-y-2">
+                    <Label htmlFor="by2">Lookup by</Label>
+                    <select id="by2" name="by" className="w-full h-9 rounded-md border px-3 text-sm">
+                      <option value="phone">Phone</option>
+                      <option value="id">User ID</option>
+                    </select>
+                  </div>
+                  <div className="sm:col-span-4 space-y-2">
+                    <Label htmlFor="identifier2">Identifier</Label>
+                    <Input id="identifier2" name="identifier" placeholder="e.g. +358401234567 or 123" required />
+                  </div>
+
+                  <div className="sm:col-span-3 space-y-2">
+                    <Label htmlFor="newPhone">New phone</Label>
+                    <Input id="newPhone" name="phone" placeholder="Leave empty to keep" />
+                  </div>
+                  <div className="sm:col-span-1 space-y-2">
+                    <Label htmlFor="language">Lang</Label>
+                    <Input id="language" name="language" placeholder="fi/sv/en" maxLength={2} />
+                  </div>
+                  <div className="sm:col-span-1 space-y-2">
+                    <Label htmlFor="hour">Hour</Label>
+                    <Input id="hour" name="hour" placeholder="HH:mm" />
+                  </div>
+                  <div className="sm:col-span-1 space-y-2">
+                    <Label htmlFor="areaEdit">Area</Label>
+                    <Input id="areaEdit" name="area" placeholder="Helsinki" />
+                  </div>
+                  <div className="sm:col-span-6">
+                    <Button type="submit">Save changes</Button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Erase */}
+              <div className="space-y-3 border-t pt-4">
+                <div className="font-medium text-destructive">Erase user (Right to Erasure)</div>
+                <div className="text-sm text-muted-foreground">
+                  Permanently deletes the user record and associated SMS queue items and SMS logs. This action cannot be undone.
+                </div>
+                <form action={eraseUserAdapter} className="grid grid-cols-1 gap-4 sm:grid-cols-6">
+                  <div className="sm:col-span-2 space-y-2">
+                    <Label htmlFor="by3">Lookup by</Label>
+                    <select id="by3" name="by" className="w-full h-9 rounded-md border px-3 text-sm">
+                      <option value="phone">Phone</option>
+                      <option value="id">User ID</option>
+                    </select>
+                  </div>
+                  <div className="sm:col-span-3 space-y-2">
+                    <Label htmlFor="identifier3">Identifier</Label>
+                    <Input id="identifier3" name="identifier" placeholder="e.g. +358401234567 or 123" required />
+                  </div>
+                  <div className="sm:col-span-1 space-y-2">
+                    <Label htmlFor="confirmWord">Confirm</Label>
+                    <Input id="confirmWord" name="confirm" placeholder="type ERASE" />
+                  </div>
+                  <div className="sm:col-span-6">
+                    <Button type="submit" variant="destructive">Erase now</Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

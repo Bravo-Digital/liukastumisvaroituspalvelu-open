@@ -8,7 +8,6 @@ import { getTranslations } from "next-intl/server"
 
 const links = [
   { label: "Warnings", href: "/warnings" },
-  { label: "developers", href: "/developers" },
   { label: "Feedback", href: "/feedback" },
 ]
 

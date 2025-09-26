@@ -75,7 +75,9 @@
   "q3": "Is the service only available in Helsinki?",
   "a3": "At the moment, slipperiness alerts are only available for the Helsinki area.",
   "q4": "Who is responsible for maintaining Liukasbotti?",
-  "a4": "Liukasbotti is maintained by Bravo Digital Inc."
+  "a4": "Liukasbotti is maintained by Bravo Digital Inc.",
+  "q5": "I don't want to receive warnings anymore. How can I cancel my subscription?",
+  "a5": "You can cancel your subscription by sending the message STOP to the number 050 902 4308."
 }
 },
 "WarningsPage": {

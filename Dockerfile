@@ -68,13 +68,13 @@ FROM node:20-alpine AS migrator
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Install deps (dev + prod). --prod=false guarantees dev deps even if NODE_ENV=production leaks in.
+# Install deps (dev + prod). --prod=false guarantees dev deps even if NODE_ENV=production leaks in
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile --prod=false
 
 # Copy everything the CLI needs to resolve config + schema
 COPY . .
 
-# Run Drizzle using local install (not dlx)
+# Run Drizzle using local install
 CMD ["pnpm","drizzle-kit","push","--config=drizzle.config.ts"]
 

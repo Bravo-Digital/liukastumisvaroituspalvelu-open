@@ -138,7 +138,7 @@ export async function sendWarningToAll(_: any, formData: FormData) {
       await db
         .insert(smsQueueTable)
         .values(rows.slice(i, i + CHUNK))
-        .onConflictDoNothing(); // you already have a (userId, warningId) unique index
+        .onConflictDoNothing(); 
     }
   
     // Done: scheduler.ts will send these within its next tick
@@ -161,7 +161,6 @@ export async function getFeedbackList(opts?: { limit?: number; status?: "pending
     .orderBy(desc(feedbackTable.createdAt))
     .limit(limit);
 
-  // Drizzle can't mutate the query easily; simplest is a separate branch
   if (status !== "all") {
     return await db
       .select()

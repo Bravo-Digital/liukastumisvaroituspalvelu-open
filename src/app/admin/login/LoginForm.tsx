@@ -35,6 +35,7 @@ export default function LoginForm() {
           </form>
         </CardContent>
       </Card>
+      <p>This page uses cookies.</p>
     </div>
   );
 }
