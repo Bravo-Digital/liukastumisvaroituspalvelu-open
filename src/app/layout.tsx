@@ -45,12 +45,19 @@ export const metadata: Metadata = {
       "en": "https://www.liukasbotti.fi/en",
     },
   },
+  icons: {
+    icon: [
+      { url: "/photos/favicon.svg", type: "image/svg+xml" }
+    ]
+}
 };
+
 
 
   export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
       <html lang="en" suppressHydrationWarning> {/* fallback lang */}
+      <meta name="theme-color" content="#0f172a" />
         <body
           className={`${inter.variable} antialiased w-screen h-auto flex flex-col items-center justify-start overflow-x-hidden`}
         >

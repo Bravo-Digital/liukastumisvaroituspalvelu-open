@@ -1,4 +1,3 @@
-// src/scheduler.ts
 import { db } from "@/lib/db";
 import { smsQueueTable, warningsTable } from "@/lib/schema";
 import { and, eq, lte, sql, inArray } from "drizzle-orm";
