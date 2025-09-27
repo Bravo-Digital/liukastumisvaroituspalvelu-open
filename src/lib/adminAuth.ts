@@ -60,3 +60,26 @@ export async function clearAdminCookie() {
   const store = await cookies();
   store.delete(COOKIE_NAME);
 }
+
+const PENDING_COOKIE = "admin_pending_2fa";
+
+export async function setPending2faCookie() {
+  const c = await cookies();
+  c.set(PENDING_COOKIE, "1", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: true,
+    path: "/",
+    maxAge: 20,
+  });
+}
+
+export async function clearPending2faCookie() {
+  const c = await cookies();
+  c.set(PENDING_COOKIE, "", { path: "/", maxAge: 0 });
+}
+
+export async function hasPending2faCookie() {
+  const c = await cookies();
+  return c.get(PENDING_COOKIE)?.value === "1";
+}
