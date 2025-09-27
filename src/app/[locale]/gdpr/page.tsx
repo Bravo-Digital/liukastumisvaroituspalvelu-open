@@ -221,13 +221,24 @@ export default async function GDPRPage() {
         </CardContent>
       </Card>
 
-    {/* Cookie declaration */}
-      <Script
-        id="cookie-declaration"
-        src="https://consent.cookiebot.com/d223003a-5d0e-423f-bae4-d35d9f371403/cd.js"
-        strategy="afterInteractive"
-      />
-      <div id="CookieDeclaration" />
-    </div>
+
+{/* Cookie declaration */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("cookies")}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <Script
+          id="cookie-declaration"
+          src="https://consent.cookiebot.com/d223003a-5d0e-423f-bae4-d35d9f371403/cd.js"
+          strategy="afterInteractive"
+          />
+          <div id="CookieDeclaration" />
+        </CardContent>
+      </Card>
+
+    
+
+      </div>
   );
 }

@@ -242,6 +242,7 @@
       "title": "Yhteydenotot tietosuojaan liittyen",
       "primary": "Ensisijaiset yhteydenotot: email(at)bravodigital.fi.",
       "instructions": "Voit pyytää pääsyä tietoihisi, oikaista tietoja, peruuttaa suostumuksesi tai esittää muita tietosuojaan liittyviä pyyntöjä ottamalla yhteyttä rekisterinpitäjään."
-    }
+    },
+    "cookies": "Evästeet"
   }
 }
