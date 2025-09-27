@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google"
 import { ThemeProvider } from 'next-themes'
+import Script from "next/script";
 import "./globals.css";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
-import { NextIntlClientProvider } from "next-intl";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -56,7 +54,16 @@ export const metadata: Metadata = {
 
   export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-      <html lang="en" suppressHydrationWarning> {/* fallback lang */}
+      <html lang="en" suppressHydrationWarning> 
+        <head>
+          <Script
+            id="cookiebot"
+            src="https://consent.cookiebot.com/uc.js"
+            data-cbid="d223003a-5d0e-423f-bae4-d35d9f371403"
+            data-blockingmode="auto"
+            strategy="beforeInteractive"
+          />
+        </head>
       <meta name="theme-color" content="#0f172a" />
         <body
           className={`${inter.variable} antialiased w-screen h-auto flex flex-col items-center justify-start overflow-x-hidden`}

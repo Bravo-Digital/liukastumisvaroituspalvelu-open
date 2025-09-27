@@ -8,6 +8,7 @@ import {
   Table, TableHeader, TableRow, TableHead, TableBody, TableCell
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import Script from "next/script"
 
 // Map for Open Graph locale codes
 const ogLocaleMap: Record<string, string> = { fi: "fi_FI", sv: "sv_FI", en: "en_GB" };
@@ -219,6 +220,14 @@ export default async function GDPRPage() {
           </Alert>
         </CardContent>
       </Card>
+
+    {/* Cookie declaration */}
+      <Script
+        id="cookie-declaration"
+        src="https://consent.cookiebot.com/d223003a-5d0e-423f-bae4-d35d9f371403/cd.js"
+        strategy="afterInteractive"
+      />
+      <div id="CookieDeclaration" />
     </div>
   );
 }
