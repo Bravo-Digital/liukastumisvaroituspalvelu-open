@@ -8,14 +8,14 @@ import {
   getActiveWarningsForAdmin,
   updateWarningExpiry,
 } from "@/actions/admin";
-
+import { getAdminMfa } from "@/lib/adminMfa";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
+import ConfirmSubmitButton from "@/components/admin/confirm-submit-button";
 import {
   Table,
   TableBody,
@@ -50,9 +50,10 @@ export default async function AdminHome() {
   const [summary, feedback, activeWarnings] = await Promise.all([
     getAdminSummary(),
     getFeedbackList({ limit: 50, status: "all" }),
-    getActiveWarningsForAdmin(),
+    getActiveWarningsForAdmin()
   ]);
 
+  const mfa = await getAdminMfa();
   // Server action adapters (1 arg: FormData) for the forms
   async function sendWarningAdapter(formData: FormData) {
     "use server";
@@ -115,10 +116,29 @@ export default async function AdminHome() {
         </Card>
         <Card>
           <CardHeader><CardTitle>SMS sent (30d)</CardTitle></CardHeader>
-          <CardContent><div className="text-3xl font-bold">{summary.smsSent}</div></CardContent>
+          <CardContent><div className="text-3xl font-bold">{summary.smsSent}</div></CardContent>  
         </Card>
       </div>
-
+      
+      {/* Security / 2FA */}
+      <Card>
+        <CardHeader><CardTitle>Security</CardTitle></CardHeader>
+        <CardContent className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            Two-factor authentication adds a second step to sign-in using an authenticator app.
+          </div>
+          {mfa?.mfaEnabled ? (
+            <a href="/admin/2fa" className="inline-flex">
+              <Button variant="outline">Manage 2FA</Button>
+            </a>
+          ) : (
+            <a href="/admin/2fa" className="inline-flex">
+              <Button>Set up 2FA</Button>
+            </a>
+          )}
+        </CardContent>
+      </Card>
+      
       {/* Report */}
       <Card>
         <CardHeader><CardTitle>Export report (CSV)</CardTitle></CardHeader>
@@ -175,7 +195,16 @@ export default async function AdminHome() {
                           className="w-full"
                           required
                         />
-                        <Button type="submit" size="sm">Save</Button>
+                        <ConfirmSubmitButton
+                          size="sm"
+                          submitLabel="Save"
+                          title="Update expiry?"
+                          description={
+                            <>This will change the warning&apos;s expiry time. Users may still be scheduled up to the new expiry.</>
+                          }
+                        >
+                          Save
+                        </ConfirmSubmitButton>
                       </form>
                     </TableCell>
                   </TableRow>
@@ -211,7 +240,19 @@ export default async function AdminHome() {
               <Input id="hours" name="hours" type="number" min={1} max={168} defaultValue={72} />
             </div>
             <div className="sm:col-span-6">
-              <Button type="submit">Send to SMS Scheduler</Button>
+            <ConfirmSubmitButton
+                title="Send warning to all users?"
+                description={
+                  <>
+                    This enqueues SMS to <strong>all active subscribers</strong>. The scheduler will send them
+                    according to each user&apos;s preferred hour, within the validity window.
+                  </>
+                }
+                submitLabel="Send now"
+              >
+                Send to SMS Scheduler
+              </ConfirmSubmitButton>
+
             </div>
           </form>
         </CardContent>
@@ -258,7 +299,15 @@ export default async function AdminHome() {
                       ) : (
                         <form action={markHandledAdapter}>
                           <input type="hidden" name="id" value={fb.id} />
-                          <Button size="sm" type="submit">Mark handled</Button>
+                          <ConfirmSubmitButton
+                            size="sm"
+                            variant="outline"
+                            title="Mark feedback as handled?"
+                            description="You can still view the message later, but it will be marked handled."
+                            submitLabel="Mark handled"
+                          >
+                            Mark handled
+                          </ConfirmSubmitButton>
                         </form>
                       )}
                     </TableCell>
@@ -339,7 +388,13 @@ export default async function AdminHome() {
                     <Input id="areaEdit" name="area" placeholder="Helsinki" />
                   </div>
                   <div className="sm:col-span-6">
-                    <Button type="submit">Save changes</Button>
+                  <ConfirmSubmitButton
+                      title="Save changes?"
+                      description="This updates the user record with the provided values."
+                      submitLabel="Save changes"
+                    >
+                      Save changes
+                    </ConfirmSubmitButton>
                   </div>
                 </form>
               </div>
@@ -367,7 +422,19 @@ export default async function AdminHome() {
                     <Input id="confirmWord" name="confirm" placeholder="type ERASE" />
                   </div>
                   <div className="sm:col-span-6">
-                    <Button type="submit" variant="destructive">Erase now</Button>
+                  <ConfirmSubmitButton
+                      variant="destructive"
+                      destructive
+                      title="Erase user permanently?"
+                      description={
+                        <>
+                          This cannot be undone. The user profile and related SMS queue/log entries will be permanently deleted.
+                        </>
+                      }
+                      submitLabel="Erase now"
+                    >
+                      Erase now
+                    </ConfirmSubmitButton>
                   </div>
                 </form>
               </div>

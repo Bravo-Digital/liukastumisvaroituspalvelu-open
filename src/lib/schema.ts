@@ -12,12 +12,10 @@ export const warningsTable = pgTable("warnings", {
 
 export const feedbackTable = pgTable("feedback", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar("name", { length: 256 }),
   email: varchar("email", { length: 256 }),
   category: varchar("category", { length: 50 }).notNull(),
   subject: varchar("subject", { length: 512 }).notNull(),
   message: text("message").notNull(),
-  contactBack: boolean("contact_back").notNull().default(false),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   status: varchar("status", { length: 20 }).notNull().default("pending"),
 });
@@ -31,6 +29,12 @@ export const usersTable = pgTable("users", {
   language: varchar("language", { length: 2 }).notNull().default("fi"),
 });
 
+export const adminSettings = pgTable("admin_settings", {
+  id: integer("id").primaryKey().default(1), // always 1
+  mfaEnabled: boolean("mfa_enabled").notNull().default(false),
+  mfaSecret: text("mfa_secret"), // Base32 secret for TOTP
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
 
 export const smsLogsTable = pgTable("sms_logs", {
   id: serial("id").primaryKey(),

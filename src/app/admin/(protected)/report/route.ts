@@ -63,7 +63,6 @@ export async function GET(req: NextRequest) {
       category: feedbackTable.category,
       subject: feedbackTable.subject,
       message: feedbackTable.message,
-      contactBack: feedbackTable.contactBack,
       status: feedbackTable.status,
     })
     .from(feedbackTable)
@@ -109,7 +108,6 @@ export async function GET(req: NextRequest) {
     "Category",
     "Subject",
     "Message",
-    "Contact Back",
     "Status",
   ]);
 
@@ -122,7 +120,6 @@ export async function GET(req: NextRequest) {
       r.category ?? "",
       r.subject ?? "",
       r.message ?? "",
-      r.contactBack ?? false,
       r.status ?? "",
     ]);
   }

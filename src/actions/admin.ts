@@ -1,33 +1,120 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { setAdminCookie, clearAdminCookie, getAdminSession } from "@/lib/adminAuth";
 import { db } from "@/lib/db";
 import { usersTable, warningsTable, smsQueueTable } from "@/lib/schema";
 import { desc, and, count, eq, gte, lte } from "drizzle-orm";
 import { baseMessageByLang, formatStampForMessage, isImmediateHour, nextRunAtForHour } from "@/lib/smsUtil";
 import { feedbackTable } from "@/lib/schema";
+import {
+  setAdminCookie, clearAdminCookie, getAdminSession,
+  setPending2faCookie, clearPending2faCookie, hasPending2faCookie
+} from "@/lib/adminAuth";
+import { getAdminMfa, saveAdminMfaEnabled, saveAdminMfaSecret } from "@/lib/adminMfa";
+import { newTotpSecret, totpUri, verifyTotp } from "@/lib/totp";
+import QRCode from "qrcode";
 import { revalidatePath } from "next/cache";
 
 export type LoginState = { error?: string | null };
 
-// SIGN IN
-export async function adminSignIn(_: any, formData: FormData) {
+///
+// STEP 1: password
+//
+export async function adminStartSignIn(_: any, formData: FormData) {
   const username = String(formData.get("username") || "");
   const password = String(formData.get("password") || "");
-  if (
+
+  const ok =
     username === (process.env.ADMIN_USERNAME || "") &&
-    password === (process.env.ADMIN_PASSWORD || "")
-  ) {
+    password === (process.env.ADMIN_PASSWORD || "");
+
+  if (!ok) return { error: "Invalid credentials" };
+
+  const mfa = await getAdminMfa();
+
+  if (mfa?.mfaEnabled && mfa.mfaSecret) {
+    await setPending2faCookie();
+    redirect("/admin/login/2fa");
+  } else {
     await setAdminCookie(username);
     redirect("/admin");
   }
-  return { error: "Invalid credentials" };
 }
+
+//
+// STEP 2: verify TOTP
+//
+export async function adminVerifyTotp(_: any, formData: FormData) {
+  const hasPending = await hasPending2faCookie();
+  if (!hasPending) return { error: "Session expired. Please sign in again." };
+
+  const code = String(formData.get("code") || "").replace(/\s+/g, "");
+  const mfa = await getAdminMfa();
+
+  if (!mfa?.mfaEnabled || !mfa.mfaSecret) {
+    return { error: "2FA is not enabled." };
+  }
+
+  const valid = verifyTotp(mfa.mfaSecret, code);
+  if (!valid) return { error: "Invalid code" };
+
+  await clearPending2faCookie();
+  await setAdminCookie(process.env.ADMIN_USERNAME || "admin");
+  redirect("/admin");
+}
+
+//
+// Admin: 2FA setup (only when already logged in)
+//
+export async function createMfaEnrollment() {
+  const session = await getAdminSession();
+  if (!session) throw new Error("Unauthorized");
+
+  const current = await getAdminMfa();
+  const secret = current?.mfaSecret ?? newTotpSecret();
+  if (!current?.mfaSecret) {
+    await saveAdminMfaSecret(secret);
+  }
+
+  const issuer = "Liukasbotti Admin";
+  const label = process.env.ADMIN_USERNAME || "admin";
+  const uri = totpUri({ secret, issuer, label });
+
+  const qrDataUrl = await QRCode.toDataURL(uri);
+  return { secret, uri, qrDataUrl };
+}
+export async function finalizeMfaEnable(formData: FormData) {
+  const session = await getAdminSession();
+  if (!session) throw new Error("Unauthorized");
+
+  const code = String(formData.get("code") || "").replace(/\s+/g, "");
+  const mfa = await getAdminMfa();
+  if (!mfa?.mfaSecret) throw new Error("No secret to verify");
+
+  if (!verifyTotp(mfa.mfaSecret, code)) {
+    return { error: "Invalid code" };
+  }
+
+  await saveAdminMfaEnabled(true);
+  revalidatePath("/admin/2fa");
+  return { ok: true };
+}
+
+export async function disableMfa() {
+  const session = await getAdminSession();
+  if (!session) throw new Error("Unauthorized");
+
+  await saveAdminMfaEnabled(false);
+  await saveAdminMfaSecret(null);
+  revalidatePath("/admin/2fa");
+  return { ok: true };
+}
+
 
 // SIGN OUT
 export async function adminSignOut() {
   await clearAdminCookie();
+  await clearPending2faCookie();
   redirect("/admin/login");
 }
 

@@ -46,7 +46,7 @@ const createTransporter = () => {
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port,
-    secure, // 587 => false (STARTTLS), 465 => true (SMTPS)
+    secure,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
