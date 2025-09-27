@@ -58,7 +58,6 @@ export async function GET(req: NextRequest) {
     .select({
       id: feedbackTable.id,
       createdAt: feedbackTable.createdAt,
-      name: feedbackTable.name,
       email: feedbackTable.email,
       category: feedbackTable.category,
       subject: feedbackTable.subject,
@@ -103,7 +102,6 @@ export async function GET(req: NextRequest) {
   pushRow(lines, [
     "Feedback ID",
     "Created At",
-    "Name",
     "Email",
     "Category",
     "Subject",
@@ -115,7 +113,6 @@ export async function GET(req: NextRequest) {
     pushRow(lines, [
       r.id,
       r.createdAt?.toISOString?.() ?? "",
-      r.name ?? "",
       r.email ?? "",
       r.category ?? "",
       r.subject ?? "",
