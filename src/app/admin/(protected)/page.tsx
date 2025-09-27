@@ -287,7 +287,7 @@ export default async function AdminHome() {
                         {fb.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>{fb.name || "—"}</TableCell>
+                    <TableCell>{fb.subject || "—"}</TableCell>
                     <TableCell className="truncate">{fb.email || "—"}</TableCell>
                     <TableCell>
                       <div className="font-medium">{fb.subject}</div>
