@@ -131,7 +131,7 @@ export default function SubscribePage() {
                 </div>
                 
                 {/* Right Column - Setup Form */}
-                <Card className="lg:col-span-2 flex flex-col min-h-0">
+                <Card className="md:col-span-2 flex flex-col min-h-0">
                     <CardHeader className="pb-4 flex-shrink-0">
                         <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
                             {selectedOptionData?.icon}
