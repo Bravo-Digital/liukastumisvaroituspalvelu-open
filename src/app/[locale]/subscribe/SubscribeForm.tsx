@@ -58,7 +58,7 @@ export default function SubscribeForm() {
       </div>
 
       {/* Right Column */}
-      <Card className="lg:col-span-2">
+      <Card className="md:col-span-2">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-base md:text-lg">
             {selectedOptionData?.icon}
