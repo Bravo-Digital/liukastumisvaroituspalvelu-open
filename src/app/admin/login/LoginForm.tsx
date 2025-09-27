@@ -1,7 +1,8 @@
+// src/app/admin/login/LoginForm.tsx
 "use client";
 
 import { useFormState, useFormStatus } from "react-dom";
-import { adminStartSignIn, type LoginState } from "@/actions/admin";
+import { adminSignIn, type LoginState } from "@/actions/admin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { Label } from "@/components/ui/label";
 const initialState: LoginState = { error: null };
 
 export default function LoginForm() {
-  const [state, formAction] = useFormState(adminStartSignIn, initialState);
+  const [state, formAction] = useFormState(adminSignIn, initialState);
   const { pending } = useFormStatus();
 
   return (
@@ -34,7 +35,7 @@ export default function LoginForm() {
           </form>
         </CardContent>
       </Card>
-      <p className="mt-2 text-xs text-muted-foreground">This page uses cookies.</p>
+      <p>This page uses cookies.</p>
     </div>
   );
 }

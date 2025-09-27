@@ -40,13 +40,9 @@ export const smsLogsTable = pgTable("sms_logs", {
   status: varchar("status", { length: 20 }).notNull(),
   error: text("error"), 
 });
-export const adminSettings = pgTable("admin_settings", {
-  id: integer("id").primaryKey().default(1), 
-  mfaEnabled: boolean("mfa_enabled").notNull().default(false),
-  mfaSecret: text("mfa_secret"), // Base32 secret for TOTP
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
-export const smsQueueTable = pgTable("sms_queue",{
+export const smsQueueTable = pgTable(
+  "sms_queue",
+  {
     id: serial("id").primaryKey(),
     warningId: varchar("warning_id", { length: 256 }).notNull(),
     userId: integer("user_id").notNull(),
