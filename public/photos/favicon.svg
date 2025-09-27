@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <style>
+      .bg { fill: #2563eb; }
+      .fg { stroke: #ffffff; stroke-width: 64; stroke-linecap: round; }
+      .fgfill { fill: #ffffff; }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="512" height="512" rx="72" ry="72"/>
+  <!-- Snowflake -->
+  <g class="fg">
+    <line x1="96" y1="256" x2="416" y2="256"/>
+    <line x1="256" y1="96" x2="256" y2="416"/>
+    <line x1="145" y1="145" x2="367" y2="367"/>
+    <line x1="367" y1="145" x2="145" y2="367"/>
+    <!-- extra two arms via rotate 60deg already covered by above -->
+  </g>
+  <!-- Exclamation -->
+  <rect class="fgfill" x="224" y="170" width="64" height="172" rx="32" ry="32"/>
+  <circle class="fgfill" cx="256" cy="360" r="32"/>
+</svg>

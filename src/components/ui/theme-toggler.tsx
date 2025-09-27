@@ -1,37 +1,37 @@
-"use client"
+"use client";
 
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
-import { Moon, Sun } from "lucide-react"
-import { useEffect, useState } from "react"
-import { Skeleton } from "./skeleton"
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Moon, Sun } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function ThemeToggler() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState<boolean>(false)
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const t = useTranslations("Navbar");
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  useEffect(() => setMounted(true), []);
 
-  if (!mounted) return <div className="w-9 h-9 aspect-square"/>
-  
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
+  const label = t("ThemeToggler");
+
+  if (!mounted) {
+    return (
+      <Button variant="ghost" size="icon" aria-label={label} disabled>
+        <Sun className="h-5 w-5 opacity-0" />
+      </Button>
+    );
   }
 
+  const isDark = resolvedTheme === "dark";
   return (
     <Button
-      size={"icon"}
-      variant={"link"}
-      onClick={toggleTheme}
-      className={"group cursor-pointer"}
+      variant="ghost"
+      size="icon"
+      aria-label={label}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
     >
-      {theme === "dark" ? (
-        <Sun className="transition-all duration-200 group-hover:fill-current" />
-      ) : (
-        <Moon className="transition-all duration-200 group-hover:fill-current" />
-      )}
+      {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
-  )
+  );
 }

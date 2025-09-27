@@ -1,74 +1,248 @@
 {
   "Navbar": {
     "Warnings": "Varoitukset",
-    "API": "Kehittäjille",
+    "developers": "Kehittäjille",
     "Feedback": "Anna palautetta",
-    "Subscribe": "Tilaa varoitukset"
+    "Subscribe": "Tilaa varoitukset",
+    "SkipToContent": "Mene sisältöön",
+    "OpenMenu": "Avaa valikko",
+    "Menu": "Valikko",
+    "ThemeToggler": "Vaihda teemaa"
   },
   "Footer": {
-    "slogan": "Liukkaan jalankulkusään varoitukset suoraan puhelimeesi.",
     "links": "Linkit",
-    "gdpr": "Tietosuojaseloste"
+    "slogan": "Liukkaan jalankulkusään varoitukset suoraan puhelimeesi.",
+    "gdpr": "Tietosuojaseloste",
+    "developers": "Kehittäjille",
+    "feedback": "Anna palautetta"
   },
   "Warning": {
-    "title": "Liukastumisvaroituspalvelu",
+    "title": "Liukasbotti",
     "description": "Tämä palvelu tarjoaa ajantasaiset liukastumisvaroitukset Helsingissä ja Uudellamaalla.",
     "subscribeButton": "Tilaa",
     "feedbackButton": "Anna palautetta"
   },  
   
-    "FeedbackForm": {
-      "title": "Anna palautetta",
-      "description": "Oletko tyytyväinen liukastumisvaroituspalveluun? Mitä haluaisit parannettavan?",
-      "nameLabel": "Nimi",
-      "nameOptional": "(valinnainen)",
-      "emailLabel": "Sähköposti",
-      "emailRequiredIndicator": "*",
-      "emailOptional": "(valinnainen)",
-      "wantsResponseLabel": "Haluaisin vastauksen palautteeseeni",
-      "wantsResponseDescOn": "Vastaamme sähköpostiisi",
-      "wantsResponseDescOff": "Valitse tämä, jos haluat, että otamme sinuun yhteyttä",
-      "feedbackLabel": "Palaute",
-      "feedbackRequiredIndicator": "*",
-      "feedbackPlaceholder": "Kerro meille, mitä mieltä olet, mitä voisi parantaa tai muita ehdotuksia...",
-      "feedbackCharCount": "/1000 merkkiä",
-      "submitButton": "Lähetä palaute",
-      "submittingButton": "Lähetetään palautetta...",
-      "submitSuccessTitle": "Palaute lähetetty onnistuneesti!",
-      "submitSuccessMessage": "Kiitos palautteestasi.",
-      "submitSuccessEmailMessage": "📧 Tarkista sähköpostisi osoitteessa {{email}} vahvistusta varten.",
-      "submitError": "Tapahtui virhe. Yritä uudelleen.",
-      "requiredFieldsText": "* Pakolliset kentät"
+  "FeedbackForm": {
+    "title": "Anna palautetta",
+    "description": "Oletko tyytyväinen Liukasbottiin? Mitä haluaisit parannettavan?",
+    "nameLabel": "Nimi",
+    "nameOptional": "(valinnainen)",
+    "emailLabel": "Sähköposti",
+    "emailRequiredIndicator": "*",
+    "emailOptional": "(valinnainen)",
+    "wantsResponseLabel": "Haluaisin vastauksen palautteeseeni",
+    "wantsResponseDescOn": "Vastaamme sähköpostiisi",
+    "wantsResponseDescOff": "Valitse tämä, jos haluat, että otamme sinuun yhteyttä",
+    "feedbackLabel": "Palaute",
+    "feedbackSubmitted": "Kiitos palautteestasi!",
+    "feedbackRequiredIndicator": "*",
+    "feedbackPlaceholder": "Kerro meille, mitä mieltä olet, mitä voisi parantaa tai muita ehdotuksia...",
+    "feedbackCharCount": "/1000 merkkiä",
+    "submitButton": "Lähetä palaute",
+    "submittingButton": "Lähetetään palautetta...",
+    "submitSuccessTitle": "Palaute lähetetty onnistuneesti!",
+    "submitSuccessMessage": "Kiitos palautteestasi.",
+    "submitError": "Tapahtui virhe. Yritä uudelleen.",
+    "requiredFieldsText": "* Pakolliset kentät",
+    "emailRequiredWhenAskingForResponse": "Sähköpostiosoite on pakollinen, jos haluat vastauksen palautteeseesi",
+    "enterValidEmail": "Syötä kelvollinen sähköpostiosoite"
+  },
+  
+    "FeedbackEmail": {
+      "subject": "Olemme vastaanottaneet palautteesi – Kiitos!",
+      "greeting": "Hei {name},",
+      "there": "sinä",
+      "intro": "Olemme vastaanottaneet palautteesi ja arvostamme, että autat meitä parantamaan palvelua.",
+      "yourFeedback": "Palautteesi",
+      "noreplyNote": "Huom! Älä vastaa tähän viestiin. Jos sinulla on lisäkysymyksiä, jätä uusi palautelomake verkkosivullamme.",
+      "submittedOn": "Lähetetty: {date}",
+      "thanksTitle": "Kiitos palautteestasi!"
     },
-    "Homepage": {
-      "Hero": {
-        "title1/2": "Vältä liukastumiset",
-        "title2/2": "Liukasbotilla",
-        "desc": "Saat ilmoitukset erittäin liukkaasta jalankulkusäästä suoraan puhelimeesi. Palvelu on ilmainen.",
-        "subscibe": "Tilaa varoitukset"
-      },
-      "InfoBox": {
-        "title": "Tietoa Liukasbotista",
-        "text": "Liukasbotin idea on tiedottaa sen käyttäjiä silloin, kun ulkona on erityisen liukasta, jotta liukastumisilta vältyttäisiin.",
-        "subtitle": "Toimintaperiaatteet",
-        "p1": "Saat ilmoituksen puhelimeesi, kun ulkona on poikkeuksellisen liukasta, ja liikkuminen vaatii erityistä varovaisuutta.",
-        "p2": "Varoitus lähetetään liukkaan sään alussa.",
-        "p3": "Palvelu on täysin ilmainen."
-      },
-      "FAQ": {
-        "title": "Usein kysytyt kysymykset",
-        "q1": "Miten saan varoitukset puhelimeeni?",
-        "a1/1": "Voit tilata varoitukset puhelimeesi ",
-        "from_here": "täältä",
-        "a1/2": ". Kun poikkeuksellista liukkautta havaitaan, saat varoituksen suoraan puhelimeesi.",
-        "q2": "Onko palvelu ilmainen?",
-        "a2": "Kyllä, palvelu on täysin ilmainen.",
-        "q3": "Onko palvelu käytössä vain Helsingissä?",
-        "a3": "Tällä hetkellä liukkausvaroitukset ovat vain Helsingin alueelta.",
-        "q4": "Kuka vastaa Liukasbotin ylläpidosta?",
-        "a4": "Liukasbotin ylläpidosta vastaa Bravo Digital Oy."
+    "FeedbackReturn": {
+      "success": "Palautteesi on lähetetty. Kiitos, että autat meitä parantamaan!",
+      "successWithResponse": "Palautteesi on lähetetty! Lähetimme vahvistuksen sähköpostiisi ja palaamme pian.",
+      "errorGeneric": "Tapahtui virhe palautetta lähetettäessä. Yritä uudelleen."
+    },
+  
+  
+"Homepage": {
+  "Hero": {
+    "title1/2": "Vältä liukastumiset",
+    "title2/2": "Liukasbotilla",
+    "desc": "Saat ilmoitukset erittäin liukkaasta jalankulkusäästä suoraan puhelimeesi. Palvelu on ilmainen.",
+    "subscibe": "Tilaa varoitukset"
+  },
+  "InfoBox": {
+    "title": "Tietoa Liukasbotista",
+    "text": "Liukasbotin idea on tiedottaa sen käyttäjiä silloin, kun ulkona on erityisen liukasta, jotta liukastumisilta vältyttäisiin.",
+    "subtitle": "Toimintaperiaatteet",
+    "p1": "Saat ilmoituksen puhelimeesi, kun ulkona on poikkeuksellisen liukasta, ja liikkuminen vaatii erityistä varovaisuutta.",
+    "p2": "Varoitus lähetetään liukkaan sään alussa.",
+    "p3": "Palvelu on täysin ilmainen."
+  },
+  "FAQ": {
+    "title": "Usein kysytyt kysymykset",
+    "q1": "Miten saan varoitukset puhelimeeni?",
+    "from_here": "Tilaa varoitukset puhelimeesi täältä.",
+    "a1/1": "Varoitukset toimitetaan tekstiviesteillä. Kun poikkeuksellista liukkautta havaitaan, saat varoituksen suoraan puhelimeesi.",
+    "q2": "Onko palvelu ilmainen?",
+    "a2": "Kyllä, palvelu on täysin ilmainen.",
+    "q3": "Onko palvelu käytössä vain Helsingissä?",
+    "a3": "Tällä hetkellä liukkausvaroitukset ovat vain Helsingin alueelta.",
+    "q4": "Kuka vastaa Liukasbotin ylläpidosta?",
+    "a4": "Liukasbotin ylläpidosta vastaa Bravo Digital Oy.",
+    "q5": "En halua enää vastaanottaa varoituksia. Miten voin poistua palvelusta?",
+    "a5": "Voit poistua palvelusta lähettämällä viestin STOP numeroon 050 902 4308."
+  }
+},
+"WarningsPage": {
+  "active": {
+    "title": "Aktiivinen liukkausvaroitus",
+    "description_singular": "Helsingissä on poikkeuksellisen liukasta.",
+    "description_plural": "Helsingissä on poikkeuksellisen liukasta."
+  },
+  "none": {
+    "title": "Ei havaittua liukkautta",
+    "description": "Tällä hetkellä ei ole aktiivisia varoituksia."
+  }
+},
+"Statistics": {
+  "title": "Tilastot talvikaudelta",
+  "warnings": "Varoituksia",
+  "users": "Aktiivisia tilaajia"
+},
+
+"DataTable": {
+  "date": "Päivämäärä",
+  "time": "Kellonaika",
+  "area": "Kaupunki",
+  "loading": "Ladataan...",
+  "empty": "Ei varoituksia"
+},
+
+"subscribe": {
+  "title": "Tilaa liukastumisvaroitukset",
+  "subtitle": "Tilaa tekstiviestivaroitukset Helsingistä. Liittyminen tapahtuu lähettämällä viesti alla olevien ohjeiden mukaan.",
+  "subscribeWith": "Tilaa",
+  "instructions": "Ohjeet:",
+  "options": {
+    "sms": {
+      "label": "Tekstiviestivaroitukset",
+      "guide": {
+        "intro": "Tilaat palvelun näin:",
+        "step1": "Lähetä tekstiviesti numeroon",
+        "number": "050 902 4308",
+        "step2": "Viestin sisältö:",
+        "keyword": "LIITY HELSINKI",
+        "step3": "Jos haluat saada varoitukset tiettyyn kellonaikaan, lisää viestin loppuun tunti (0–23, Suomen aikaa).",
+        "examplesTitle": "Esimerkkejä:",
+        "ex1": "LIITY HELSINKI",
+        "ex1Note": "Saat varoitukset heti, kun niitä on.",
+        "ex2": "LIITY HELSINKI 8",
+        "ex2Note": "Saat varoitukset klo 08:00.",
+        "ex3": "LIITY HELSINKI 18",
+        "ex3Note": "Saat varoitukset klo 18:00.",
+        "notesTitle": "Huomio:",
+        "note1": "Aika annetaan 24 h muodossa (0–23) ja on Suomen aikaa (Europe/Helsinki).",
+        "note2": "Voit poistua palvelusta milloin tahansa lähettämällä viestin STOP samaan numeroon."
       }
     }
-  
-  
+  },
+  "acceptTerms": "Hyväksyn",
+  "terms": "käyttöehdot",
+  "privacy": "tietosuojaselosteen",
+  "and": "ja",
+  "verifyCode": "Vahvista koodi",
+  "subscribeButton": "Tilaa ilmoitukset"
+},
+
+
+      
+"SEO": {
+  "title": "Liukasbotti - Vältä loukkaantumiset talvella",
+  "description": "Tilaa ilmaiset liukastumisvaroitukset Helsingissä ja pysy pystyssä talvella.",
+  "feedbackTitle": "Anna palautetta - Liukasbotti",
+  "feedbackDescription": "Pidätkö Liukasbotista? Kerro meille, miten voimme parantaa palvelua!",
+  "warningsTitle": "Varoitukset - Liukasbotti",
+  "warningsDescription": "Katso aiempien talvien liukastumisvaroitukset.",
+  "subscribeTitle": "Tilaa liukastumisvaroitukset - Liukasbotti",
+  "subscribeDescription": "Tilaa ilmaiset liukastumisvaroitukset Helsingissä suoraan puhelimeesi!",
+    "gdprTitle": "Tietosuojaseloste – Liukasbotti",
+    "gdprDescription": "Tietosuojaseloste Liukasbotin henkilötietojen käsittelystä. Rekisterinpitäjä: Helsingin kaupunki (Kaupunkiympäristön toimiala)."
+},
+
+  "GDPR": {
+    "title": "Tietosuojaseloste",
+    "lastUpdated": "Viimeksi päivitetty: {date}",
+    "controller": {
+      "title": "Rekisterinpitäjä",
+      "name": "Helsingin kaupunki – Kaupunkiympäristön toimiala (KYMP)",
+      "scope": "Tämä seloste koskee Liukasbotti-palvelussa tapahtuvaa henkilötietojen käsittelyä."
+    },
+    "purpose": {
+      "title": "Käsittelyn tarkoitus",
+      "lead": "Liukasbotti lähettää liukkaus- ja varovaisuusvaroituksia tekstiviesteillä. Käsittelemme vain vähimmäismäärän tietoja viestien toimittamiseksi.",
+      "items": {
+        "delivery": "Varoitusviestien toimittaminen ja kohdentaminen.",
+        "subscription": "Tilauksen hallinta (liittyminen/poistuminen, ajastus).",
+        "logging": "Tekninen lokitus ja häiriötilanteiden selvitys.",
+        "feedback": "Mahdollisen palautteen vastaanotto ja käsittely."
+      }
+    },
+    "dataCategories": {
+      "title": "Käsiteltävät henkilötiedot",
+      "table": {
+        "head": { "group": "Tietoryhmä", "desc": "Kuvaus" },
+        "rows": {
+          "contact": { "group": "Yhteystiedot", "desc": "Puhelinnumero (tekstiviestien lähettämistä varten)" },
+          "subscription": { "group": "Tilaukseen liittyvät tiedot", "desc": "Alue/paikkakunta, kielivalinta (fi/sv/en), haluttu lähetysaika" },
+          "logs": { "group": "Tekniset lokit", "desc": "Viestilokit (lähetetty viesti, tila, virheet)" },
+          "feedback": { "group": "Palaute (valinnainen)", "desc": "Nimi, sähköposti, aihe/luokka ja viesti; mahdollinen yhteydenottopyyntö" },
+          "special": { "group": "Arkaluonteiset tiedot", "desc": "Ei käsitellä." }
+        }
+      }
+    },
+    "legal": {
+      "title": "Lähteet, oikeusperusteet ja vastaanottajat",
+      "sources": { "title": "Henkilötietojen lähteet", "desc": "Tiedot saadaan rekisteröidyltä (liittymisviesti, palautelomake)." },
+      "basis": {
+        "title": "Käsittelyn oikeusperuste",
+        "desc": "Liittyminen ja viestintä perustuvat suostumukseen. Tekninen lokitus on tarpeen palvelun tuottamiseen, tietoturvaan ja toiminnan varmistamiseen (oikeutettu etu)."
+      },
+      "recipients": {
+        "title": "Vastaanottajat ja käsittelijät",
+        "table": {
+          "head": { "party": "Taho", "role": "Rooli", "location": "Sijainti" },
+          "rows": {
+            "bravo": { "party": "Bravo Digital Oy (3527863-5)", "role": "Palvelun tuottaja / henkilötietojen käsittelijä (Liukasbotti)", "location": "Suomi (palvelintila Suomessa)" },
+            "gateway": { "party": "GatewayAPI A/S", "role": "Tekstiviestien välityspalvelu (alikäsittelijä)", "location": "Saksa (palvelimet)" }
+          }
+        }
+      },
+      "notice": "Tietoja ei siirretä EU/ETA-alueen ulkopuolelle. Palvelinten ja varmuuskopioiden sijainti: Saksa (SMS-palvelu) ja Suomi (Bravo Digitalin palvelintila)."
+    },
+    "retention": {
+      "title": "Säilytysajat ja käsittelyn kesto",
+      "desc": "Henkilötietoja säilytetään sopimuksen keston ja lakisääteisten velvoitteiden ajan kaupungin arkistointiohjeiden mukaisesti."
+    },
+    "rights": {
+      "title": "Rekisteröidyn oikeudet",
+      "items": {
+        "access": "oikeus saada pääsy omiin tietoihin (tarkastusoikeus)",
+        "rectification": "oikeus tietojen oikaisemiseen ja päivittämiseen",
+        "erasure": "oikeus tietojen poistamiseen, kun peruste täyttyy",
+        "restriction": "oikeus käsittelyn rajoittamiseen tietyissä tilanteissa",
+        "object": "oikeus vastustaa käsittelyä, kun perusteena on oikeutettu etu",
+        "withdraw": "oikeus peruuttaa suostumus milloin tahansa",
+        "complaint": "oikeus tehdä valitus valvontaviranomaiselle"
+      }
+    },
+    "contact": {
+      "title": "Yhteydenotot tietosuojaan liittyen",
+      "primary": "Ensisijaiset yhteydenotot: email(at)bravodigital.fi.",
+      "instructions": "Voit pyytää pääsyä tietoihisi, oikaista tietoja, peruuttaa suostumuksesi tai esittää muita tietosuojaan liittyviä pyyntöjä ottamalla yhteyttä rekisterinpitäjään."
+    },
+    "cookies": "Evästeet"
+  }
 }

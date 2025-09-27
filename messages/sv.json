@@ -1,17 +1,23 @@
 {
   "Navbar": {
     "Warnings": "Varningar",
-    "API": "API",
+    "developers": "För utvecklare",
     "Feedback": "Ge feedback",
-    "Subscribe": "Prenumerera"
+    "Subscribe": "Prenumerera",
+    "SkipToContent": "Gå till innehåll",
+    "OpenMenu": "Öppna menyn",
+    "Menu": "Meny",
+      "ThemeToggler": "Växla tema"
   },
   "Footer": {
-  "slogan": "Halkvarningar direkt till din telefon.",
   "links": "Länkar",
-  "gdpr": "Integritetspolicy"
+  "slogan": "Halkvarningar direkt till din telefon.",
+  "developers": "För utvecklare",
+  "gdpr": "Dataskyddsbeskrivning",
+  "feedback": "Ge feedback"
 },
   "Warning": {
-    "title": "Halkvarningsservice",
+    "title": "Liukasbotti",
     "description": "Halkvarningsservice tillhandahåller extremt hala gångbanvarningar via textmeddelande",
     "area": "Område",
     "validFrom": "Gäller från",
@@ -25,6 +31,7 @@
   "emailLabel": "E-post",
   "emailRequiredIndicator": "*",
   "emailOptional": "(valfritt)",
+  "feedbackSubmitted": "Tack för feedbacken!",
   "wantsResponseLabel": "Jag vill ha svar på min feedback",
   "wantsResponseDescOn": "Vi svarar på din e-post",
   "wantsResponseDescOff": "Välj detta om du vill att vi kontaktar dig",
@@ -36,10 +43,29 @@
   "submittingButton": "Skickar feedback...",
   "submitSuccessTitle": "Feedback skickad!",
   "submitSuccessMessage": "Tack för din feedback.",
-  "submitSuccessEmailMessage": "📧 Kontrollera din e-post på {{email}} för bekräftelse.",
   "submitError": "Ett fel inträffade. Försök igen.",
-  "requiredFieldsText": "* Obligatoriska fält"
+  "requiredFieldsText": "* Obligatoriska fält",
+  "emailRequiredWhenAskingForResponse": "E-postadress krävs om du vill ha svar på din feedback",
+  "enterValidEmail": "Ange en giltig e-postadress"
 },
+
+  "FeedbackEmail": {
+    "subject": "Vi har mottagit din feedback – Tack!",
+    "greeting": "Hej {name},",
+    "there": "du",
+    "intro": "Vi har mottagit din feedback och uppskattar att du hjälper oss att bli bättre.",
+    "yourFeedback": "Din feedback",
+    "noreplyNote": "Observera! Svara inte på detta meddelande. Om du har fler frågor, skicka ett nytt formulär på vår webbplats.",
+    "submittedOn": "Skickat: {date}",
+    "thanksTitle": "Tack för din feedback!"
+  },
+  "FeedbackReturn": {
+    "success": "Din feedback har skickats. Tack för att du hjälper oss att förbättra!",
+    "successWithResponse": "Din feedback har skickats! Vi har skickat en bekräftelse till din e-post och hör av oss snart.",
+    "errorGeneric": "Ett fel inträffade när din feedback skickades. Försök igen."
+  },
+
+
 "Homepage": {
   "Hero": {
   "title1/2": "Undvik halkolyckor med",
@@ -58,17 +84,166 @@
 "FAQ": {
   "title": "Vanliga frågor",
   "q1": "Hur får jag varningar till min telefon?",
-  "a1/1": "Du kan prenumerera på varningar till din telefon ",
-  "from_here": "här",
-  "a1/2": ". När ovanlig halka upptäcks får du en varning direkt till din telefon.",
+  "from_here": "Prenumerera på varningar på din telefon här.",
+  "a1/1": "Varningar skickas via sms. När exceptionell halthet upptäcks får du en varning direkt till din telefon.",
   "q2": "Är tjänsten gratis?",
   "a2": "Ja, tjänsten är helt gratis.",
   "q3": "Är tjänsten endast tillgänglig i Helsingfors?",
   "a3": "För tillfället finns halkvarningarna endast för Helsingforsområdet.",
   "q4": "Vem ansvarar för underhållet av Liukasbotti?",
-  "a4": "Liukasbotti underhålls av Bravo Digital Oy."
+  "a4": "Liukasbotti underhålls av Bravo Digital Ab.",
+  "q5": "Jag vill inte längre ta emot varningar. Hur kan jag avsluta prenumerationen?",
+  "a5": "Du kan avsluta prenumerationen genom att skicka meddelandet STOP till 050 902 4308."
 }
+},
+"WarningsPage": {
+  "active": {
+  "title": "Aktiv halkvarning",
+  "description_singular": "Helsingfors är exceptionellt halt.",
+  "description_plural": "Helsingfors är exceptionellt halt."
+  },
+  "none": {
+  "title": "Ingen halka upptäckt",
+  "description": "Det finns för närvarande inga aktiva varningar."
+  }
+},
+"Statistics": {
+  "title": "Statistik för vintersäsongen",
+  "warnings": "Varningar",
+  "users": "Aktiva prenumeranter"
+},
+
+  "DataTable": {
+    "date": "Datum",
+    "time": "Tid",
+    "area": "Stad",
+    "loading": "Laddar...",
+    "empty": "Inga varningar"
+  },
+"subscribe": {
+    "title": "Prenumerera på halkvarningar",
+    "subtitle": "Prenumerera på SMS-varningar för Helsingfors. Gå med genom att skicka ett meddelande exakt enligt instruktionerna nedan.",
+    "subscribeWith": "Prenumerera",
+    "instructions": "Instruktioner:",
+    "options": {
+      "sms": {
+        "label": "SMS-varningar",
+        "guide": {
+          "intro": "Gör så här:",
+          "step1": "Skicka ett textmeddelande till",
+          "number": "050 902 4308",
+          "step2": "Meddelandets text:",
+          "keyword": "DELTA HELSINKI",
+          "step3": "Om du vill få varningar en viss tid, lägg till timmen i slutet (0–23, finsk tid).",
+          "examplesTitle": "Exempel:",
+          "ex1": "DELTA HELSINKI",
+          "ex1Note": "Du får varningar så snart de finns.",
+          "ex2": "DELTA HELSINKI 8",
+          "ex2Note": "Du får varningar kl. 08:00.",
+          "ex3": "DELTA HELSINKI 18",
+          "ex3Note": "Du får varningar kl. 18:00.",
+          "notesTitle": "Observera:",
+          "note1": "Tiden anges i 24-timmarsformat (0–23), Europe/Helsinki.",
+          "note2": "Du kan avsluta när som helst genom att skicka STOP till samma nummer."
+        }
+      }
+    },
+    "acceptTerms": "Jag godkänner",
+    "terms": "användarvillkoren",
+    "privacy": "dataskyddsbeskrivningen",
+    "and": "och",
+    "verifyCode": "Bekräfta koden",
+    "subscribeButton": "Beställ aviseringar"
+  },
+
+  "SEO": {
+  "title": "Liukasbotti - Undvik skador på vintern",
+  "description": "Beställ gratis halkvarningar i Helsingfors och håll dig på benen i vinter.",
+  "feedbackTitle": "Ge feedback - Liukasbotti",
+  "feedbackDescription": "Gillar du Liukasbotti? Berätta hur vi kan förbättra tjänsten!",
+  "warningsTitle": "Varningar - Slipperybot",
+  "warningsDescription": "Se halkvarningar från tidigare vintrar.",
+  "subscribeTitle": "Beställ halkvarningar - Liukasbotti",
+  "subscribeDescription": "Få gratis halkvarningar i Helsingfors direkt till din telefon!",
+  "gdprTitle": "Dataskyddsbeskrivning – Liukasbotti",
+  "gdprDescription": "Dataskyddsbeskrivning för Liukasbotti. Personuppgiftsansvarig: Helsingfors stad (Stadsmiljösektorn)."
+ 
+},
+
+
+  "GDPR": {
+    "title": "Dataskyddsbeskrivning",
+    "lastUpdated": "Senast uppdaterad: {date}",
+    "controller": {
+      "title": "Personuppgiftsansvarig",
+      "name": "Helsingfors stad – Stadsmiljösektorn (KYMP)",
+      "scope": "Denna beskrivning gäller behandlingen av personuppgifter i Liukasbotti."
+    },
+    "purpose": {
+      "title": "Ändamål",
+      "lead": "Liukasbotti skickar halkvarningar via SMS. Vi behandlar minsta möjliga mängd uppgifter.",
+      "items": {
+        "delivery": "Utskick och riktning av varningsmeddelanden.",
+        "subscription": "Hantering av prenumeration (anslutning/avslut, schemaläggning).",
+        "logging": "Teknisk loggning och felsökning.",
+        "feedback": "Mottagning och hantering av valfri feedback."
+      }
+    },
+    "dataCategories": {
+      "title": "Behandlade personuppgifter",
+      "table": {
+        "head": { "group": "Uppgiftsgrupp", "desc": "Beskrivning" },
+        "rows": {
+          "contact": { "group": "Kontaktuppgifter", "desc": "Telefonnummer (för SMS-utskick)" },
+          "subscription": { "group": "Prenumerationsuppgifter", "desc": "Område/ort, språk (fi/sv/en), önskad sändningstid" },
+          "logs": { "group": "Tekniska loggar", "desc": "Meddelandeloggar (innehåll, status, fel)" },
+          "feedback": { "group": "Feedback (valfritt)", "desc": "Namn, e-post, ämne/kategori och meddelande; ev. begäran om svar" },
+          "special": { "group": "Känsliga uppgifter", "desc": "Behandlas inte." }
+        }
+      }
+    },
+    "legal": {
+      "title": "Källor, rättslig grund och mottagare",
+      "sources": { "title": "Uppgiftskällor", "desc": "Uppgifter fås i första hand av den registrerade (anslutnings-SMS, feedbackformulär)." },
+      "basis": {
+        "title": "Rättslig grund",
+        "desc": "Anslutning och meddelanden baseras på samtycke. Teknisk loggning behövs för tjänsten, datasäkerhet och kontinuitet (berättigat intresse)."
+      },
+      "recipients": {
+        "title": "Mottagare och personuppgiftsbiträden",
+        "table": {
+          "head": { "party": "Part", "role": "Roll", "location": "Plats" },
+          "rows": {
+            "bravo": { "party": "Bravo Digital Oy (3527863-5)", "role": "Tjänsteleverantör / personuppgiftsbiträde (Liukasbotti)", "location": "Finland (hosting i Finland)" },
+            "gateway": { "party": "GatewayAPI A/S", "role": "SMS-gateway (underbiträde)", "location": "Tyskland (servrar)" }
+          }
+        }
+      },
+      "notice": "Inga överföringar utanför EU/EES. Server-/säkerhetskopiors plats: Tyskland (SMS) och Finland (Bravo Digitals hosting)."
+    },
+    "retention": {
+      "title": "Lagringstid och varaktighet",
+      "desc": "Uppgifter lagras under tjänstens varaktighet och lagstadgade skyldigheter, enligt stadens arkiveringsregler."
+    },
+    "rights": {
+      "title": "Den registrerades rättigheter",
+      "items": {
+        "access": "rätt till tillgång",
+        "rectification": "rätt till rättelse",
+        "erasure": "rätt till radering när villkoren uppfylls",
+        "restriction": "rätt till begränsning i vissa fall",
+        "object": "rätt att invända när grunden är berättigat intresse",
+        "withdraw": "rätt att återkalla samtycke när som helst",
+        "complaint": "rätt att lämna in klagomål till tillsynsmyndigheten"
+      }
+    },
+    "contact": {
+      "title": "Kontakt i dataskyddsärenden",
+      "primary": "Primär kontakt: email(at)bravodigital.fi.",
+      "instructions": "Begär tillgång, rättelse, återkalla samtycke eller gör andra dataskyddsrelaterade begäranden genom att kontakta den personuppgiftsansvarige."
+    },
+  "cookies": "Cookies"
+  }
 }
 
 
-}

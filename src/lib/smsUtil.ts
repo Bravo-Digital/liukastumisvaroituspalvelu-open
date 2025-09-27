@@ -32,9 +32,9 @@ export function formatStampForMessage(now = new Date()): string {
 
 export function baseMessageByLang(lang: string, stamp = formatStampForMessage()) {
   const msgs: Record<string, string> = {
-    fi: `[${stamp}] Varoitus: Ulkona on erittäin liukasta. Ole varovainen liikkuessasi ulkona.`,
-    en: `[${stamp}] Warning: Pedestrian conditions are very slippery. Please be careful when walking outside.`,
-    sv: `[${stamp}] Varning: Fotgängarvädret är mycket halt. Var försiktig när du är utomhus.`,
+    fi: `[${stamp}] Varoitus: Helsingissä on erittäin liukasta. Ole varovainen liikkuessasi ulkona.`,
+    en: `[${stamp}] Warning: Pedestrian conditions are very slippery in Helsinki. Please be careful when walking outside.`,
+    sv: `[${stamp}] Varning: Fotgängarvädret är mycket halt i Helsingfors. Var försiktig när du är utomhus.`,
   };
   return msgs[lang] ?? msgs.fi;
 }

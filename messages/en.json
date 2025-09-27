@@ -1,26 +1,32 @@
 {
   "Navbar": {
     "Warnings": "Warnings",
-    "API": "API",
+    "developers": "For developers",
     "Feedback": "Feedback",
-    "Subscribe": "Subscribe"
+    "Subscribe": "Subscribe",
+    "SkipToContent": "Skip to content",
+    "OpenMenu": "Open menu",
+    "Menu": "Menu",
+    "ThemeToggler": "Toggle Theme"
   },
   "Footer": {
-  "slogan": "Slippery weather alerts directly to your phone.",
   "links": "Links",
-  "gdpr": "Privacy Policy"
+  "slogan": "Slippery weather alerts directly to your phone.",
+  "gdpr": "Privacy Policy",
+  "developers":"For developers",
+  "feedback": "Feedback"
 },
 
   "Warning": {
-    "title": "Slip Warning Service",
-    "description": "Slip Warning Service provides extremely slippery pedestrian warnings via text message",
+    "title": "Liukasbotti",
+    "description": "Liukasbotti provides warnings about extremely slippery pedestrian conditions via text message",
     "area": "Area",
     "validFrom": "Valid from",
     "severity": "Severity"
   },
   "FeedbackForm": {
   "title": "Give Feedback",
-  "description": "Are you satisfied with the slip warning service? What would you like to see improved?",
+  "description": "Are you satisfied with Liukasbotti? What would you like to see improved?",
   "nameLabel": "Name",
   "nameOptional": "(optional)",
   "emailLabel": "Email",
@@ -29,6 +35,7 @@
   "wantsResponseLabel": "I would like a response to my feedback",
   "wantsResponseDescOn": "We will reply to your email",
   "wantsResponseDescOff": "Select this if you want us to contact you",
+  "feedbackSubmitted": "Thank you for your feedback!",
   "feedbackLabel": "Feedback",
   "feedbackRequiredIndicator": "*",
   "feedbackPlaceholder": "Tell us what you think, what could be improved, or any other suggestions...",
@@ -37,16 +44,37 @@
   "submittingButton": "Submitting feedback...",
   "submitSuccessTitle": "Feedback Sent Successfully!",
   "submitSuccessMessage": "Thank you for your feedback.",
-  "submitSuccessEmailMessage": "📧 Check your email at {{email}} for confirmation.",
   "submitError": "An error occurred. Please try again.",
-  "requiredFieldsText": "* Required fields"
+  "requiredFieldsText": "* Required fields",
+  "emailRequiredWhenAskingForResponse": "Email is required when requesting a response",
+  "enterValidEmail": "Please enter a valid email address",
+  "q5": "I no longer want to receive warnings. How can I unsubscribe?",
+  "a5": "You can unsubscribe by sending the message STOP to 050 902 4308."
 },
+
+  "FeedbackEmail": {
+    "subject": "We received your feedback — Thank you!",
+    "greeting": "Hi {name},",
+    "there": "there",
+    "intro": "We've received your feedback and appreciate you taking the time to help us improve.",
+    "yourFeedback": "Your Feedback",
+    "noreplyNote": "Note: Please don't reply to this email. If you have additional questions, please submit a new feedback form on our website.",
+    "submittedOn": "Submitted on: {date}",
+    "thanksTitle": "Thank you for your feedback!"
+  },
+  "FeedbackReturn": {
+    "success": "Your feedback has been submitted. Thank you for helping us improve!",
+    "successWithResponse": "Your feedback has been submitted! We've sent a confirmation to your email and will get back to you soon.",
+    "errorGeneric": "An error occurred while submitting your feedback. Please try again."
+  },
+
+
 "Homepage": {
   "Hero": {
   "title1/2": "Avoid slipping with",
   "title2/2": "Liukasbotti",
   "desc": "Get alerts about extremely slippery walking conditions directly on your phone. The service is free.",
-  "subscibe": "Subscirbe"
+  "subscibe": "Subscribe"
 },
 "InfoBox": {
   "title": "About Liukasbotti",
@@ -59,16 +87,163 @@
 "FAQ": {
   "title": "Frequently Asked Questions",
   "q1": "How do I get alerts on my phone?",
-  "a1/1": "You can subscribe to alerts on your phone ",
-  "from_here": "here",
-  "a1/2": ". When unusual slipperiness is detected, you will receive an alert directly on your phone.",
-  "q2": "Is the service free?",
-  "a2": "Yes, the service is completely free.",
+  "from_here": "You can subscribe to alerts on your phone here",
+  "a1/1": "Warnings are delivered via SMS. When unusual slipperiness is detected, you will receive an alert directly on your phone.",
+  "q2": "Is Liukasbotti free?",
+  "a2": "Yes, it is completely free.",
   "q3": "Is the service only available in Helsinki?",
   "a3": "At the moment, slipperiness alerts are only available for the Helsinki area.",
   "q4": "Who is responsible for maintaining Liukasbotti?",
-  "a4": "Liukasbotti is maintained by Bravo Digital Oy."
+  "a4": "Liukasbotti is maintained by Bravo Digital Inc.",
+  "q5": "I don't want to receive warnings anymore. How can I cancel my subscription?",
+  "a5": "You can cancel your subscription by sending the message STOP to the number 050 902 4308."
 }
+},
+"WarningsPage": {
+  "active": {
+    "title": "Active slippery warning",
+    "description_singular": "It is exceptionally slippery in Helsinki.",
+    "description_plural": "It is exceptionally slippery in Helsinki."
+  },
+  "none": {
+    "title": "No active warnings",
+    "description": "There are no active slippery warnings currently."
+  }
+},
+"Statistics": {
+  "title": "Statistics for winter season",
+  "warnings": "Warnings",
+  "users": "Active subscribers"
+},
+"DataTable": {
+  "date": "Date",
+  "time": "Time",
+  "area": "City",
+  "loading": "Loading...",
+  "empty": "No warnings"
+},
+"subscribe": {
+    "title": "Subscribe to ice-slip warnings",
+    "subtitle": "Subscribe to SMS alerts for Helsinki. Join by sending a message exactly as shown below.",
+    "subscribeWith": "Subscribe",
+    "instructions": "Instructions:",
+    "options": {
+      "sms": {
+        "label": "SMS alerts",
+        "guide": {
+          "intro": "Subscribe like this:",
+          "step1": "Send a text message to",
+          "number": "050 902 4308",
+          "step2": "Message text:",
+          "keyword": "JOIN HELSINKI",
+          "step3": "If you want to receive the warnings at a specific time, add the hour at the end (0–23, Finnish time).",
+          "examplesTitle": "Examples:",
+          "ex1": "JOIN HELSINKI",
+          "ex1Note": "Receive warnings as soon as they are available.",
+          "ex2": "JOIN HELSINKI 8",
+          "ex2Note": "Receive warnings at 08:00.",
+          "ex3": "JOIN HELSINKI 18",
+          "ex3Note": "Receive warnings at 18:00.",
+          "notesTitle": "Notes:",
+          "note1": "Time uses the 24-hour format (0–23) and Europe/Helsinki time.",
+          "note2": "You can leave anytime by sending STOP to the same number."
+        }
+      }
+    },
+    "acceptTerms": "I accept",
+    "terms": "terms of use",
+    "privacy": "privacy notice",
+    "and": "and",
+    "verifyCode": "Verify code",
+    "subscribeButton": "Subscribe to alerts"
+  },
+  
+  
+"SEO": {
+  "title": "Liukasbotti - Avoid injuries during the winter",
+  "description": "Subscribe to free slippery warnings in Helsinki and stay on your feet this winter.",
+  "feedbackTitle": "Give feedback - Liukasbotti",
+  "feedbackDescription": "Do you like Liukasbotti? Tell us how we can improve the service!",
+  "warningsTitle": "Warnings - Liukasbotti",
+  "warningsDescription": "View past slippery warnings from previous winter seasons.",
+  "subscribeTitle": "Subscribe to slippery warnings - Liukasbotti",
+  "subscribeDescription": "Get free slippery warnings in Helsinki delivered straight to your phone!",
+  "gdprTitle": "Privacy Notice – Liukasbotti",
+  "gdprDescription": "Privacy notice for Liukasbotti. Controller: City of Helsinki (Urban Environment Division)."
+},
+
+  "GDPR": {
+    "title": "Privacy Notice",
+    "lastUpdated": "Last updated: {date}",
+    "controller": {
+      "title": "Controller",
+      "name": "City of Helsinki – Urban Environment Division (KYMP)",
+      "scope": "This notice covers personal data processing in the Liukasbotti service."
+    },
+    "purpose": {
+      "title": "Purpose of processing",
+      "lead": "Liukasbotti sends slipperiness warnings via SMS. We process the minimum data needed to deliver messages.",
+      "items": {
+        "delivery": "Delivering and targeting warning messages.",
+        "subscription": "Subscription management (join/leave, scheduling).",
+        "logging": "Technical logging and incident troubleshooting.",
+        "feedback": "Receiving and processing optional feedback."
+      }
+    },
+    "dataCategories": {
+      "title": "Personal data processed",
+      "table": {
+        "head": { "group": "Group", "desc": "Description" },
+        "rows": {
+          "contact": { "group": "Contact details", "desc": "Phone number (for SMS delivery)" },
+          "subscription": { "group": "Subscription data", "desc": "Area/city (text), language (fi/sv/en), preferred sending hour" },
+          "logs": { "group": "Technical logs", "desc": "Message logs (content, status, errors)" },
+          "feedback": { "group": "Feedback (optional)", "desc": "Name, email, topic/category and message; optional request for reply" },
+          "special": { "group": "Special categories", "desc": "Not processed." }
+        }
+      }
+    },
+    "legal": {
+      "title": "Sources, legal bases and recipients",
+      "sources": { "title": "Sources of data", "desc": "Data is primarily obtained from the data subject (join SMS, feedback form)." },
+      "basis": {
+        "title": "Legal basis",
+        "desc": "Joining and messaging rely on consent. Technical logging is necessary for service provision, security and continuity (legitimate interests)."
+      },
+      "recipients": {
+        "title": "Recipients and processors",
+        "table": {
+          "head": { "party": "Party", "role": "Role", "location": "Location" },
+          "rows": {
+            "bravo": { "party": "Bravo Digital Oy (3527863-5)", "role": "Service provider / processor (Liukasbotti)", "location": "Finland (hosting in Finland)" },
+            "gateway": { "party": "GatewayAPI A/S", "role": "SMS gateway (sub-processor)", "location": "Germany (servers)" }
+          }
+        }
+      },
+      "notice": "No transfers outside the EU/EEA. Server/backup locations: Germany (SMS) and Finland (Bravo Digital hosting)."
+    },
+    "retention": {
+      "title": "Retention and duration",
+      "desc": "Data is retained for the duration of the service and legal obligations, per the city’s archiving rules."
+    },
+    "rights": {
+      "title": "Data subject rights",
+      "items": {
+        "access": "right of access",
+        "rectification": "right to rectification",
+        "erasure": "right to erasure where applicable",
+        "restriction": "right to restriction in certain cases",
+        "object": "right to object where the basis is legitimate interest",
+        "withdraw": "right to withdraw consent at any time",
+        "complaint": "right to lodge a complaint with a supervisory authority"
+      }
+    },
+    "contact": {
+      "title": "Privacy contact",
+      "primary": "Primary contact: email(at)bravodigital.fi.",
+      "instructions": "You can request access, rectification, withdraw consent or make other privacy-related requests by contacting the controller."
+    }
+  },
+  "cookies": "Cookies"
 }
 
-}

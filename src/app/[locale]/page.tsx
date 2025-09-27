@@ -1,27 +1,58 @@
 import Link from "next/link"
-import Statistics from "@/components/statistics"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertTriangle, CheckCircle } from "lucide-react"
+import { CheckCircle } from "lucide-react"
 import { getLocale, getTranslations } from "next-intl/server"
 import { buttonVariants } from "@/components/ui/button";
-import { DotPattern } from "@/components/ui/shadcn-io/dot-pattern";
-import { cn } from "@/lib/utils";
 import { FAQ } from "@/components/FAQ";
+import type { Metadata } from "next";
 
 const localeMap = {
   fi: "fi-FI",
   sv: "sv-FI",
   en: "en-GB"
 }
+const ogLocaleMap: Record<string, string> = {
+  fi: "fi_FI",
+  sv: "sv_FI",
+  en: "en_GB",
+};
+
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = (await getLocale()) as "fi" | "sv" | "en";
+  const t = await getTranslations({ locale, namespace: "SEO" });
+
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    openGraph: {
+      title: t("title"),
+      description: t("description"),
+      url: `/${locale}`,
+      locale: ogLocaleMap[locale],
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: t("title"),
+      description: t("description"),
+    },
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        fi: "/fi",
+        sv: "/sv",
+        en: "/en",
+        "x-default": "/en",
+      },
+    },
+  };
+}
 
 export default async function HomePage() {
   const t = await getTranslations("Homepage")
   const locale = await getLocale() as keyof typeof localeMap
-  const apiLocale = localeMap[locale]
-  const result = await fetch(`http://localhost:3000/api/warnings/active?languages=${apiLocale}`).then(res => res.json())
-  const activeWarning = Array.isArray(result.warnings) && result.warnings.length > 0 ? result.warnings[0] : undefined;
-  const isActiveWarning = activeWarning !== undefined
-
+  const apiLocale = localeMap[locale];
 
   const faqItems = [
     {
@@ -29,13 +60,13 @@ export default async function HomePage() {
       answer: (
         <>
           {t("FAQ.a1/1")}
+          <br />
           <a
             href="/subscribe"
             className="text-primary font-medium hover:underline"
           >
             {t("FAQ.from_here")}
           </a>
-          {t("FAQ.a1/2")}
         </>
       )
       
@@ -51,15 +82,18 @@ export default async function HomePage() {
     {
         question: t("FAQ.q4"),
         answer: t("FAQ.a4")
+      },
+      {
+        question: t("FAQ.q5"),
+        answer: t("FAQ.a5")
       }
   ];
 
   return (
     <div className="w-full max-w-5xl mx-auto flex flex-col space-y-10 pb-16 px-5">
-
-<section className="relative w-full text-center rounded-xl min-h-[75vh] 
-  bg-[radial-gradient(ellipse_at_center,rgba(from_var(--primary)_r_g_b_/_0.19),transparent_40%)] 
-  flex items-center justify-center overflow-hidden">
+    <section className="relative w-full text-center rounded-xl min-h-[75vh] 
+    bg-[radial-gradient(ellipse_at_center,rgba(from_var(--primary)_r_g_b_/_0.19),transparent_40%)] 
+    flex items-center justify-center overflow-hidden">
 
   {/* Hero content */}
   <div className="relative flex flex-col items-center space-y-6 px-5 md:px-0">
@@ -119,19 +153,19 @@ export default async function HomePage() {
   <ul className="list-disc list-inside space-y-2 text-card-foreground/90">
     <li className="flex items-start space-x-3">
       <div className="bg-primary/10 text-primary group-hover:bg-primary/20 flex w-12 h-12 items-center justify-center rounded-full transition-colors duration-300 flex-shrink-0">
-        <CheckCircle className="w-5 h-5" />
+        <CheckCircle className="w-5 h-5" aria-hidden="true"/>
       </div>
       <span>{t("InfoBox.p1")}</span>
     </li>
     <li className="flex items-center space-x-3">
       <div className="bg-primary/10 text-primary group-hover:bg-primary/20 flex w-12 h-12 items-center justify-center rounded-full transition-colors duration-300 flex-shrink-0">
-        <CheckCircle className="w-5 h-5" />
+        <CheckCircle className="w-5 h-5" aria-hidden="true"/>
       </div>
       <span>{t("InfoBox.p2")}</span>
     </li>
     <li className="flex items-center space-x-3">
       <div className="bg-primary/10 text-primary group-hover:bg-primary/20 flex w-12 h-12 items-center justify-center rounded-full transition-colors duration-300 flex-shrink-0">
-        <CheckCircle className="w-5 h-5" />
+        <CheckCircle className="w-5 h-5" aria-hidden="true"/>
       </div>
       <span>{t("InfoBox.p3")}</span>
     </li>
@@ -141,20 +175,6 @@ export default async function HomePage() {
 <section>
 <FAQ items={faqItems} />
 </section>
-
-      {/* Active Warning Alert */}
-      {isActiveWarning && (
-        <Alert variant={activeWarning.severity} className="w-full">
-          <AlertTriangle />
-          <AlertTitle>{activeWarning.details[0].event}</AlertTitle>
-          <AlertDescription>{activeWarning.details[0].description}</AlertDescription>
-        </Alert>
-      )}
-
-
-
-     
-
     </div>
   )
 }

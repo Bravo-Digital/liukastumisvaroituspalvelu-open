@@ -1,46 +1,87 @@
+
+
 services:
+  traefik:
+    image: traefik:v3.5
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.le.acme.httpchallenge=true
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.le.acme.email=${LE_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_letsencrypt:/letsencrypt
+    networks:
+      - liukastumisvaroituspalvelu_net
+    restart: unless-stopped
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
-      target: ${NODE_ENV:-development}
-    command: >
-      sh -c "if [ '${NODE_ENV}' = 'production' ]; then pnpm start; else pnpm dev; fi"
+      target: app
     environment:
-      PORT: "${PORT}"
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
       GATEWAYAPI_API_KEY: "${GATEWAYAPI_API_KEY}"
       REPLY_SENDER: "${REPLY_SENDER}"
       WEBHOOK_SECRET: "${WEBHOOK_SECRET}"
-      NODE_ENV: "${NODE_ENV:-development}"
-    ports:
-      - "${PORT}:${PORT}"
+      NODE_ENV: "production"
+      ADMIN_USERNAME: "${ADMIN_USERNAME}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+      ADMIN_SECRET: "${ADMIN_SECRET}"
+      SMTP_HOST: "${SMTP_HOST}"
+      SMTP_PORT: "${SMTP_PORT:-587}"
+      SMTP_SECURE: "${SMTP_SECURE:-false}"
+      SMTP_USER: "${SMTP_USER}"
+      SMTP_PASS: "${SMTP_PASS}"
+      SMTP_FROM: "${SMTP_FROM}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL}"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - liukastumisvaroituspalvelu_net
+    labels:
+      # normal app router (apex)
+      - traefik.enable=true
+      - traefik.http.routers.app.rule=Host(`${APP_HOST}`)
+      - traefik.http.routers.app.entrypoints=websecure
+      - traefik.http.routers.app.tls.certresolver=le
+      - traefik.http.services.app.loadbalancer.server.port=3000
+
+      # WWW - apex redirect
+      - traefik.http.routers.www.rule=Host(`${APP_HOST_ALT}`)
+      - traefik.http.routers.www.entrypoints=web,websecure
+      - traefik.http.routers.www.tls.certresolver=le
+      - traefik.http.routers.www.middlewares=redirect-www-to-apex
+      - traefik.http.middlewares.redirect-www-to-apex.redirectregex.regex=^https?://${APP_HOST_ALT}/?(.*)
+      - traefik.http.middlewares.redirect-www-to-apex.redirectregex.replacement=https://${APP_HOST}/$${1}
+      - traefik.http.middlewares.redirect-www-to-apex.redirectregex.permanent=true
 
   worker:
     build:
       context: .
       dockerfile: Dockerfile
-      target: ${NODE_ENV:-development}
-    command: >
-      sh -c "if [ '${NODE_ENV}' = 'production' ]; then
-               pnpm workers;
-             else
-               pnpm build:workers && pnpm workers;
-             fi"
-    
+      target: worker
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
       GATEWAYAPI_API_KEY: "${GATEWAYAPI_API_KEY}"
       REPLY_SENDER: "${REPLY_SENDER}"
       WEBHOOK_SECRET: "${WEBHOOK_SECRET}"
-      NODE_ENV: "${NODE_ENV:-development}"
+      NODE_ENV: "production"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - liukastumisvaroituspalvelu_net
@@ -53,27 +94,43 @@ services:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     volumes:
       - liukastumisvaroituspalvelu_db_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     restart: unless-stopped
     networks:
       - liukastumisvaroituspalvelu_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrator
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - liukastumisvaroituspalvelu_net
+    restart: "no"
 
   pgadmin:
     image: dpage/pgadmin4:8
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@bravodigital.fi
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       - db
     restart: unless-stopped
     networks:
       - liukastumisvaroituspalvelu_net
+    ports: []
 
 volumes:
   liukastumisvaroituspalvelu_db_data:
+  traefik_letsencrypt:
 
 networks:
   liukastumisvaroituspalvelu_net:
