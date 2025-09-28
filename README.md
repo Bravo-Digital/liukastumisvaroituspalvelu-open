@@ -1,4 +1,4 @@
-# Liukasbotti — Slippery Pedestrian Weather Warning Service
+# Liukasbotti Open — Slippery Pedestrian Weather Warning Service
 
 > [!IMPORTANT]
 > This document targets software developers. For product info, visit **https://liukasbotti.fi**.
@@ -11,6 +11,7 @@ Liukasbotti sends localized *slippery conditions* warnings to subscribers via SM
 
 - [Features](#features)
 - [Architecture](#architecture)
+- [Project structure](#project-structure)
 - [Tech stack](#tech-stack)
 - [Prerequisites](#prerequisites)
 - [Quick start (local)](#quick-start-local)
@@ -22,7 +23,6 @@ Liukasbotti sends localized *slippery conditions* warnings to subscribers via SM
 - [Admin dashboard & 2FA](#admin-dashboard--2fa)
 - [Reports & GDPR tools](#reports--gdpr-tools)
 - [Production with Docker & Traefik](#production-with-docker--traefik)
-- [DNS & TLS](#dns--tls)
 - [Troubleshooting](#troubleshooting)
 - [Scripts](#scripts)
 - [Credits](#credits)
@@ -36,7 +36,7 @@ Liukasbotti sends localized *slippery conditions* warnings to subscribers via SM
 - **Subscriber warnings**: Queue + scheduler for SMS with per-user language (FI/SV/EN) and preferred send hour  
 - **Admin dashboard**: KPIs, active warning management, CSV export, feedback moderation, GDPR tools  
 - **Internationalization**: `next-intl` with locale routes (`/fi`, `/sv`, `/en`) and translated UI  
-- **Dark mode first**: Next Themes configured for dark mode by default, regardless of system preferences 
+- **Dark mode first**: Next Themes configured for dark mode by default, regardless of system preferences  
 - **2FA (TOTP)**: Optional admin two-factor auth with QR enrollment (Google Authenticator, 1Password, Authy)  
 - **Email**: Feedback notifications + user confirmations (via SMTP)  
 - **Cookie consent**: Cookiebot script support  
@@ -59,11 +59,94 @@ Traefik — reverse proxy, TLS (from Let’s Encrypt)
 
 **Services (compose):**
 - `app`: Next.js server (port 3000)
-- `worker`: Node worker processes (queue, schedulers)
+- `worker`: Node worker processes (queue, schedulers) — see `src/scheduler.ts`
+- `migrate`: **migration worker (one-shot)** that applies DB migrations on startup
 - `db`: Postgres 16
-- `migrate`: **migration worker (one-shot)** that applies DB migrations
 - `pgadmin`: optional DB UI
 - `traefik`: reverse proxy + TLS
+
+---
+
+## Project structure
+
+> High-level directories/files you will touch most often.
+
+```
+messages/                         # i18n message catalogs for next-intl
+  ├─ en.json
+  ├─ fi.json
+  └─ sv.json
+
+public/                           # static assets (served at /)
+  ├─ fonts/Inter-Regular.ttf
+  └─ photos/ (includes favicon.svg etc.)
+
+src/
+  ├─ actions/                     # server actions (admin, feedback, gdpr, sms, stats)
+  │   ├─ admin.ts
+  │   ├─ feedback.ts
+  │   ├─ gdpr.ts
+  │   ├─ sendSms.ts
+  │   └─ winterStats.ts
+  │
+  ├─ app/                         # Next.js App Router
+  │   ├─ [locale]/                # localized public site
+  │   │   ├─ layout.tsx
+  │   │   ├─ page.tsx             # localized home
+  │   │   ├─ developers/
+  │   │   ├─ feedback/
+  │   │   ├─ gdpr/
+  │   │   │   └─ page.tsx
+  │   │   ├─ subscribe/
+  │   │   │   ├─ page.tsx
+  │   │   │   └─ SubscribeForm.tsx
+  │   │   └─ warnings/
+  │   │       └─ page.tsx
+  │   │
+  │   ├─ admin/                   # admin area (protected via password login, cookie session + optional 2FA)
+  │   │   ├─ (protected)/
+  │   │   │   ├─ layout.tsx
+  │   │   │   ├─ page.tsx         # dashboard
+  │   │   │   ├─ 2fa/page.tsx     # 2FA management
+  │   │   │   └─ report/route.ts  # CSV export
+  │   │   └─ login/               # admin login (+ 2FA prompt route)
+  │   │
+  │   ├─ api/                     # serverless routes
+  │   │   ├─ receive-sms/route.ts # inbound SMS webhook
+  │   │   └─ warnings/route.ts    # public warnings API
+  │   ├─ globals.css
+  │   ├─ layout.tsx               # root layout (Cookiebot script, theme-color, fonts)
+  │   ├─ robots.ts
+  │   └─ sitemap.ts
+  │
+  ├─ components/
+  │   ├─ admin/confirm-submit-button.tsx  # reusable confirmation dialog submits
+  │   ├─ statistics/                      # statistics client components
+  │   ├─ ui/                              # shadcn/ui components
+  │   │   ├─ dialog.tsx, button.tsx, table.tsx, ...
+  │   │   └─ shadcn-io/ (internal scaffolding)
+  │   ├─ FAQ.tsx, footer.tsx, navbar.tsx
+  │   └─ theme-provider.tsx, SetHtmlLang.tsx
+  │
+  ├─ hooks/, i18n/                        # (if present) client hooks and i18n helpers
+  ├─ lib/                                 # server-side libs
+  │   ├─ adminAuth.ts                     # cookie session helpers
+  │   ├─ adminMfa.ts                      # 2FA persistence (admin_settings table)
+  │   ├─ db.ts                            # Drizzle client
+  │   ├─ schema.ts                        # Drizzle schema
+  │   ├─ smsUtil.ts                       # SMS text helpers and scheduling
+  │   ├─ totp.ts                          # TOTP generation/verification
+  │   └─ utils.ts                         # misc utilities
+  │
+  ├─ middleware.ts                        # locale middleware (next-intl)
+  └─ scheduler.ts                         # background scheduler entry for workers
+
+compose.yaml                              # production stack
+Dockerfile                                # multi-stage build (app, worker, migrate)
+drizzle.config.ts                         # Drizzle config
+tailwind.config.ts, postcss.config.mjs    # styling toolchain
+tsconfig.json, tsconfig.workers.json      # TS configs
+```
 
 ---
 
@@ -73,9 +156,9 @@ Traefik — reverse proxy, TLS (from Let’s Encrypt)
 - **Web**: Next.js, React  
 - **Styling/UI**: Tailwind, shadcn/ui, lucide icons  
 - **Data**: Postgres, Drizzle ORM  
-- **Background**: Node workers (concurrently)  
+- **Background**: Node workers (`src/scheduler.ts`)  
 - **Auth (admin)**: Cookie-based + optional TOTP  
-- **i18n**: next-intl  
+- **i18n**: next-intl (locale routes + messages JSON)  
 - **Email**: nodemailer  
 - **SMS**: GatewayAPI  
 
@@ -92,7 +175,7 @@ Traefik — reverse proxy, TLS (from Let’s Encrypt)
 
 ---
 
-## Quick start (local)
+## Quick start (production)
 
 1) **Clone & install**
 ```bash
@@ -103,10 +186,14 @@ pnpm install
 
 2) **Fill values to .env**
 
-3) **Start the app**
+3) **Build**
 ```bash
-# Local full stack (app, worker, db). The migration worker runs automatically.
-docker compose -f compose.local-prod.yaml up 
+docker compose build
+```
+
+4) **Start the app**
+```bash
+docker compose up 
 ```
 
 > The **migration worker** (service `migrate`) will run once and apply all pending migrations on startup. You do **not** need to run Drizzle manually when using Docker.
@@ -162,6 +249,12 @@ LE_EMAIL=admin@liukasbotti.fi
 ### TL;DR
 - **Docker (recommended):** Migrations are handled **automatically** by the **migration worker** (`migrate` service). On every deploy/boot, it runs and applies pending migrations, then exits. **No manual step required.**
 
+If you really need to run migrations without Docker:
+```bash
+pnpm drizzle:push       # Apply schema to DB
+pnpm drizzle:generate   # Generate SQL migration files
+```
+
 ---
 
 ## Email (Nodemailer)
@@ -176,19 +269,19 @@ Emails are sent when users submit feedback and (optionally) receive confirmation
 
 ## SMS (GatewayAPI)
 
-Set:
-```ini
-GATEWAYAPI_API_KEY=gw_xxx
-REPLY_SENDER=LIUKAS
-```
-Workers pull pending messages from the `sms_queue` and send them via GatewayAPI. Ensure the `worker` service runs in production.
+Set environment variables first.
+
+- **Outbound:** workers read `sms_queue` and send via GatewayAPI.  
+- **Inbound:** `src/app/api/receive-sms/route.ts` handles webhook callbacks (reply STOP, help, etc. depending on your config).  
+Ensure the `worker` service runs in production.
 
 ---
 
 ## Internationalization & Theming
 
-- **i18n**: `next-intl` with language routes: `/fi`, `/sv`, `/en`.
-- **Dark by default**: ensure you wrap the app with your ThemeProvider that sets:
+- **i18n**: `next-intl` with language routes: `/fi`, `/sv`, `/en`.  
+  Translations live in `messages/{fi,sv,en}.json`.
+- **Dark by default**: ensure your ThemeProvider sets:
   ```tsx
   <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem={false} />
   ```
@@ -203,7 +296,7 @@ Workers pull pending messages from the `sms_queue` and send them via GatewayAPI.
 - Admin login at **`/admin/login`**. Uses `ADMIN_USERNAME`/`ADMIN_PASSWORD`.
 - After login, visit **`/admin/2fa`** to enable TOTP 2FA:
   1. Click **Enable 2FA**.
-  2. Scan the QR with Google Authenticator / 1Password / Authy.
+  2. Scan the QR with your preferred 2FA app.
   3. Enter code to finalize.
 - Next sign-ins will require password **and** TOTP.
 
@@ -211,7 +304,7 @@ Workers pull pending messages from the `sms_queue` and send them via GatewayAPI.
 
 ## Reports & GDPR tools
 
-- **CSV report**: `/admin/report?from=YYYY-MM-DD&to=YYYY-MM-DD`
+- **CSV report**: `/admin/report?from=YYYY-MM-DD&to=YYYY-MM-DD` (see `src/app/admin/(protected)/report/route.ts`)
 - **Active warnings**: edit expiry inline.
 - **Feedback**: list + mark handled.
 - **GDPR**:
@@ -261,20 +354,6 @@ labels:
 
 ---
 
-## DNS & TLS
-
-Recommended records (replace IPs/domains):
-
-```
-A     liukasbotti.fi    203.0.113.42
-AAAA  liukasbotti.fi    2001:db8::42       (optional IPv6)
-CNAME www               liukasbotti.fi
-```
-
-Traefik will handle HTTP→HTTPS redirect and obtain Let’s Encrypt certificates automatically (ensure ports **80** and **443** are open).
-
----
-
 ## Troubleshooting
 
 **1) Next.js shows “Invalid next.config.ts option serverComponentsExternalPackages”**  
@@ -306,15 +385,11 @@ export default nextConfig;
 - Wrap in `attribute="class"` and have Tailwind `dark:` styles ready.
 - Add `suppressHydrationWarning` on `<html>`.
 
-**5) Reset admin 2FA (locked out)**  
-From server shell (inside Postgres container):
-```bash
-docker compose exec db psql -U $POSTGRES_USER -d $POSTGRES_DB -c "DELETE FROM admin_settings;"
-```
-This clears MFA settings; login with password and re-enroll 2FA.
-
 **6) Build fails after removing a DB column**  
 If you removed a DB column (e.g., `name` on feedback) but code still reads it, update the UI to use existing fields (e.g., `subject`) and ensure the migration worker has applied the migration.
+
+**7) Cannot send emails from VPS**  
+Many VPS providers block outbound SMTP by default. Use a transactional provider (Mailgun, Postmark, AWS SES w/ SMTP relay) or open a ticket to unblock. Check container egress firewall rules.
 
 ---
 
