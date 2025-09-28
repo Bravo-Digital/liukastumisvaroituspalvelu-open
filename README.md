@@ -413,7 +413,7 @@ pnpm drizzle:generate# Generate migration files
 ## Credits
 
 **Core & Stewardship**
-- **Einari Mustakallio** — product & engineering
+- **Einari Mustakallio** — project lead
 - **Moritz Uphoff** — product & engineering
 
 **Design & Brand**
