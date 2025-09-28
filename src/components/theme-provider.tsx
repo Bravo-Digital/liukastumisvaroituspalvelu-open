@@ -8,8 +8,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     <NextThemesProvider
       attribute="class"          
       defaultTheme="dark"        
-      enableSystem={false}       
-      disableTransitionOnChange  
+      enableSystem={false}
+      storageKey="lb-theme" 
     >
       {children}
     </NextThemesProvider>

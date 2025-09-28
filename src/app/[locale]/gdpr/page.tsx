@@ -13,7 +13,6 @@ import Script from "next/script"
 // Map for Open Graph locale codes
 const ogLocaleMap: Record<string, string> = { fi: "fi_FI", sv: "sv_FI", en: "en_GB" };
 
-// Edit this when you update the page content
 const LAST_UPDATED = "5.9.2025";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -236,9 +235,6 @@ export default async function GDPRPage() {
           <div id="CookieDeclaration" />
         </CardContent>
       </Card>
-
-    
-
       </div>
   );
 }

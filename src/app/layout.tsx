@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google"
-import { ThemeProvider } from 'next-themes'
+import ThemeProvider from "@/components/theme-provider";
 import Script from "next/script";
 import "./globals.css";
 
@@ -66,9 +66,8 @@ export const metadata: Metadata = {
         </head>
       <meta name="theme-color" content="#0f172a" />
         <body
-          className={`${inter.variable} antialiased w-screen h-auto flex flex-col items-center justify-start overflow-x-hidden`}
-        >
-          <ThemeProvider attribute="class">
+          className={`${inter.variable} antialiased w-screen h-auto flex flex-col items-center justify-start overflow-x-hidden`}>
+          <ThemeProvider>
             {children}
           </ThemeProvider>
         </body>
