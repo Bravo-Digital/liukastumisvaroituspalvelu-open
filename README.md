@@ -356,23 +356,13 @@ labels:
 
 ## Troubleshooting
 
-**1) Next.js shows “Invalid next.config.ts option serverComponentsExternalPackages”**  
-Change to:
-```ts
-// next.config.ts
-const nextConfig = {
-  serverExternalPackages: ["<pkg1>", "<pkg2>"], // replace your previous experimental key
-};
-export default nextConfig;
-```
-
-**2) SMTP works locally but times out on server**  
+**SMTP works locally but times out on server**  
 - Check VPS firewall / provider network policy for **587/465**.
 - Use provider SMTP relay or request port unblock.
 - For Gmail, use **App Passwords** (requires Google 2FA).  
 - Verify `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`.
 
-**3) WWW redirect not working**  
+**WWW redirect not working**  
 - Ensure `.env` has **both**:
   ```
   APP_HOST=liukasbotti.fi
@@ -380,15 +370,15 @@ export default nextConfig;
   ```
 - Recreate Traefik: `docker compose up -d --force-recreate traefik`
 
-**4) Dark mode not default**  
+**Dark mode not default**  
 - Ensure your **ThemeProvider** uses `defaultTheme="dark"` and `enableSystem={false}`.
 - Wrap in `attribute="class"` and have Tailwind `dark:` styles ready.
 - Add `suppressHydrationWarning` on `<html>`.
 
-**6) Build fails after removing a DB column**  
+**Build fails after removing a DB column**  
 If you removed a DB column (e.g., `name` on feedback) but code still reads it, update the UI to use existing fields (e.g., `subject`) and ensure the migration worker has applied the migration.
 
-**7) Cannot send emails from VPS**  
+**Cannot send emails from VPS**  
 Many VPS providers block outbound SMTP by default. Use a transactional provider (Mailgun, Postmark, AWS SES w/ SMTP relay) or open a ticket to unblock. Check container egress firewall rules.
 
 ---
