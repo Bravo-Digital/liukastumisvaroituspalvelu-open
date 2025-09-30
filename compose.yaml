@@ -120,7 +120,6 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:8
-    user: "1000:1000"
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/PGADMIN_DEFAULT_PASSWORD
