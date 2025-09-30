@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+for f in /run/secrets/*; do
+  [ -e "$f" ] || continue
+  [ -f "$f" ] || continue
+  name=$(basename "$f")
+  case "$name" in
+    .* ) continue ;;  # skip hidden files 
+  esac
+  # only allow VAR names like FOO or FOO_BAR1
+  if ! printf '%s' "$name" | grep -Eq '^[A-Za-z_][A-Za-z0-9_]*$'; then
+    continue
+  fi
+  val=$(tr -d '\r' < "$f")
+  [ -n "$val" ] && export "$name=$val"
+done
+exec "$@"
