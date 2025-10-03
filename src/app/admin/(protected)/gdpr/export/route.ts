@@ -193,7 +193,7 @@ export async function GET(req: Request) {
 
   await audit({
     actor_type: "admin",
-    action: "report_export_csv",
+    action: "gdpr_export",
     subject_type: "user",
     subject_id: lookup.mode === "id" ? lookup.id : lookup.phone
   });
