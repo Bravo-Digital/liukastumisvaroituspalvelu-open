@@ -3,6 +3,7 @@
 import { db } from "@/lib/db"; // 🔧 adjust if your db path differs
 import { eq } from "drizzle-orm";
 import { usersTable, smsQueueTable, smsLogsTable } from "@/lib/schema"; // 🔧 adjust path to your schema.ts
+import { logger, audit } from "@/lib/logger";
 
 function parseLookup(by: string | null, identifier: string | null) {
   const mode = (by === "id" ? "id" : "phone") as "id" | "phone";
@@ -45,6 +46,14 @@ export async function rectifyUser(formData: FormData) {
   // Update user
   await db.update(usersTable).set(updateData).where(eq(usersTable.id, user.id));
 
+    await audit({
+      actor_type: "admin",
+      action: "user_rectify",
+      subject_type: "user",
+      subject_id: user.id,
+      meta: { updateData },
+    });
+
   // Keep queued SMS in sync if phone changed
   if (updateData.phone) {
     await db.update(smsQueueTable).set({ phone: updateData.phone }).where(eq(smsQueueTable.userId, user.id));
@@ -69,6 +78,14 @@ export async function eraseUser(formData: FormData) {
   // Delete related records first
   await db.delete(smsQueueTable).where(eq(smsQueueTable.userId, user.id));
   await db.delete(smsLogsTable).where(eq(smsLogsTable.phone, user.phone));
+
+  await audit({
+    actor_type: "admin",
+    action: "user_erase",
+    subject_type: "user",
+    subject_id: user.id,
+  });
+
 
   // Finally delete user
   await db.delete(usersTable).where(eq(usersTable.id, user.id));

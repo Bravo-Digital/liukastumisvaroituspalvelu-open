@@ -14,6 +14,8 @@ import { getAdminMfa, saveAdminMfaEnabled, saveAdminMfaSecret } from "@/lib/admi
 import { newTotpSecret, totpUri, verifyTotp } from "@/lib/totp";
 import QRCode from "qrcode";
 import { revalidatePath } from "next/cache";
+import { logger, audit } from "@/lib/logger";
+import { headers } from "next/headers";
 
 export type LoginState = { error?: string | null };
 
@@ -28,7 +30,35 @@ export async function adminStartSignIn(_: any, formData: FormData) {
     username === (process.env.ADMIN_USERNAME || "") &&
     password === (process.env.ADMIN_PASSWORD || "");
 
-  if (!ok) return { error: "Invalid credentials" };
+    const h = await headers();
+    const forwardedFor = h.get("x-forwarded-for") ?? "";
+    const ip =
+    forwardedFor.split(",").map((s) => s.trim())[0] ||
+    h.get("x-real-ip") ||
+    "unknown";
+    const ua = h.get("user-agent") ?? "";
+    
+    if (!ok) {
+      audit({
+        actor_type: "admin",
+        actor_id: username || "unknown",
+        action: "login_password",
+        outcome: "fail",
+        ip,
+        user_agent: ua,
+      });
+      return { error: "Invalid credentials" as const };
+    }
+  
+
+  audit({
+    actor_type: "admin",
+    actor_id: username || "unknown",
+    action: "login_password",
+    outcome: ok ? "success" : "fail",
+    ip,
+    user_agent: ua,
+  });
 
   const mfa = await getAdminMfa();
 
@@ -58,6 +88,13 @@ export async function adminVerifyTotp(_: any, formData: FormData) {
   const valid = verifyTotp(mfa.mfaSecret, code);
   if (!valid) return { error: "Invalid code" };
 
+  audit({
+    actor_type: "admin",
+    actor_id: process.env.ADMIN_USERNAME || "admin",
+    action: "login_totp",
+    outcome: valid ? "success" : "fail",
+  });
+
   await clearPending2faCookie();
   await setAdminCookie(process.env.ADMIN_USERNAME || "admin");
   redirect("/admin");
@@ -81,6 +118,20 @@ export async function createMfaEnrollment() {
   const uri = totpUri({ secret, issuer, label });
 
   const qrDataUrl = await QRCode.toDataURL(uri);
+
+
+  const h = await headers();
+  const forwardedFor = h.get("x-forwarded-for") ?? "";
+  const ip =
+  forwardedFor.split(",").map((s) => s.trim())[0] ||
+  h.get("x-real-ip") ||
+  "unknown";
+
+  audit({
+    actor_type: "admin",
+    action: "admin_createMfaEnrollment",
+    ip,
+  });
   return { secret, uri, qrDataUrl };
 }
 export async function finalizeMfaEnable(formData: FormData) {
@@ -96,6 +147,20 @@ export async function finalizeMfaEnable(formData: FormData) {
   }
 
   await saveAdminMfaEnabled(true);
+
+  const h = await headers();
+  const forwardedFor = h.get("x-forwarded-for") ?? "";
+  const ip =
+  forwardedFor.split(",").map((s) => s.trim())[0] ||
+  h.get("x-real-ip") ||
+  "unknown";
+
+  audit({
+    actor_type: "admin",
+    action: "admin_finalizeMfaEnable",
+    ip,
+  });
+
   revalidatePath("/admin/2fa");
   return { ok: true };
 }
@@ -115,6 +180,11 @@ export async function disableMfa() {
 export async function adminSignOut() {
   await clearAdminCookie();
   await clearPending2faCookie();
+  audit({
+    actor_type: "admin",
+    actor_id: process.env.ADMIN_USERNAME || "admin",
+    action: "admin_signout",
+  });
   redirect("/admin/login");
 }
 
@@ -180,6 +250,14 @@ export async function sendWarningToAll(_: any, formData: FormData) {
       expiresAt,
     });
   
+    await audit({
+      actor_type: "admin",
+      action: "send_warning_all",
+      meta: { hours },
+    });
+    
+    logger.info({ id, area, hours }, "Manual warning created");
+
     // Load users
     const users = await db.select().from(usersTable);
     if (users.length === 0) return { ok: true, warningId: id, recipients: 0 };
@@ -269,6 +347,14 @@ export async function markFeedbackHandled(formData: FormData) {
 
   await db.update(feedbackTable).set({ status: "handled" }).where(eq(feedbackTable.id, id));
   revalidatePath("/admin");
+
+  await audit({
+    actor_type: "admin",
+    action: "feedback_mark_handled",
+    subject_type: "feedback",
+    subject_id: id,
+  });
+  
   return { ok: true };
 }
 
@@ -300,5 +386,17 @@ export async function updateWarningExpiry(formData: FormData) {
 
   await db.update(warningsTable).set({ expiresAt: newExpiresAt }).where(eq(warningsTable.id, id));
   revalidatePath("/admin");
+
+  await audit({
+    actor_type: "admin",
+    action: "warning_update_expiry",
+    subject_type: "warning",
+    subject_id: id,
+    meta: { expires: newExpiresAt.toISOString() },
+  });
+  
+  logger.info({ id, expiresAt: newExpiresAt.toISOString() }, "Warning expiry updated");
+
+
   return { ok: true };
 }

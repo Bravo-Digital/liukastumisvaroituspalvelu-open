@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { smsQueueTable, warningsTable } from "@/lib/schema";
 import { and, eq, lte, sql, inArray } from "drizzle-orm";
 import { sendBulkSms as gatewaySendSms } from "@/actions/sendSms";
-
+import { logger, audit } from "@/lib/logger";
 
 const SENDER = process.env.REPLY_SENDER!;
 const MAX_BATCH = 1000;          // recipients per gateway call
@@ -75,6 +75,7 @@ async function markError(rows: QueueRow[], err: unknown) {
 
     if (nextAttempts >= MAX_ATTEMPTS) {
       updates.status = "error";
+      logger.warn({ id: r.id, attempts: nextAttempts, err: e }, "Queue item failed");
     } else {
       // schedule next try with backoff
       const minutes = BACKOFF_MINUTES[Math.min(nextAttempts - 1, BACKOFF_MINUTES.length - 1)];
@@ -174,15 +175,23 @@ async function processQueueOnce() {
        .where(inArray(smsQueueTable.id, rowsChunk.map(r => r.id)));
         
         console.log(`[Scheduler] Sent ${rowsChunk.length} SMS for ${key}`);
+        logger.info({ sent: rowsChunk.length, key }, "[Scheduler] Sent batch");
         
+        await audit({
+          actor_type: "worker",
+          actor_id: "scheduler",
+          action: "sms_sent_batch",
+          meta: { sent_count: rowsChunk.length },
+        });
       } catch (err) {
         console.error("[Scheduler] Gateway send failed:", err);
+        logger.error({ err }, "[Scheduler] Gateway send failed");
         await markError(rowsChunk, err);
       }
     }
   }
 }
-
+logger.info("[Scheduler] Running SMS scheduler minute task...");
 console.log("[Scheduler] Running SMS scheduler minute task...");
 setInterval(processQueueOnce, 60 * 1000);
 

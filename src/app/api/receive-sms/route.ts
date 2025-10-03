@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { and, eq, sql } from "drizzle-orm";
 import { usersTable, smsLogsTable, smsQueueTable } from "@/lib/schema";
 import { sendBulkSms } from "@/actions/sendSms";
+import { logger, audit, maskPhone } from "@/lib/logger";
 
 const JOIN_KEYWORDS = ["JOIN", "LIITY", "DELTA"];
 const LANGUAGE_MAP: Record<string, string> = {
@@ -224,6 +225,13 @@ export async function POST(req: NextRequest) {
             recipients: [{ msisdn: from }],
           });
 
+          audit({
+            actor_type: "user",
+            actor_id: maskPhone(from),
+            action: "sms_stop",
+            outcome: "success",
+          });
+
           status = "unsubscribed";
         } else {
           return;
@@ -241,6 +249,9 @@ export async function POST(req: NextRequest) {
         status,
         error,
       });
+
+      logger.info({ from: maskPhone(from) }, "Inbound SMS received");
+      
       return NextResponse.json({ status });
     }
 
@@ -266,6 +277,12 @@ export async function POST(req: NextRequest) {
         status = "already_registered";
       } else {
         try {
+          audit({
+            actor_type: "user",
+            actor_id: maskPhone(from),
+            action: "sms_join",
+            outcome: status === "registered" ? status : "success"
+          });
           await db.insert(usersTable).values({
             phone: from,
             area,

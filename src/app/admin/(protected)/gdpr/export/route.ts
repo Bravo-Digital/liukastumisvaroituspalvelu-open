@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { and, eq } from "drizzle-orm";
 import { usersTable, smsQueueTable, warningsTable, smsLogsTable } from "@/lib/schema";
 import PDFDocument from "pdfkit";
+import { audit } from "@/lib/logger";
 
 export const dynamic = "force-dynamic";
 import fs from 'node:fs';
@@ -189,6 +190,13 @@ export async function GET(req: Request) {
       },
     });
   }
+
+  await audit({
+    actor_type: "admin",
+    action: "report_export_csv",
+    subject_type: "user",
+    subject_id: lookup.mode === "id" ? lookup.id : lookup.phone
+  });
 
   // default PDF
   const pdf = await toPDFBuffer(bundle);

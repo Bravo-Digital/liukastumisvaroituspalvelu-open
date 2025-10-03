@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/adminAuth";
 import { db } from "@/lib/db";
 import { usersTable, warningsTable, smsQueueTable, feedbackTable } from "@/lib/schema";
 import { and, count, eq, gte, lte, desc } from "drizzle-orm";
+import { audit } from "@/lib/logger"
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -127,6 +128,12 @@ export async function GET(req: NextRequest) {
   // Add BOM so Excel opens UTF-8 nicely
   const body = "\uFEFF" + csv;
 
+      await audit({
+        actor_type: "admin",
+        action: "report_export_csv",
+        meta: { from, to }
+      });
+  
   return new Response(body, {
     headers: {
       "content-type": "text/csv; charset=utf-8",

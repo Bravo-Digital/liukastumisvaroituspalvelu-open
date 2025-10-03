@@ -1,4 +1,5 @@
 "use server";
+import { logger } from "@/lib/logger";
 
 export async function sendBulkSms({
   sender,
@@ -36,7 +37,7 @@ export async function sendBulkSms({
     },
     body: JSON.stringify(payload),
   });
-
+  logger.info({ url, count: recipients.length }, "Sending SMS via GatewayAPI");
   const text = await gwRes.text();
   let json: any = null;
   try {

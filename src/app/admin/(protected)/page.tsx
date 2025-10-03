@@ -139,6 +139,20 @@ export default async function AdminHome() {
         </CardContent>
       </Card>
       
+      {/* Audit logs */}
+      <Card>
+        <CardHeader><CardTitle>Audit Logs</CardTitle></CardHeader>
+        <CardContent className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            View app logs
+          </div>
+          <a href="/admin/logs" className="inline-flex">
+            <Button variant="outline">View audit logs</Button>
+          </a>
+
+        </CardContent>
+      </Card>
+
       {/* Report */}
       <Card>
         <CardHeader><CardTitle>Export report (CSV)</CardTitle></CardHeader>

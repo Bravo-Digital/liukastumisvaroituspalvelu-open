@@ -7,7 +7,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { warningsTable } from "@/lib/schema";
 import { isImmediateHour, nextRunAtForHour, baseMessageByLang } from "@/lib/smsUtil";
-
+import { logger, audit } from "@/lib/logger";
 
 interface Area {
   areaDesc: string;
@@ -154,6 +154,17 @@ async function enqueueJobsForWarning(
   }
 
   console.log(`[Index] Enqueued ${rowsToInsert.length} SMS jobs for warning ${warningId}`);
+
+  await audit({
+    actor_type: "worker",
+    actor_id: "rss-indexer",
+    action: "enqueue_jobs",
+    subject_type: "warning",
+    subject_id: warningId,
+    outcome: "success",
+    meta: { recipients_count: rowsToInsert.length },
+  });
+  logger.info({ warningId, enqueued: rowsToInsert.length }, "Enqueued SMS jobs");  
 }
 
 
@@ -255,11 +266,13 @@ async function checkWarnings() {
         if (warning.type === 'Cancel') {
           if (existing.length > 0) {
             console.log(`[Index] Cancelling existing warning: ${warning.identifier}`);
+            logger.warn({ id: warning.identifier }, "Cancelling existing warning");
             await db.update(warningsTable)
               .set({ status: 'cancelled' })
               .where(eq(warningsTable.id, warning.identifier));
           } else {
             console.log(`[Index] Cancel received but warning not found: ${warning.identifier}`);
+            logger.warn({ id: warning.identifier }, "Cancel received but warning not found");
           }
           continue;
         }
@@ -277,10 +290,11 @@ async function checkWarnings() {
           }
         
           console.log(`[Index] Inserting new warning: ${warning.identifier}`);
+          logger.info({ id: warning.identifier }, "Inserting new warning");
           const createdAt = new Date();
           const onsetAt = safeOnset(warning.info[0].onset);
           const expiresAt = sevenDaysLater(createdAt);
-        
+      
           await db.insert(warningsTable).values({
             id: warning.identifier,
             area: "Helsinki",
@@ -298,17 +312,26 @@ async function checkWarnings() {
               [detail]
             );
           }
+
+          audit({
+            actor_type: "system",
+            action: "warning_ingested",
+            outcome: "success",
+            subject_type: "warning",
+            subject_id: warning.identifier,
+          });          
         }
         
         
         else if (warning.type === "Update") {
           console.log(`[Index] Updating existing warning: ${warning.identifier}`);
+          logger.info({ id: warning.identifier }, "Updating existing warning");
           const onsetAt = safeOnset(warning.info[0].onset);
           const expiresAt = sevenDaysLater(new Date());
           
           await db.update(warningsTable)
             .set({
-              area: "helsinki",
+              area: "Helsinki",
               onsetAt,
               expiresAt,
             })
@@ -323,6 +346,7 @@ async function checkWarnings() {
 
   } catch (error) {
     console.error('Error fetching feed:', error);
+    logger.error({ error }, "Error fetching feed");
   }
 }
 

@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, timestamp, varchar, text, boolean, uniqueIndex } from "drizzle-orm/pg-core";
+import { index, integer, pgTable, serial, timestamp, varchar, text, boolean, uniqueIndex, jsonb } from "drizzle-orm/pg-core";
 
 export const warningsTable = pgTable("warnings", {
   id: varchar("id", { length: 256 }).primaryKey(),
@@ -68,4 +68,30 @@ export const smsQueueTable = pgTable(
       ),
     };
   }
+);
+export const auditEvents = pgTable(
+  "audit_events",
+  {
+    id: serial("id").primaryKey(),
+    ts: timestamp("ts", { mode: "date", withTimezone: true }).notNull().defaultNow(),
+
+    actorType: varchar("actor_type", { length: 20 }),
+    actorId: varchar("actor_id", { length: 128 }),
+    action: varchar("action", { length: 64 }).notNull(),
+    subjectType: varchar("subject_type", { length: 32 }),
+    subjectId: varchar("subject_id", { length: 128 }),
+    outcome: varchar("outcome", { length: 16 }),
+
+    ip: varchar("ip", { length: 45 }),
+    userAgent: text("user_agent"),
+
+    prevHash: varchar("prev_hash", { length: 128 }),
+    hash: varchar("hash", { length: 128 }), // 64 is enough for sha256 hex, 128 is fine too
+
+    meta: jsonb("meta"),
+  },
+  (t) => ({
+    byTs: index("audit_by_ts").on(t.ts),
+    uniqHash: uniqueIndex("audit_uniq_hash").on(t.hash), // for idempotency
+  })
 );
