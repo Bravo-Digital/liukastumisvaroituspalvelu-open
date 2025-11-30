@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, sql, inArray } from "drizzle-orm";
 import { usersTable, smsLogsTable, smsQueueTable } from "@/lib/schema";
 import { sendBulkSms } from "@/actions/sendSms";
 import { logger, audit, maskPhone } from "@/lib/logger";
+import jwt from "jsonwebtoken"
 
 const JOIN_KEYWORDS = ["JOIN", "LIITY", "DELTA"];
 const LANGUAGE_MAP: Record<string, string> = {
@@ -167,6 +168,33 @@ function parseUserHour(raw: string | undefined | null): string | null {
 }
 
 export async function POST(req: NextRequest) {
+  
+   // --- JWT verification from GatewayAPI X-Gwapi-Signature -header ---
+   const signature = req.headers.get("x-gwapi-signature"); // headers are case sensitive
+
+   if (!signature) {
+     return NextResponse.json({ error: "Missing signature" }, { status: 401 });
+   }
+ 
+   const secret = process.env.SMS_WEBHOOK_SECRET;
+   if (!secret) {
+     console.error("SMS_WEBHOOK_SECRET is not set");
+     return NextResponse.json(
+       { error: "Server misconfiguration" },
+       { status: 500 }
+     );
+   }
+ 
+   try {
+     //Optional payload checking
+     const payload = jwt.verify(signature, secret, { algorithms: ["HS256"] });
+     // logger.debug({ payload }, "Valid SMS webhook signature");
+   } catch (err) {
+     console.error("Invalid SMS webhook signature:", err);
+     return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
+   }
+   // --- JWT verification logic ends ---
+
   let body: any = {};
   try {
     try {
@@ -206,17 +234,18 @@ export async function POST(req: NextRequest) {
 
           // 2) cancel any unsent / queued jobs for this user
           await db
-            .update(smsQueueTable)
-            .set({
-              status: "cancelled",
-              lastError: "Unsubscribed via STOP",
-            })
-            .where(
-              and(
-                eq(smsQueueTable.userId, user.id),
-                sql`${smsQueueTable.status} IN ('pending', 'sending') OR ${smsQueueTable.sentAt} IS NULL`
-              )
-            );
+          await db
+          .update(smsQueueTable)
+          .set({
+            status: "cancelled",
+            lastError: "Unsubscribed via STOP",
+          })
+          .where(
+            and(
+              eq(smsQueueTable.userId, user.id),
+              inArray(smsQueueTable.status, ["pending", "sending"])
+            )
+          );
 
           // 3) confirmation SMS
           await sendBulkSms({

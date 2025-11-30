@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { usersTable, warningsTable, smsQueueTable } from "@/lib/schema";
 import { desc, and, count, eq, gte, lte } from "drizzle-orm";
 import { baseMessageByLang, formatStampForMessage, isImmediateHour, nextRunAtForHour } from "@/lib/smsUtil";
-import { feedbackTable } from "@/lib/schema";
+import { feedbackTable, adminLoginAttemptsTable } from "@/lib/schema";
 import {
   setAdminCookie, clearAdminCookie, getAdminSession,
   setPending2faCookie, clearPending2faCookie, hasPending2faCookie
@@ -22,40 +22,86 @@ export type LoginState = { error?: string | null };
 ///
 // STEP 1: password
 //
-export async function adminStartSignIn(_: any, formData: FormData) {
+export async function adminStartSignIn(_: any, formData: FormData): Promise<LoginState> {
   const username = String(formData.get("username") || "");
   const password = String(formData.get("password") || "");
+
+  const h = await headers();
+  const forwardedFor = h.get("x-forwarded-for") ?? "";
+  const ip =
+    forwardedFor.split(",").map((s) => s.trim())[0] ||
+    h.get("x-real-ip") ||
+    "unknown";
+  const ua = h.get("user-agent") ?? "";
+
+  // --- Brute force prevention settings ---
+  const WINDOW_MINUTES = 15;         // how far back we look
+  const MAX_ATTEMPTS = 5;            // max failed attempts in that window
+  const since = new Date(Date.now() - WINDOW_MINUTES * 60 * 1000);
+
+  // Check recent failures from this IP
+  const [row] = await db
+    .select({ attempts: count() })
+    .from(adminLoginAttemptsTable)
+    .where(
+      and(
+        eq(adminLoginAttemptsTable.ip, ip),
+        gte(adminLoginAttemptsTable.createdAt, since),
+      ),
+    );
+
+  const recentAttempts = Number(row?.attempts ?? 0);
+
+  if (recentAttempts >= MAX_ATTEMPTS) {
+    // Already locked out
+    await audit({
+      actor_type: "admin",
+      actor_id: username || "unknown",
+      action: "login_password",
+      outcome: "locked_out",
+      ip,
+      user_agent: ua,
+      meta: { recentAttempts, windowMinutes: WINDOW_MINUTES },
+    });
+
+    return {
+      error: "Too many failed attempts. Please try again later.",
+    };
+  }
 
   const ok =
     username === (process.env.ADMIN_USERNAME || "") &&
     password === (process.env.ADMIN_PASSWORD || "");
 
-    const h = await headers();
-    const forwardedFor = h.get("x-forwarded-for") ?? "";
-    const ip =
-    forwardedFor.split(",").map((s) => s.trim())[0] ||
-    h.get("x-real-ip") ||
-    "unknown";
-    const ua = h.get("user-agent") ?? "";
-    
-    if (!ok) {
-      audit({
-        actor_type: "admin",
-        actor_id: username || "unknown",
-        action: "login_password",
-        outcome: "fail",
-        ip,
-        user_agent: ua,
-      });
-      return { error: "Invalid credentials" as const };
-    }
-  
+  if (!ok) {
+    // Record failed attempt for this IP
+    await db.insert(adminLoginAttemptsTable).values({
+      username: username || "unknown",
+      ip,
+    });
 
-  audit({
+    await audit({
+      actor_type: "admin",
+      actor_id: username || "unknown",
+      action: "login_password",
+      outcome: "fail",
+      ip,
+      user_agent: ua,
+    });
+
+    return { error: "Invalid credentials" as const };
+  }
+
+  // Success: clear old attempts for this IP 
+  await db
+    .delete(adminLoginAttemptsTable)
+    .where(eq(adminLoginAttemptsTable.ip, ip));
+
+  await audit({
     actor_type: "admin",
     actor_id: username || "unknown",
     action: "login_password",
-    outcome: ok ? "success" : "fail",
+    outcome: "success",
     ip,
     user_agent: ua,
   });

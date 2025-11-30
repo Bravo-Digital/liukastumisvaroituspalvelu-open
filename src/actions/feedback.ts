@@ -7,6 +7,20 @@ import nodemailer from "nodemailer";
 import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Avoid header injection in mail subjects
+function sanitizeHeader(input: string): string {
+  return input.replace(/[\r\n]+/g, " ").trim();
+}
+
 type Locale = "fi" | "sv" | "en";
 
 async function getLocale(): Promise<Locale> {
@@ -54,15 +68,29 @@ const createTransporter = () => {
   });
 };
 
-// Send email notification(s)
+// Send email notification
 async function sendEmailNotification(formData: FeedbackFormData) {
   const transporter = createTransporter();
+
+  // --- sanitize user input for HTML/email headers ---
+  const rawName = formData.name || "";
+  const rawEmail = formData.email || "";
+  const rawFeedback = formData.feedback || "";
+
+  const subjectName = rawName || "Anonymous User";
+  const safeSubjectName = sanitizeHeader(subjectName);
+
+  const safeNameHtml = rawName ? escapeHtml(rawName) : "Not provided";
+  const safeEmailHtml = rawEmail ? escapeHtml(rawEmail) : "Not provided";
+  const safeWantsResponseHtml = formData.wantsResponse ? "Yes" : "No";
+
+  const feedbackHtmlAdmin = escapeHtml(rawFeedback).replace(/\n/g, "<br>");
 
   // 1) Admin/team notification (English)
   const adminMailOptions = {
     from: process.env.SMTP_FROM || process.env.SMTP_USER,
     to: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
-    subject: `New Feedback from ${formData.name || "Anonymous User"}`,
+    subject: `New Feedback from ${safeSubjectName}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333; border-bottom: 2px solid rgb(0, 166, 255); padding-bottom: 10px;">
@@ -70,14 +98,13 @@ async function sendEmailNotification(formData: FeedbackFormData) {
         </h2>
         <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="color: #4f46e5; margin-top: 0;">Contact Information</h3>
-          <p><strong>Name:</strong> ${formData.name || "Not provided"}</p>
-          <p><strong>Email:</strong> ${formData.email || "Not provided"}</p>
-          <p><strong>Wants Response:</strong> ${formData.wantsResponse ? "Yes" : "No"}</p>
+          <p><strong>Name:</strong> ${safeNameHtml}</p>
+          <p><strong>Email:</strong> ${safeEmailHtml}</p>
+          <p><strong>Wants Response:</strong> ${safeWantsResponseHtml}</p>
         </div>
         <div style="background: #fff; padding: 20px; border-left: 4px solid #4f46e5; margin: 20px 0;">
           <h3 style="color: #333; margin-top: 0;">Feedback Message</h3>
-          <p style="line-height: 1.6; color: #555;">${(formData.feedback || "")
-            .replace(/\n/g, "<br>")}</p>
+          <p style="line-height: 1.6; color: #555;">${feedbackHtmlAdmin}</p>
         </div>
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
           <p>Submitted on ${new Date().toISOString()}</p>
@@ -92,68 +119,74 @@ async function sendEmailNotification(formData: FeedbackFormData) {
     const locale = await getLocale();
     const t = await getEmailT(locale);
 
-    const nameShown =
+    const nameShownRaw =
       (formData.name && formData.name.trim()) || t("there"); // localized fallback
     const dateStr = new Date().toLocaleString(
       locale === "fi" ? "fi-FI" : locale === "sv" ? "sv-FI" : "en-GB"
     );
-    const feedbackHtml = (formData.feedback || "").replace(/\n/g, "<br>");
 
-    const subject = t("subject");
+    // Plain-text version uses raw text (safe, no HTML)
     const text = [
-      `${t("greeting", { name: nameShown })}`,
+      `${t("greeting", { name: nameShownRaw })}`,
       "",
       t("intro"),
       "",
       `${t("yourFeedback")}:`,
-      `"${formData.feedback || ""}"`,
+      `"${rawFeedback}"`,
       "",
       t("submittedOn", { date: dateStr }),
       "",
       t("noreplyNote"),
     ].join("\n");
 
+    // HTML version escapes everything user-controlled
+    const greetingHtml = escapeHtml(t("greeting", { name: nameShownRaw }));
+    const feedbackHtmlUser = escapeHtml(rawFeedback).replace(/\n/g, "<br>");
+
+    const subject = sanitizeHeader(t("subject"));
+
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333; border-bottom: 2px solid #4f46e5; padding-bottom: 10px;">
-          ${t("thanksTitle")}
+          ${escapeHtml(t("thanksTitle"))}
         </h2>
 
         <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <p style="margin: 0; color: #0369a1;">
-            <strong>${t("greeting", { name: nameShown })}</strong>
+            <strong>${greetingHtml}</strong>
           </p>
           <p style="margin: 15px 0 0 0; line-height: 1.6; color: #0369a1;">
-            ${t("intro")}
+            ${escapeHtml(t("intro"))}
           </p>
         </div>
 
         <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="color: #4f46e5; margin-top: 0;">${t("yourFeedback")}</h3>
+          <h3 style="color: #4f46e5; margin-top: 0;">${escapeHtml(t("yourFeedback"))}</h3>
           <p style="line-height: 1.6; color: #555; font-style: italic;">
-            "${feedbackHtml}"
+            "${feedbackHtmlUser}"
           </p>
         </div>
 
         <div style="margin-top: 30px; padding: 20px; background: #fef3c7; border-radius: 8px;">
-          <p style="margin: 0; color: #92400e; font-size: 14px;">${t("noreplyNote")}</p>
+          <p style="margin: 0; color: #92400e; font-size: 14px;">${escapeHtml(t("noreplyNote"))}</p>
         </div>
 
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
-          <p>${t("submittedOn", { date: dateStr })}</p>
+          <p>${escapeHtml(t("submittedOn", { date: dateStr }))}</p>
         </div>
       </div>
     `;
 
     await transporter.sendMail({
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
-      to: formData.email,
+      to: formData.email, // MUST stay raw so it's a valid address
       subject,
       text,
       html,
     });
   }
 }
+
 
 export async function submitFeedback(formData: FeedbackFormData): Promise<ActionResult> {
   try {

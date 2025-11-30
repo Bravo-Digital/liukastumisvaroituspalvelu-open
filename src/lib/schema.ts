@@ -95,3 +95,11 @@ export const auditEvents = pgTable(
     uniqHash: uniqueIndex("audit_uniq_hash").on(t.hash), // for idempotency
   })
 );
+export const adminLoginAttemptsTable = pgTable("admin_login_attempts", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull(),
+  ip: text("ip").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
