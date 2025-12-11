@@ -168,35 +168,38 @@ function parseUserHour(raw: string | undefined | null): string | null {
 }
 
 export async function POST(req: NextRequest) {
-  
-   // --- JWT verification from GatewayAPI X-Gwapi-Signature -header ---
-   const signature = req.headers.get("x-gwapi-signature"); // headers are case sensitive
+  // --- JWT verification from GatewayAPI X-Gwapi-Signature header ---
+  const signature = req.headers.get("x-gwapi-signature");
 
-   if (!signature) {
-     return NextResponse.json({ error: "Missing signature" }, { status: 401 });
-   }
- 
-   const secret = process.env.SMS_WEBHOOK_SECRET;
-   if (!secret) {
-     console.error("SMS_WEBHOOK_SECRET is not set");
-     return NextResponse.json(
-       { error: "Server misconfiguration" },
-       { status: 500 }
-     );
-   }
- 
-   try {
-     //Optional payload checking
-     const payload = jwt.verify(signature, secret, { algorithms: ["HS256"] });
-     // logger.debug({ payload }, "Valid SMS webhook signature");
-   } catch (err) {
-     console.error("Invalid SMS webhook signature:", err);
-     return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
-   }
-   // --- JWT verification logic ends ---
+  if (!signature) {
+    return NextResponse.json({ error: "Missing signature" }, { status: 401 });
+  }
+
+  const rawSecret = process.env.SMS_WEBHOOK_SECRET;
+  if (!rawSecret) {
+    console.error("SMS_WEBHOOK_SECRET is not set");
+    return NextResponse.json(
+      { error: "Server misconfiguration" },
+      { status: 500 }
+    );
+  }
+
+  const secret = rawSecret.trim();
+
+  try {
+    // Optional payload checking
+    jwt.verify(signature, secret, { algorithms: ["HS256"] });
+    // logger.debug({ payload }, "Valid SMS webhook signature");
+  } catch (err) {
+    console.error("Invalid SMS webhook signature:", err);
+    return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
+  }
+  // --- JWT verification logic ends ---
 
   let body: any = {};
+
   try {
+    // JSON first, fall back to form-data
     try {
       body = await req.json();
     } catch {
@@ -216,7 +219,7 @@ export async function POST(req: NextRequest) {
     const keyword = (parts[0] ?? "").toUpperCase();
     const defaultLanguage = LANGUAGE_MAP[keyword] ?? "fi";
 
-    // STOP: unsubscribe user & cancel queued jobs
+    // ---------- STOP: unsubscribe user & cancel queued jobs ----------
     if (keyword === "STOP") {
       try {
         const existing = await db
@@ -234,18 +237,17 @@ export async function POST(req: NextRequest) {
 
           // 2) cancel any unsent / queued jobs for this user
           await db
-          await db
-          .update(smsQueueTable)
-          .set({
-            status: "cancelled",
-            lastError: "Unsubscribed via STOP",
-          })
-          .where(
-            and(
-              eq(smsQueueTable.userId, user.id),
-              inArray(smsQueueTable.status, ["pending", "sending"])
-            )
-          );
+            .update(smsQueueTable)
+            .set({
+              status: "cancelled",
+              lastError: "Unsubscribed via STOP",
+            })
+            .where(
+              and(
+                eq(smsQueueTable.userId, user.id),
+                inArray(smsQueueTable.status, ["pending", "sending"])
+              )
+            );
 
           // 3) confirmation SMS
           await sendBulkSms({
@@ -254,7 +256,7 @@ export async function POST(req: NextRequest) {
             recipients: [{ msisdn: from }],
           });
 
-          audit({
+          await audit({
             actor_type: "user",
             actor_id: maskPhone(from),
             action: "sms_stop",
@@ -264,7 +266,6 @@ export async function POST(req: NextRequest) {
           status = "unsubscribed";
         } else {
           status = "not_found";
-          return;
         }
       } catch (err: any) {
         console.error("Error processing STOP:", err);
@@ -280,22 +281,55 @@ export async function POST(req: NextRequest) {
         error,
       });
 
-      logger.info({ from: maskPhone(from) }, "Inbound SMS received");
-      
+      logger.info({ from: maskPhone(from), status }, "Inbound SMS received");
+
       return NextResponse.json({ status });
     }
 
-    // JOIN / LIITY / DELTA 
+    // ---------- JOIN / LIITY / DELTA ----------
     const language = defaultLanguage;
+
     if (JOIN_KEYWORDS.includes(keyword)) {
-      const area = parts[1] ?? "Unknown";
+      // Determine requested area
+      // - If message is just "LIITY"/"JOIN"/"DELTA", default to Helsinki
+      // - If area is provided, only accept Helsinki (case-insensitive)
+      let requestedArea: string;
 
-  // 1) Parse unpadded hour ("0".."23") from the rest of the message
-  const hourParsed = parseUserHour(parts.slice(2).join(" ")); // string | null
+      if (parts.length === 1) {
+        // e.g. "LIITY"
+        requestedArea = "Helsinki";
+      } else {
+        requestedArea = parts[1];
+      }
 
-  // 2) Convert to "HH:00" for DB + SMS
-  const hourForDb = hourParsed ? `${hourParsed.padStart(2, "0")}:00` : null;
+      const normalizedArea = requestedArea.trim().toLowerCase();
 
+      if (normalizedArea !== "helsinki") {
+        // Unsupported area: log, mark status, but do NOT register user
+        status = "invalid_area";
+        error = `Unsupported area: ${requestedArea}`;
+
+        await db.insert(smsLogsTable).values({
+          phone: from,
+          message,
+          status,
+          error,
+        });
+
+        logger.info(
+          { from: maskPhone(from), area: requestedArea },
+          "Inbound SMS with unsupported area"
+        );
+
+        return NextResponse.json({ status, error }, { status: 400 });
+      }
+
+      // Canonical area in DB and SMS is always "Helsinki"
+      const area = "Helsinki";
+
+      // Parse hour from rest of message (if provided)
+      const hourParsed = parseUserHour(parts.slice(2).join(" ")); // string | null
+      const hourForDb = hourParsed ? `${hourParsed.padStart(2, "0")}:00` : null;
 
       const existingUser = await db
         .select()
@@ -307,18 +341,22 @@ export async function POST(req: NextRequest) {
         status = "already_registered";
       } else {
         try {
-          audit({
+          await audit({
             actor_type: "user",
             actor_id: maskPhone(from),
             action: "sms_join",
-            outcome: status === "registered" ? status : "success"
+            outcome: "success",
           });
-          await db.insert(usersTable).values({
-            phone: from,
-            area,
-            hour: hourForDb,      // always "HH:00" ("00:00", "08:00", "19:00")
-            language,
-          }).onConflictDoNothing();
+
+          await db
+            .insert(usersTable)
+            .values({
+              phone: from,
+              area, // always "Helsinki"
+              hour: hourForDb,
+              language,
+            })
+            .onConflictDoNothing();
 
           const smsText = hourForDb
             ? CONFIRMATION_MESSAGES[language](area, hourForDb)
@@ -339,7 +377,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // log all messages
+    // ---------- default logging & response ----------
     await db.insert(smsLogsTable).values({
       phone: from,
       message,
@@ -356,3 +394,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
