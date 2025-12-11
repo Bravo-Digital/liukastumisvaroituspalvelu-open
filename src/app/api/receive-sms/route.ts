@@ -263,6 +263,7 @@ export async function POST(req: NextRequest) {
 
           status = "unsubscribed";
         } else {
+          status = "not_found";
           return;
         }
       } catch (err: any) {
