@@ -200,11 +200,15 @@ export async function GET(req: Request) {
 
   // default PDF
   const pdf = await toPDFBuffer(bundle);
-  return new NextResponse(pdf, {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename=gdpr-user-${bundle.user.id}.pdf` ,
-      "Cache-Control": "no-store",
-    },
-  });
+// Convert Buffer -> Uint8Array (valid BodyInit)
+const pdfUint8 = new Uint8Array(pdf);
+
+return new NextResponse(pdfUint8, {
+  headers: {
+    "Content-Type": "application/pdf",
+    "Content-Disposition": `attachment; filename=gdpr-user-${bundle.user.id}.pdf`,
+    "Cache-Control": "no-store",
+  },
+});
+
 }
