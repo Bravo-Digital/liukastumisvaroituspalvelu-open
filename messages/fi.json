@@ -105,7 +105,12 @@
   "none": {
     "title": "Ei havaittua liukkautta",
     "description": "Tällä hetkellä ei ole aktiivisia varoituksia."
-  }
+  },
+  "attribution": {
+  "text": "Varoitusten lähde: Ilmatieteen laitos – avoin data, varoitukset",
+  "more": "Lisenssit ja lähteet"
+}
+
 },
 "Statistics": {
   "title": "Tilastot talvikaudelta",
@@ -157,7 +162,33 @@
   "subscribeButton": "Tilaa ilmoitukset"
 },
 
+"LicensePage": {
+  "title": "Lisenssit ja lähteet",
+  "intro": "Liukasbotti hyödyntää Ilmatieteen laitoksen avoimen datan varoituksia.",
+  "back": "Takaisin varoituksiin",
 
+  "sections": {
+    "fmi": {
+      "title": "Ilmatieteen laitoksen avoin data – Varoitukset (CAP)",
+      "labels": {
+        "licensor": "Lisenssinantaja",
+        "dataset": "Aineisto",
+        "source": "Lähde",
+        "license": "Lisenssi"
+      },
+      "values": {
+        "licensorName": "Ilmatieteen laitos",
+        "datasetName": "Varoitukset (CAP)",
+        "fmiTermsLinkLabel": "Ilmatieteen laitoksen lisenssi- ja käyttöehdot"
+      }
+    },
+
+    "changes": {
+      "title": "Mahdolliset muutokset / esitystapa",
+      "text": "Liukasbotti voi suodattaa, järjestää ja visualisoida varoituksia (esim. alueen tai ajankohdan mukaan). Alkuperäiset varoitukset ovat saatavilla Ilmatieteen laitoksen lähteestä. Jos varoitusten sisältöä on muokattu, tästä kerrotaan erikseen."
+    }
+  }
+},
       
 "SEO": {
   "title": "Liukasbotti - Vältä loukkaantumiset talvella",

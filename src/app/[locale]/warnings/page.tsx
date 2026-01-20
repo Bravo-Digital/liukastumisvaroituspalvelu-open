@@ -67,6 +67,11 @@ export default async function WarningsPage() {
       <section className="w-full">
         <Statistics />
       </section>
+
+      <section className="w-full text-center mt-2">
+        <p>{t("attribution.text")}</p>
+        <a className="text-primary font-medium hover:underline" href="./license">{t("attribution.more")}</a>
+      </section>
     </div>
   );
 }
