@@ -4,9 +4,9 @@ export const warningsTable = pgTable("warnings", {
   id: varchar("id", { length: 256 }).primaryKey(),
   area: varchar("area", { length: 128 }).notNull(),
   status: varchar("status", { length: 20 }).notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-  onsetAt: timestamp("effective_at", { mode: "date" }).notNull(),
-  expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),
+  createdAt: timestamp("created_at", { mode: "date", withTimezone: true }).notNull().defaultNow(),
+  onsetAt:   timestamp("effective_at", { mode: "date", withTimezone: true }).notNull(),
+  expiresAt: timestamp("expires_at", { mode: "date", withTimezone: true }).notNull(),
 });
 
 
@@ -16,7 +16,7 @@ export const feedbackTable = pgTable("feedback", {
   category: varchar("category", { length: 50 }).notNull(),
   subject: varchar("subject", { length: 512 }).notNull(),
   message: text("message").notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  createdAt: timestamp("created_at", { mode: "date", withTimezone: true }).notNull().defaultNow(),
   status: varchar("status", { length: 20 }).notNull().default("pending"),
 });
 
@@ -24,7 +24,7 @@ export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   phone: varchar("phone", { length: 20 }).notNull(),
   area: varchar("area", { length: 128 }).notNull(),
-  joinDate: timestamp("join_date", { mode: "date" }).notNull().defaultNow(),
+  joinDate: timestamp("join_date", { mode: "date", withTimezone: true }).notNull().defaultNow(),
   hour: varchar("hour", { length: 5 }), 
   language: varchar("language", { length: 2 }).notNull().default("fi"),
 });
@@ -40,7 +40,7 @@ export const smsLogsTable = pgTable("sms_logs", {
   id: serial("id").primaryKey(),
   phone: varchar("phone", { length: 20 }).notNull(),
   message: text("message").notNull(),
-  receivedAt: timestamp("received_at").defaultNow(),
+  receivedAt: timestamp("received_at", { mode: "date", withTimezone: true }).defaultNow(),
   status: varchar("status", { length: 20 }).notNull(),
   error: text("error"), 
 });
@@ -53,8 +53,8 @@ export const smsQueueTable = pgTable(
     phone: varchar("phone", { length: 20 }).notNull(),
     language: varchar("language", { length: 2 }).notNull(),
     message: text("message").notNull(),
-    scheduledAt: timestamp("scheduled_at", { mode: "date" }).notNull(),
-    sentAt: timestamp("sent_at", { mode: "date" }),
+    scheduledAt: timestamp("scheduled_at", { mode: "date", withTimezone: true }).notNull(),
+    sentAt: timestamp("sent_at", { mode: "date", withTimezone: true }),
     status: varchar("status", { length: 20 }).notNull().default("pending"), 
     attempts: integer("attempts").notNull().default(0),
     gatewayMessageId: varchar("gateway_message_id", { length: 64 }), 

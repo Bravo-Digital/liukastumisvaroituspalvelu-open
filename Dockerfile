@@ -67,4 +67,4 @@ FROM base AS migrator
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile --prod=false
 COPY . .
-CMD ["pnpm","drizzle-kit","push","--config=drizzle.config.ts"]
+CMD ["pnpm","drizzle-kit","migrate","--config=drizzle.config.ts"]

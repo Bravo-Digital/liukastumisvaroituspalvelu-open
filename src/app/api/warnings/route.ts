@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { warningsTable } from "@/lib/schema";
 import { desc } from "drizzle-orm";
+import { DateTime } from "luxon";
 
 /** ---- limiter ---- */
 const RL_LIMIT = 60;             // 60 req
@@ -36,7 +37,7 @@ function getClientIp(req: NextRequest): string {
 
 function checkRateLimit(key: string) {
   const now = Date.now();
-  sweepExpired(now); // 🔹 keep map from growing forever
+  sweepExpired(now); // keep map from growing forever
 
   let b = buckets.get(key);
   if (!b || b.resetAt <= now) {
@@ -94,9 +95,9 @@ export async function GET(request: NextRequest) {
     const warningsMap = new Map<string, { id: string; date: string; time: string; area: string }>();
     allWarnings.forEach((warning) => {
       if (!warningsMap.has(warning.id)) {
-        const d = new Date(warning.onsetAt);
-        const date = `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
-        const time = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+        const dt = DateTime.fromJSDate(warning.onsetAt).setZone("Europe/Helsinki");
+        const date = dt.toFormat("dd.MM.yyyy");
+        const time = dt.toFormat("HH:mm");
         warningsMap.set(warning.id, { id: warning.id, date, time, area: warning.area || "" });
       }
     });
