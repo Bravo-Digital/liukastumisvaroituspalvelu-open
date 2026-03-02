@@ -350,7 +350,7 @@ async function checkWarnings() {
             );
           }
 
-          audit({
+         await audit({
             actor_type: "system",
             action: "warning_ingested",
             outcome: "success",
