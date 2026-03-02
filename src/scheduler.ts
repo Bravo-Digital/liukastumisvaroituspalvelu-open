@@ -3,6 +3,7 @@ import { smsQueueTable, warningsTable } from "@/lib/schema";
 import { and, eq, lte, sql, inArray } from "drizzle-orm";
 import { sendBulkSms as gatewaySendSms } from "@/actions/sendSms";
 import { logger, audit } from "@/lib/logger";
+import { baseMessageByLang, formatStampForMessage } from "@/lib/smsUtil";
 
 const SENDER = process.env.REPLY_SENDER!;
 const MAX_BATCH = 1000;          // recipients per gateway call
@@ -20,10 +21,10 @@ type QueueRow = {
   attempts: number;
 };
 
-function groupByMessageAndLang(rows: QueueRow[]) {
+function groupByLanguage(rows: QueueRow[]) {
   const map = new Map<string, QueueRow[]>();
   for (const r of rows) {
-    const key = `${r.language}::${r.message}`;
+    const key = r.language;
     (map.get(key) ?? map.set(key, []).get(key)!).push(r);
   }
   return map;
@@ -140,51 +141,50 @@ async function processQueueOnce() {
   }
 
   // Group by (language + exact message) for bulk sends
-  const grouped = groupByMessageAndLang(filtered);
+  const grouped = groupByLanguage(filtered);
 
-  for (const [key, rows] of grouped.entries()) {
-    // Chunk recipients for SMS Gateway
+  for (const [lang, rows] of grouped.entries()) {
+
     const chunks = chunk(rows, MAX_BATCH);
-    for (const rowsChunk of chunks) {
-      const recipients = rowsChunk.map(r => ({ msisdn: r.phone }));
-      const sample = rowsChunk[0];
-        
-      // Update SMS status to 'sending'
-      await db.update(smsQueueTable)
-      .set({ status: "sending" })
-      .where(inArray(smsQueueTable.id, rowsChunk.map(r => r.id)));
 
+    for (const rowsChunk of chunks) {
+    // timestamp per gateway batch
+    const sentAt = new Date();
+    const stamp = formatStampForMessage(sentAt); // Helsinki time in the text
+    const message = baseMessageByLang(lang, stamp);
+  
+
+      const recipients = rowsChunk.map(r => ({ msisdn: r.phone }));
+  
+      await db.update(smsQueueTable)
+        .set({ status: "sending" })
+        .where(inArray(smsQueueTable.id, rowsChunk.map(r => r.id)));
+  
       try {
-        const res = await gatewaySendSms({
+        await gatewaySendSms({
           sender: SENDER,
-          message: sample.message,
+          message,          // message built at send time
           recipients,
         });
-        
-        // Message gateway returns { ids: [messageId1, messageId2, ...], usage: {...} }
-        /* 
-        if (!res?.ids || res.ids.length === 0) {
-          throw new Error("No message IDs returned from gateway");
-        }
-        */
-        // Map returned IDs to each recipient row
-       // const msgId = res.ids[0];
-        
-       await db.update(smsQueueTable)
-       .set({ status: "sent", sentAt: new Date(), lastError: null, gatewayMessageId: null })
-       .where(inArray(smsQueueTable.id, rowsChunk.map(r => r.id)));
-        
-        console.log(`[Scheduler] Sent ${rowsChunk.length} SMS for ${key}`);
-        logger.info({ sent: rowsChunk.length, key }, "[Scheduler] Sent batch");
-        
+  
+        await db.update(smsQueueTable)
+          .set({
+            status: "sent",
+            sentAt,          // actual send timestamp in DB
+            lastError: null,
+            gatewayMessageId: null,
+            message,         // overwrite queue message to exactly what was sent
+          })
+          .where(inArray(smsQueueTable.id, rowsChunk.map(r => r.id)));
+  
+        logger.info({ sent: rowsChunk.length, lang }, "[Scheduler] Sent batch");
         await audit({
           actor_type: "worker",
           actor_id: "scheduler",
           action: "sms_sent_batch",
-          meta: { sent_count: rowsChunk.length },
+          meta: { sent_count: rowsChunk.length, lang, stamp },
         });
       } catch (err) {
-        console.error("[Scheduler] Gateway send failed:", err);
         logger.error({ err }, "[Scheduler] Gateway send failed");
         await markError(rowsChunk, err);
       }

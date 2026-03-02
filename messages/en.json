@@ -108,6 +108,10 @@
   "none": {
     "title": "No active warnings",
     "description": "There are no active slippery warnings currently."
+  },
+  "attribution": {
+    "text": "Warnings source: Finnish Meteorological Institute (FMI) Open Data – Warnings",
+    "more": "Licenses & sources"
   }
 },
 "Statistics": {
@@ -244,6 +248,33 @@
       "instructions": "You can request access, rectification, withdraw consent or make other privacy-related requests by contacting the controller."
     },
       "cookies": "Cookies"
+  },
+
+  "LicensePage": {
+  "title": "Licenses & sources",
+  "intro": "Liukasbotti uses warnings (CAP) from the Finnish Meteorological Institute (FMI) Open Data.",
+
+  "sections": {
+    "fmi": {
+      "title": "FMI Open Data – Warnings (CAP)",
+      "labels": {
+        "licensor": "Licensor",
+        "dataset": "Dataset",
+        "source": "Source",
+        "license": "License"
+      },
+      "values": {
+        "licensorName": "Finnish Meteorological Institute (FMI)",
+        "datasetName": "Warnings (CAP)",
+        "fmiTermsLinkLabel": "License terms"
+      }
+    },
+
+    "changes": {
+      "title": "Any changes / presentation",
+      "text": "Liukasbotti may filter, sort, and visualize warnings (e.g., by area or time). The original warnings are available from the FMI source. If the content has been modified, this will be indicated separately."
+    }
   }
+}
 }
 

@@ -85,10 +85,10 @@ console.log(data.warnings, data.pagination);`;
         </CardHeader>
         <CardContent className="space-y-3">
           <p>
-            This endpoint reads the <code>warnings</code> table, sorts rows by{" "}
+            This endpoint reads the <code>warnings</code> table, sorts rows by 
             <code>created_at</code> (descending), deduplicates by <code>id</code>, then returns a
-            page of results. Each item includes a display-ready <code>date</code> and{" "}
-            <code>time</code> derived from the warning&apos;s onset/effective time, and the{" "}
+            page of results. Each item includes a display-ready <code>date</code> and
+            <code>time</code> derived from the warning&apos;s onset/effective time, and the
             <code>area</code>.
           </p>
           <Alert>
@@ -156,12 +156,6 @@ console.log(data.warnings, data.pagination);`;
         <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-6 font-mono whitespace-pre">
           <code>{responseSchema}</code>
         </pre>
-          <p className="mt-3 text-sm text-muted-foreground">
-            <strong>Note:</strong> <code>date</code> and <code>time</code> are human-friendly
-            strings produced on the server. If you need raw timestamps (e.g., ISO 8601 for{" "}
-            <code>onsetAt</code>/<code>expiresAt</code>), consider extending the API in a future
-            version.
-          </p>
         </CardContent>
       </Card>
 

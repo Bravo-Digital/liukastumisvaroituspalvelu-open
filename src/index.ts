@@ -6,8 +6,10 @@ import { usersTable, smsQueueTable } from "@/lib/schema";
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { warningsTable } from "@/lib/schema";
-import { isImmediateHour, nextRunAtForHour, baseMessageByLang } from "@/lib/smsUtil";
+import { baseMessageByLang } from "@/lib/smsUtil";
 import { logger, audit } from "@/lib/logger";
+
+import { DateTime } from "luxon";
 
 interface Area {
   areaDesc: string;
@@ -65,6 +67,47 @@ const FEED_URL = 'https://alerts.fmi.fi/cap/feed/rss_en-GB.rss';
 let modified: string | null = null;
 
 const areasToCheck = ["Uusimaa"];
+const HELSINKI_TZ = "Europe/Helsinki";
+
+function firstSendAtForUser(
+  hour: string | null | undefined,
+  now: Date,
+  onsetAt: Date
+): Date {
+  const nowLocal = DateTime.fromJSDate(now, { zone: HELSINKI_TZ });
+  const onsetLocal = DateTime.fromJSDate(onsetAt, { zone: HELSINKI_TZ });
+
+  // No preference => send immediately when warning starts (or now if already started)
+  if (!hour || hour.trim() === "") {
+    const dt = onsetLocal < nowLocal ? nowLocal : onsetLocal;
+    return dt.toUTC().toJSDate();
+  }
+
+  // Parse "HH:mm"
+  const parts = hour.split(":");
+  const h = Number(parts[0]);
+  const m = Number(parts[1] ?? "0");
+  if (!Number.isFinite(h) || !Number.isFinite(m)) {
+    const dt = onsetLocal < nowLocal ? nowLocal : onsetLocal;
+    return dt.toUTC().toJSDate();
+  }
+
+  // Preferred time on the onset calendar day (Helsinki time)
+  let candidate = onsetLocal.set({ hour: h, minute: m, second: 0, millisecond: 0 });
+
+  // if "today's preferred time" (on onset day) has already gone (i.e., <= onset time),
+  // send at the preferred time the NEXT day instead.
+  if (candidate < onsetLocal) {
+    candidate = candidate.plus({ days: 1 });
+  }
+
+  // If we’re already past the candidate (worker started late), move forward by days
+  while (candidate < nowLocal) {
+    candidate = candidate.plus({ days: 1 });
+  }
+
+  return candidate.toUTC().toJSDate();
+}
 
 async function enqueueJobsForWarning(
   warningId: string,
@@ -76,7 +119,6 @@ async function enqueueJobsForWarning(
   const users = await db.select().from(usersTable);
   if (users.length === 0) return;
 
-  const HELSINKI_TZ = "Europe/Helsinki";
   const now = new Date();
 
   // Pre-index detail areas by language prefix (fi/en/sv)
@@ -119,15 +161,10 @@ async function enqueueJobsForWarning(
     if (!userAreaMatches(u.area, u.language)) continue;
 
     // Determine scheduled time
-    let scheduledAt: Date;
-    if (isImmediateHour(u.hour)) {
-      scheduledAt = now; // immediate
-    } else {
-      scheduledAt = nextRunAtForHour(u.hour!, now);
-    }
-    // Clamp to warning window [onsetAt, expiresAt]
-    if (scheduledAt < onsetAt) scheduledAt = onsetAt;
-    if (scheduledAt > expiresAt) continue; // would be after expiry -> skip
+    const scheduledAt = firstSendAtForUser(u.hour, now, onsetAt);
+
+    // still respect expiry
+    if (scheduledAt > expiresAt) continue;
 
     // Compose message text now (lets us group identical messages later)
     const msg = baseMessageByLang(u.language);
@@ -313,7 +350,7 @@ async function checkWarnings() {
             );
           }
 
-          audit({
+         await audit({
             actor_type: "system",
             action: "warning_ingested",
             outcome: "success",

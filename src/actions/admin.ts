@@ -16,6 +16,8 @@ import QRCode from "qrcode";
 import { revalidatePath } from "next/cache";
 import { logger, audit } from "@/lib/logger";
 import { headers } from "next/headers";
+import { DateTime } from "luxon";
+const HELSINKI_TZ = "Europe/Helsinki";
 
 export type LoginState = { error?: string | null };
 
@@ -134,7 +136,7 @@ export async function adminVerifyTotp(_: any, formData: FormData) {
   const valid = verifyTotp(mfa.mfaSecret, code);
   if (!valid) return { error: "Invalid code" };
 
-  audit({
+ await audit({
     actor_type: "admin",
     actor_id: process.env.ADMIN_USERNAME || "admin",
     action: "login_totp",
@@ -173,7 +175,7 @@ export async function createMfaEnrollment() {
   h.get("x-real-ip") ||
   "unknown";
 
-  audit({
+ await audit({
     actor_type: "admin",
     action: "admin_createMfaEnrollment",
     ip,
@@ -201,7 +203,7 @@ export async function finalizeMfaEnable(formData: FormData) {
   h.get("x-real-ip") ||
   "unknown";
 
-  audit({
+  await audit({
     actor_type: "admin",
     action: "admin_finalizeMfaEnable",
     ip,
@@ -226,7 +228,7 @@ export async function disableMfa() {
 export async function adminSignOut() {
   await clearAdminCookie();
   await clearPending2faCookie();
-  audit({
+  await audit({
     actor_type: "admin",
     actor_id: process.env.ADMIN_USERNAME || "admin",
     action: "admin_signout",
@@ -427,7 +429,10 @@ export async function updateWarningExpiry(formData: FormData) {
   if (!id || !expires) return { error: "Missing fields" };
 
   // "YYYY-MM-DDTHH:mm" from <input type="datetime-local">
-  const newExpiresAt = new Date(expires);
+  const dt = DateTime.fromFormat(expires, "yyyy-MM-dd'T'HH:mm", { zone: HELSINKI_TZ });
+  if (!dt.isValid) return { error: "Invalid datetime" };
+  
+  const newExpiresAt = dt.toUTC().toJSDate();
   if (Number.isNaN(newExpiresAt.getTime())) return { error: "Invalid datetime" };
 
   await db.update(warningsTable).set({ expiresAt: newExpiresAt }).where(eq(warningsTable.id, id));

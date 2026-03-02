@@ -105,6 +105,10 @@
   "none": {
   "title": "Ingen halka upptäckt",
   "description": "Det finns för närvarande inga aktiva varningar."
+  },
+  "attribution": {
+    "text": "Källa för varningar: Meteorologiska institutet – öppna data, varningar",
+    "more": "Licenser och källor"
   }
 },
 "Statistics": {
@@ -242,7 +246,34 @@
       "instructions": "Begär tillgång, rättelse, återkalla samtycke eller gör andra dataskyddsrelaterade begäranden genom att kontakta den personuppgiftsansvarige."
     },
   "cookies": "Cookies"
+  },
+
+  "LicensePage": {
+  "title": "Licenser och källor",
+  "intro": "Liukasbot använder varningar (CAP) från Meteorologiska institutets öppna data.",
+
+  "sections": {
+    "fmi": {
+      "title": "Meteorologiska institutets öppna data – Varningar (CAP)",
+      "labels": {
+        "licensor": "Licensgivare",
+        "dataset": "Material",
+        "source": "Källa",
+        "license": "Licens"
+      },
+      "values": {
+        "licensorName": "Meteorologiska institutet",
+        "datasetName": "Varningar (CAP)",
+        "fmiTermsLinkLabel": "Licens- och användningsvillkor"
+      }
+    },
+
+    "changes": {
+      "title": "Eventuella ändringar / presentation",
+      "text": "Liukasbot kan filtrera, sortera och visualisera varningar (t.ex. efter område eller tid). De ursprungliga varningarna finns i institutets källa. Om innehållet har ändrats anges detta separat."
+    }
   }
+}
 }
 
 
