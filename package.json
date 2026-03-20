@@ -28,7 +28,7 @@
     "date-fns-tz": "^3.2.0",
     "dotenv": "^17.0.0",
     "drizzle-orm": "^0.44.2",
-    "fast-xml-parser": "^5.4.1",
+    "fast-xml-parser": "^5.5.7",
     "fontkit": "^2.0.4",
     "gel": "^2.1.1",
     "input-otp": "^1.4.2",
